@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="_layout">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDIT PRODUCT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+    <div layout:fragment="content" class="bg-gray-100 flex justify-center items-center min-h-screen">
+        <div class="w-full max-w-lg bg-white p-8 rounded-lg shadow-lg">
+            <h1 class="text-2xl font-semibold text-center mb-6 text-gray-700">Edit Product</h1>
+
+            <form action="#" th:action="@{/product/edit/{id}(id=${product.id})}" method="post" th:object="${product}"
+                class="space-y-4">
+                <!-- Hidden ID -->
+                <input type="hidden" th:field="*{id}" />
+
+                <!-- Name Input -->
+                <div>
+                    <label class="block text-gray-600 font-medium">Name:</label>
+                    <input type="text" th:field="*{name}" required
+                        class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+
+                <!-- Price Input -->
+                <div>
+                    <label class="block text-gray-600 font-medium">Price:</label>
+                    <input type="number" th:field="*{price}" required
+                        class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+
+                <!-- Image Input -->
+                <div>
+                    <label class="block text-gray-600 font-medium">Image link:</label>
+                    <input type="text" th:field="*{image}" required
+                        class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+
+                <!-- Description Input -->
+                <div>
+                    <label class="block text-gray-600 font-medium">Description:</label>
+                    <textarea th:field="*{description}" required rows="4"
+                        class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex justify-between">
+                    <a th:href="@{/admin}"
+                        class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition">
+                        Back to List
+                    </a>
+                    <button type="submit"
+                        class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition">
+                        Update
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

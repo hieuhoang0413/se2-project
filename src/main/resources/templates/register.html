@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" xmlns:th="http://www.thymeleaf.org">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+</head>
+
+<body>
+    <div class="flex w-full">
+        <div class="relative w-1/2 h-full min-h-screen overflow-hidden">
+            <a class="absolute z-10 left-1/2 -translate-x-1/2 w-[120px]">
+            <FurnitureDark />
+            </a>
+            <img class="w-full h-full scale-110 translate-x-[100px] translate-y-[100px] object-cover"
+                src="https://s3-alpha-sig.figma.com/img/2c01/ae8d/ce147d8554c2cda7530244569e9d8515?Expires=1742774400&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=sOXCmuXI0XUTmeDNeTmQAP6hRbuBkejfBebtFdeB9SOpH6w8~g2i7B7X3deBZ~Fhskn6P80JUa8~WHPtqiIkV8epLzVnS2TJb9JsdqJVX7U3cNLJdAuA3sVuEqt1aCxv2LDM4GZnKd83DyJMu6FJLp8gJ354CEBVMks73Bk1d0-C2xjdFin55CadwBTab2TnXco1vAsRPi1rJlW5QEd2geeH-PlpZPRLQwMjc~2RIAgvK-lDPB84inpGOsVnY2Ive~SfJoAe3QSQpPZALthC852ExEpPXNq1-mGEPhQewknsrh019uU2xf1kb9v5Nzu8ks1EEQexOTDVT~PQ6G4Tpg__"
+                alt="" />
+        </div>
+
+        <div class="w-1/2 bg-[#F3F5F7] pl-[90px] pt-[30px] pr-[160px]">
+            <h1 class="text-[40px] mb-6">Sign up</h1>
+            <p class="text-[#6C7275] mb-8">Already have an account?
+                <a th:href="@{/login}" class="text-[#38CB89]">Log in</a>
+            </p>
+            <form th:object="${user}" class="flex flex-col gap-8" th:action="@{/register}" method="post">
+                <div class="">
+                    <input type="text" id="create-account-name"
+                        class="w-full h-10 py-2 border-b border-[#6C7275] text-[#6C7275] focus:bg-none focus:outline-none focus:text-black"
+                        th:field="*{fullName}" placeholder="Full Name" required>
+                </div>
+                <div class="">
+                    <input type="text" id="create-account-username"
+                    class="w-full h-10 py-2 border-b border-[#6C7275] text-[#6C7275] focus:bg-none
+                    focus:outline-none focus:text-black" th:field="*{username}" placeholder="Username" required>
+                </div>
+                <div class="">
+                    <input type="password" id="create-account-password"
+                    class="w-full h-10 py-2 border-b border-[#6C7275] text-[#6C7275] focus:bg-none
+                    focus:outline-none focus:text-black" th:field="*{password}" placeholder="Password" required>
+                </div>
+                <div class="">
+                    <input type="number" id="create-account-phone-number"
+                    class="w-full h-10 py-2 border-b border-[#6C7275] text-[#6C7275] focus:bg-none
+                    focus:outline-none focus:text-black" th:field="*{phoneNumber}" placeholder="Phone Number" required>
+                </div>
+                <div class="">
+                    <input type="text" id="create-account-address"
+                    class="w-full h-10 py-2 border-b border-[#6C7275] text-[#6C7275] focus:bg-none
+                    focus:outline-none focus:text-black" th:field="*{address}" placeholder="Address" required>
+                </div>
+                <button type="submit"
+                    class="h-12 py-2 px-4 bg-black hover:bg-gray-500 text-white w-full transition text-center text-base font-semibold shadow-md rounded-lg cursor-pointer">
+                    Sign up
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+<!-- <script src="https://unpkg.com/@tailwindcss/browser@4"></script> -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+</html>

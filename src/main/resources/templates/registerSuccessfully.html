@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Successfully</title>
+</head>
+
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="bg-white p-8 rounded-lg shadow-lg text-center">
+        <div class="flex justify-center mb-4">
+            <svg class="w-16 h-16 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <path fill="#33a752"
+                    d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z" />
+            </svg>
+        </div>
+
+        <h2 class="text-2xl font-semibold text-gray-800">Registration successful!</h2>
+        <p class="text-gray-600 mt-2">You have successfully created an account. Please log in to continue.</p>
+
+        <a th:href="@{/login}"
+            class="mt-4 inline-block bg-green-500 text-white px-6 py-2 rounded-lg shadow hover:bg-green-600 transition">
+            Back to Login
+        </a>
+    </div>
+</body>
+<!-- <script src="https://unpkg.com/@tailwindcss/browser@4"></script> -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+
+</html>

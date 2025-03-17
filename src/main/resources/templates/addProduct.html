@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="_layout">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADD PRODUCT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+    <div layout:fragment="content" class="bg-gray-100 flex justify-center items-center min-h-screen">
+        <div class="w-full max-w-lg bg-white p-8 rounded-lg shadow-lg">
+            <h1 class="text-2xl font-semibold text-center mb-6 text-gray-700">Add Product</h1>
+
+            <form action="#" th:action="@{/product/add}" method="post" th:object="${product}" class="space-y-4">
+                <!-- Name Input -->
+                <div>
+                    <label class="block text-gray-600 font-medium">Name:</label>
+                    <input type="text" th:field="*{name}" required
+                        class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+
+                <!-- Price Input -->
+                <div>
+                    <label class="block text-gray-600 font-medium">Price:</label>
+                    <input type="number" th:field="*{price}" required
+                        class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+
+                <!-- Image Input -->
+                <div>
+                    <label class="block text-gray-600 font-medium">Image links (one per line):</label>
+                    <textarea name="imageUrls" rows="3" required
+                        class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
+                </div>
+
+                <!-- Description Input -->
+                <div>
+                    <label class="block text-gray-600 font-medium">Description:</label>
+                    <textarea th:field="*{description}" required rows="4"
+                        class="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-between">
+                    <a th:href="@{/admin}"
+                        class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition">
+                        Back to List
+                    </a>
+                    <button type="submit"
+                        class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition">
+                        ADD
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+
+</html>

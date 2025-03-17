@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="_layout">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+</head>
+
+<body>
+    <div layout:fragment="content" class="container">
+        <div class="w-full p-20">
+            <h1 class="text-4xl mb-7">Manage Product</h1>
+            <div class="flex justify-end mb-5">
+                <a th:href="@{/product/add}"
+                    class="w-[140px] h-8 bg-green-500 text-center text-white rounded cursor-pointer hover:bg-green-700">
+                    ADD PRODUCT
+                </a>
+            </div>
+            <div>
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-black text-white text-center">
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Image</th>
+                            <th>Price</th>
+                            <th>Description</th>
+                            <th>Handle</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="product : ${products}" class="text-center border">
+                            <td th:text="${product.id}"></td>
+                            <td th:text="${product.name}"></td>
+                            <td>
+                                <img th:each="image : ${product.images}" th:src="${image.imageUrl}" alt="Product Image"
+                                    class="w-16 h-16 object-cover rounded">
+                            </td>
+                            <td th:text="${product.price}"></td>
+                            <td th:text="${product.description}"></td>
+                            <td class="flex justify-center gap-6">
+                                <a th:href="@{/product/{id}(id=${product.id})}" class="text-green-500">View</a> |
+                                <a th:href="@{/product/edit/{id}(id=${product.id})}"
+                                    class="block w-[72px] h-8 bg-blue-500 text-center text-white rounded cursor-pointer hover:bg-blue-700">
+                                    EDIT
+                                </a> |
+                                <a th:href="@{/product/delete/{id}(id=${product.id})}"
+                                    onclick="return confirm('Are you sure?')"
+                                    class="block w-[72px] h-8 bg-red-500 text-center text-white rounded cursor-pointer hover:bg-red-700">
+                                    DELETE
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+<!-- <script src="https://unpkg.com/@tailwindcss/browser@4"></script> -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+</html>

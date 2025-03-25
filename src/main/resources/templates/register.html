@@ -8,49 +8,59 @@
 </head>
 
 <body>
-    <div class="flex w-full">
-        <div class="relative w-1/2 h-full min-h-screen overflow-hidden">
-            <a class="absolute z-10 left-1/2 -translate-x-1/2 w-[120px]">
-            <FurnitureDark />
+    <div class="flex flex-col md:flex-row w-full">
+        <!-- Image section - Hidden on mobile, visible from md breakpoint -->
+        <div class="relative hidden md:block md:w-1/2 h-full min-h-screen overflow-hidden">
+            <a class="absolute z-10 top-8 left-1/2 -translate-x-1/2 w-[120px]">
+                <!-- Assuming FurnitureDark is a component, replaced with placeholder text -->
+                <span class="text-2xl font-bold">Furniture</span>
             </a>
             <img class="w-full h-full scale-110 translate-x-[100px] translate-y-[100px] object-cover"
                 src="https://s3-alpha-sig.figma.com/img/2c01/ae8d/ce147d8554c2cda7530244569e9d8515?Expires=1742774400&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=sOXCmuXI0XUTmeDNeTmQAP6hRbuBkejfBebtFdeB9SOpH6w8~g2i7B7X3deBZ~Fhskn6P80JUa8~WHPtqiIkV8epLzVnS2TJb9JsdqJVX7U3cNLJdAuA3sVuEqt1aCxv2LDM4GZnKd83DyJMu6FJLp8gJ354CEBVMks73Bk1d0-C2xjdFin55CadwBTab2TnXco1vAsRPi1rJlW5QEd2geeH-PlpZPRLQwMjc~2RIAgvK-lDPB84inpGOsVnY2Ive~SfJoAe3QSQpPZALthC852ExEpPXNq1-mGEPhQewknsrh019uU2xf1kb9v5Nzu8ks1EEQexOTDVT~PQ6G4Tpg__"
                 alt="" />
         </div>
 
-        <div class="w-1/2 bg-[#F3F5F7] pl-[90px] pt-[30px] pr-[160px]">
-            <h1 class="text-[40px] mb-6">Sign up</h1>
-            <p class="text-[#6C7275] mb-8">Already have an account?
+        <!-- Mobile logo - Only visible on mobile -->
+        <div class="flex justify-center items-center py-6 md:hidden bg-[#F3F5F7]">
+            <a class="w-[100px]">
+                <span class="text-2xl font-bold">Elite Home</span>
+            </a>
+        </div>
+
+        <!-- Form section -->
+        <div class="w-full md:w-1/2 bg-[#F3F5F7] px-6 py-8 md:pl-[90px] md:pt-[30px] md:pr-[160px]">
+            <h1 class="text-3xl md:text-[40px] mb-4 md:mb-6 font-bold">Sign up</h1>
+            <p class="text-[#6C7275] mb-6 md:mb-8">Already have an account?
                 <a th:href="@{/login}" class="text-[#38CB89]">Log in</a>
             </p>
-            <form th:object="${user}" class="flex flex-col gap-8" th:action="@{/register}" method="post">
+            <form th:object="${user}" class="flex flex-col gap-5 md:gap-8" th:action="@{/register}" method="post">
                 <div class="">
-                    <input type="text" id="create-account-name"
-                        class="w-full h-10 py-2 border-b border-[#6C7275] text-[#6C7275] focus:bg-none focus:outline-none focus:text-black"
-                        th:field="*{fullName}" placeholder="Full Name" required>
+                    <input type="text" id="create-account-name" class="w-full h-10 py-2 pl-4 border border-[#6C7275] rounded-lg text-[#6C7275]
+                                        focus:outline-none focus:text-black" th:field="*{fullName}"
+                        placeholder="Full Name" required>
                 </div>
                 <div class="">
-                    <input type="text" id="create-account-username"
-                    class="w-full h-10 py-2 border-b border-[#6C7275] text-[#6C7275] focus:bg-none
-                    focus:outline-none focus:text-black" th:field="*{username}" placeholder="Username" required>
+                    <input type="text" id="create-account-username" class="w-full h-10 py-2 pl-4 border border-[#6C7275] rounded-lg text-[#6C7275]
+                                focus:outline-none focus:text-black" th:field="*{username}" placeholder="Username"
+                        required>
                 </div>
                 <div class="">
-                    <input type="password" id="create-account-password"
-                    class="w-full h-10 py-2 border-b border-[#6C7275] text-[#6C7275] focus:bg-none
-                    focus:outline-none focus:text-black" th:field="*{password}" placeholder="Password" required>
+                    <input type="password" id="create-account-password" class="w-full h-10 py-2 pl-4 border border-[#6C7275] rounded-lg text-[#6C7275]
+                                        focus:outline-none focus:text-black" th:field="*{password}"
+                        placeholder="Password" required>
                 </div>
                 <div class="">
-                    <input type="number" id="create-account-phone-number"
-                    class="w-full h-10 py-2 border-b border-[#6C7275] text-[#6C7275] focus:bg-none
-                    focus:outline-none focus:text-black" th:field="*{phoneNumber}" placeholder="Phone Number" required>
+                    <input type="tel" id="create-account-phone-number" class="w-full h-10 py-2 pl-4 border border-[#6C7275] rounded-lg text-[#6C7275]
+                                    focus:outline-none focus:text-black" th:field="*{phoneNumber}"
+                        placeholder="Phone Number" required>
                 </div>
                 <div class="">
-                    <input type="text" id="create-account-address"
-                    class="w-full h-10 py-2 border-b border-[#6C7275] text-[#6C7275] focus:bg-none
-                    focus:outline-none focus:text-black" th:field="*{address}" placeholder="Address" required>
+                    <input type="text" id="create-account-address" class="w-full h-10 py-2 pl-4 border border-[#6C7275] rounded-lg text-[#6C7275]
+                                    focus:outline-none focus:text-black" th:field="*{address}" placeholder="Address"
+                        required>
                 </div>
                 <button type="submit"
-                    class="h-12 py-2 px-4 bg-black hover:bg-gray-500 text-white w-full transition text-center text-base font-semibold shadow-md rounded-lg cursor-pointer">
+                    class="h-12 py-2 px-4 bg-black hover:bg-gray-500 text-white w-full transition text-center text-base font-semibold shadow-md rounded-lg cursor-pointer mt-2">
                     Sign up
                 </button>
             </form>

@@ -6,9 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Setter
 @Getter
 @AllArgsConstructor
@@ -26,8 +23,8 @@ public class Product {
     @Column(nullable = false)
     private double price;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductImage> images = new ArrayList<>();
+    @Column(nullable = false, length = 500)
+    private String image;
 
     @Column(nullable = false, length = 500)
     private String description;
@@ -56,12 +53,12 @@ public class Product {
         this.price = price;
     }
 
-    public List<ProductImage> getImages() {
-        return images;
+    public String getImage() {
+        return image;
     }
 
-    public void setImages(List<ProductImage> images) {
-        this.images = images;
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getDescription() {

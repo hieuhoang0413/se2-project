@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="_layout">
+    layout:decorate="_layout_admin">
 
 <head>
     <meta charset="UTF-8">
@@ -10,56 +10,185 @@
 
 <body>
     <div layout:fragment="content" class="container">
-        <div class="w-full p-20">
-            <h1 class="text-4xl mb-7">Manage Product</h1>
-            <div class="flex justify-end mb-5">
-                <a th:href="@{/product/add}"
-                    class="w-[140px] h-8 bg-green-500 text-center text-white rounded cursor-pointer hover:bg-green-700">
-                    ADD PRODUCT
-                </a>
+        <!-- Main Content - With Standard Website Margins -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <h1 class="text-2xl font-bold mb-6">Products List</h1>
+
+            <!-- Container chính -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+
+                <!-- Search Bar -->
+                <div class="relative w-full sm:w-80">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5 text-gray-400">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                        </svg>
+                    </div>
+                    <input type="text"
+                        class="bg-white border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5"
+                        placeholder="Search..." th:value="${searchQuery}">
+                </div>
+
+                <!-- Nhóm nút bên phải (Add + Trash) -->
+                <div class="flex justify-between sm:justify-start items-center w-full sm:w-auto gap-3">
+                    <!-- Add Product -->
+                    <a th:href="@{/product/add}"
+                        class="flex items-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5 mr-2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                        Add Product
+                    </a>
+
+                    <!-- Trash Icon -->
+                    <button id="deleteSelectedBtn"
+                        class="text-blue-600 hover:text-blue-800 p-2 border border-blue-200 rounded-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107
+                    1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244
+                    2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772
+                    5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12
+                    .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1
+                    3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964
+                    51.964 0 0 0-3.32 0c-1.18.037-2.09
+                    1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                        </svg>
+                    </button>
+                </div>
             </div>
-            <div>
-                <table class="w-full">
-                    <thead>
-                        <tr class="bg-black text-white text-center">
-                            <th>Id</th>
-                            <th>Name</th>
-                            <th>Image</th>
-                            <th>Price</th>
-                            <th>Description</th>
-                            <th>Handle</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="product : ${products}" class="text-center border">
-                            <td th:text="${product.id}"></td>
-                            <td th:text="${product.name}"></td>
-                            <td>
-                                <img th:each="image : ${product.images}" th:src="${image.imageUrl}" alt="Product Image"
-                                    class="w-16 h-16 object-cover rounded">
-                            </td>
-                            <td th:text="${product.price}"></td>
-                            <td th:text="${product.description}"></td>
-                            <td class="flex justify-center gap-6">
-                                <a th:href="@{/product/{id}(id=${product.id})}" class="text-green-500">View</a> |
-                                <a th:href="@{/product/edit/{id}(id=${product.id})}"
-                                    class="block w-[72px] h-8 bg-blue-500 text-center text-white rounded cursor-pointer hover:bg-blue-700">
-                                    EDIT
-                                </a> |
-                                <a th:href="@{/product/delete/{id}(id=${product.id})}"
-                                    onclick="return confirm('Are you sure?')"
-                                    class="block w-[72px] h-8 bg-red-500 text-center text-white rounded cursor-pointer hover:bg-red-700">
-                                    DELETE
-                                </a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+
+            <!-- Products Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Product Card -->
+                <div th:each="product, stat : ${products ?: {'1', '2', '3', '4', '5', '6', '7', '8', '9'}}"
+                    class="border rounded-md p-4 relative">
+                    <div class="flex justify-between items-start mb-2">
+                        <a th:href="@{/product/{id}(id=${product.id})}" class="text-lg font-semibold" th:text="${product.name}"></a>
+                        <div class="flex space-x-2">
+                            <a th:href="@{/product/edit/{id}(id=${product.id})}"
+                                class="text-blue-600 hover:text-blue-800">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                </svg>
+                            </a>
+                            <a th:href="@{/product/delete/{id}(id=${product.id})}"
+                                class="text-blue-600 hover:text-blue-800">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- <p class="text-sm text-gray-500 mb-4" th:text="${product?.category ?: 'Table'}">Table</p> -->
+
+                    <!-- Product details in a single column list -->
+                    <!-- Product details in a single row layout -->
+                    <div class="space-y-2 text-sm mb-8">
+                        <div class="flex items-center space-x-2">
+                            <p class="font-medium">Inventory:</p>
+                            <!-- <p th:text="${product?.inventory ?: '96 in stock'}">96 in stock</p> -->
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <p class="font-medium">Color:</p>
+                            <!-- <p th:text="${product?.color ?: 'Black'}">Black</p> -->
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <p class="font-medium">Price:</p>
+                            <p th:text="${product?.price ?: '$49.90'}">$49.90</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <p class="font-medium">Rating:</p>
+                            <!-- <p th:text="${product?.rating ?: '5.0 (32 Votes)'}">5.0 (32 Votes)</p> -->
+                        </div>
+                    </div>
+
+                    <!-- <div class="absolute bottom-4 right-4">
+                        <input type="checkbox" class="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                            th:checked="${product?.selected}">
+                    </div> -->
+                </div>
             </div>
-        </div>
+
+            <!-- Pagination -->
+            <div class="flex justify-center mt-8">
+                <nav class="flex items-center space-x-2">
+                    <a href="#" class="p-2 rounded-md hover:bg-gray-100"
+                        th:class="${currentPage == 1 ? 'text-gray-400 cursor-not-allowed' : ''}">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                        </svg>
+                    </a>
+
+                    <a href="#" class="w-8 h-8 flex items-center justify-center rounded-md bg-blue-600 text-white"
+                        th:text="${currentPage ?: '1'}">1</a>
+
+                    <a th:each="page : ${#numbers.sequence(2, 6)}" href="#"
+                        class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-gray-100"
+                        th:text="${page}">2</a>
+
+                    <span class="px-2">...</span>
+
+                    <a href="#" class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-gray-100"
+                        th:text="${totalPages ?: '24'}">24</a>
+
+                    <a href="#" class="p-2 rounded-md hover:bg-gray-100">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                        </svg>
+                    </a>
+                </nav>
+            </div>
+        </main>
     </div>
 </body>
-<!-- <script src="https://unpkg.com/@tailwindcss/browser@4"></script> -->
 <script src="https://cdn.tailwindcss.com"></script>
+<script>
+    // Delete modal functionality
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteButtons = document.querySelectorAll('[data-product-id]');
+        const deleteModal = document.getElementById('deleteModal');
+        const cancelDelete = document.getElementById('cancelDelete');
+        const confirmDelete = document.getElementById('confirmDelete');
+        let productIdToDelete = null;
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                productIdToDelete = this.getAttribute('data-product-id');
+                deleteModal.classList.remove('hidden');
+            });
+        });
+
+        cancelDelete.addEventListener('click', function () {
+            deleteModal.classList.add('hidden');
+            productIdToDelete = null;
+        });
+
+        confirmDelete.addEventListener('click', function () {
+            if (productIdToDelete) {
+                // Here you would typically make an AJAX request to delete the product
+                console.log('Deleting product ID:', productIdToDelete);
+
+                // For demo purposes, just hide the modal
+                deleteModal.classList.add('hidden');
+                productIdToDelete = null;
+
+                // You could redirect or refresh the page after successful deletion
+                // window.location.reload();
+            }
+        });
+    });
+</script>
+<!-- <script src="https://unpkg.com/@tailwindcss/browser@4"></script> -->
 
 </html>

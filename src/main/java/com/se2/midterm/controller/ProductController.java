@@ -26,12 +26,9 @@ public class ProductController {
     @GetMapping("/{id}")
     public String getProductById(@PathVariable Long id, Model model) {
         Product product = productService.getProductById(id);
-        List<ProductImage> images = productService.getProductImages(id);
         model.addAttribute("product", product);
-        model.addAttribute("images", images);
         return "productDetail";
     }
-
 
     // Hiển thị danh sách sản phẩm
     @GetMapping

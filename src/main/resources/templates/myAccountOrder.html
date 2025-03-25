@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="_layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - Elite Home</title>
+    <style>
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container mx-auto max-w-7xl px-4 py-[80px]">
+        <h1 class="text-4xl font-bold mb-10 text-center">My Account</h1>
+
+        <div class="flex gap-10 justify-between">
+            <!-- Sidebar Account - Width: 262px -->
+            <div class="w-[262px] h-[390px] bg-gray-50 rounded-lg p-[40px_16px_40px_16px] flex flex-col gap-10">
+                <div class="flex flex-col items-center gap-4">
+                    <div class="relative w-20 h-20">
+                        <img class="w-full h-full rounded-full object-cover" th:src="@{/images/avatar.jpg}" src="/images/avatar.jpg" alt="User Avatar">
+                        <div class="absolute bottom-0 right-0 bg-white rounded-full w-6 h-6 flex items-center justify-center shadow-md cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="font-semibold text-lg" th:text="${user?.fullName}">User Name</div>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <a th:href="@{/account/profile}" class="py-3 px-4 text-gray-800 border-b border-gray-200 hover:bg-gray-100 font-semibold cursor-pointer">Account</a>
+                    <a th:href="@{/account/orders}" class="py-3 px-4 text-gray-800 border-b border-gray-200 hover:bg-gray-100 font-semibold cursor-pointer">Orders History</a>
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="w-full text-left py-3 px-4 text-gray-800 border-b border-gray-200 hover:bg-gray-100 cursor-pointer">Log Out</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Orders History - Width: 851px -->
+            <div class="w-[851px] h-[382px] px-[72px]">
+                <h2 class="text-2xl font-semibold mb-6">Orders History</h2>
+
+                <table class="w-full">
+                    <thead>
+                    <tr class="border-b border-gray-200">
+                        <th class="py-4 text-left text-gray-600 font-medium">Number ID</th>
+                        <th class="py-4 text-left text-gray-600 font-medium">Dates</th>
+                        <th class="py-4 text-left text-gray-600 font-medium">Status</th>
+                        <th class="py-4 text-left text-gray-600 font-medium">Price</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="order : ${orders}" class="border-b border-gray-100">
+                        <td class="py-4" th:text="${order.number}">#3456_768</td>
+                        <td class="py-4" th:text="${#temporals.format(order.date, 'MMMM d, yyyy')}">October 17, 2023</td>
+                        <td class="py-4 text-green-700" th:text="${order.status}">Delivered</td>
+                        <td class="py-4" th:text="${'$' + #numbers.formatDecimal(order.price, 1, 2)}">$1234.00</td>
+                    </tr>
+                    <!-- Dữ liệu mẫu khi không có dữ liệu thực -->
+                    <tr th:if="${orders == null || orders.empty}" class="border-b border-gray-100">
+                        <td class="py-4">#3456_768</td>
+                        <td class="py-4">October 17, 2023</td>
+                        <td class="py-4 text-green-700">Delivered</td>
+                        <td class="py-4">$1234.00</td>
+                    </tr>
+                    <tr th:if="${orders == null || orders.empty}" class="border-b border-gray-100">
+                        <td class="py-4">#3456_980</td>
+                        <td class="py-4">October 11, 2023</td>
+                        <td class="py-4 text-green-700">Delivered</td>
+                        <td class="py-4">$345.00</td>
+                    </tr>
+                    <tr th:if="${orders == null || orders.empty}" class="border-b border-gray-100">
+                        <td class="py-4">#3456_120</td>
+                        <td class="py-4">August 24, 2023</td>
+                        <td class="py-4 text-green-700">Delivered</td>
+                        <td class="py-4">$2345.00</td>
+                    </tr>
+                    <tr th:if="${orders == null || orders.empty}" class="border-b border-gray-100">
+                        <td class="py-4">#3456_030</td>
+                        <td class="py-4">August 12, 2023</td>
+                        <td class="py-4 text-green-700">Delivered</td>
+                        <td class="py-4">$845.00</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!--<script src="https://cdn.tailwindcss.com"></script>-->
+</body>
+<script src="https://cdn.tailwindcss.com"></script>
+</html>

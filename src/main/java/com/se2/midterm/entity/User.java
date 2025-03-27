@@ -32,8 +32,12 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(name = "avatar_url")
+    private String avatarUrl;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+
     private Role role;
 
     public Long getId() {

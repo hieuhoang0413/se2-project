@@ -47,4 +47,14 @@ public class UserService implements UserDetailsService {
                 .roles(user.getRole().name())
                 .build();
     }
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy người dùng"));
+    }
+    public void updateUserAvatar(String username, String avatarPath) {
+        User user = findByUsername(username);
+        user.setAvatarUrl(avatarPath);
+        userRepository.save(user);
+    }
+
 }

@@ -20,17 +20,12 @@ public class Cart {
 
     private double totalPrice;
 
-    @Enumerated(EnumType.STRING)
-    private CartStatus status;  // Trạng thái giỏ hàng
-
     public Cart() {
-        this.status = CartStatus.CART;
         this.totalPrice = 0.0;
     }
 
     public Cart(User user) {
         this.user = user;
-        this.status = CartStatus.CART;
         this.totalPrice = 0.0;
     }
 
@@ -57,6 +52,4 @@ public class Cart {
     public double getTotalPrice() { return totalPrice; }
     public void setTotalPrice(double totalPrice) { this.totalPrice = totalPrice; }
 
-    public CartStatus getStatus() { return status; }
-    public void setStatus(CartStatus status) { this.status = status; }
 }

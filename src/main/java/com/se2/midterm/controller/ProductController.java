@@ -173,7 +173,4 @@ public String showEditForm(@PathVariable Long id, Model model) {
         productService.updateProduct(id, product);
         return "redirect:/admin";
     }
-
-
-
 }

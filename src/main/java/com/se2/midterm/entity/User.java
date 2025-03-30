@@ -95,4 +95,12 @@ public class User {
     public void setRole(Role role) {
         this.role = role;
     }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
 }

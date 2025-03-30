@@ -4,10 +4,12 @@ import com.se2.midterm.entity.Cart;
 import com.se2.midterm.entity.User;
 import com.se2.midterm.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/api/cart")
+@Controller
+@RequestMapping("/cart")
 public class CartController {
 
     @Autowired
@@ -61,12 +63,20 @@ public class CartController {
         return cartService.checkout(user);
     }
 
-    //API hoàn tất đơn hàng
-    @PostMapping("/complete")
-    public Cart completeOrder(@RequestParam Long userId) {
+    @GetMapping("/view/{userId}")
+    public String viewCartPage(@PathVariable Long userId, Model model) {
         User user = new User();
         user.setId(userId);
-        return cartService.completeOrder(user);
+
+        Cart cart = cartService.getOrCreateCart(user);
+        double total = cartService.getTotalPrice(user);
+
+        model.addAttribute("cart", cart);
+        model.addAttribute("total", total);
+        model.addAttribute("userId", userId);
+
+        return "cart"; // Trỏ đến templates/cart.html
     }
+
 }
 

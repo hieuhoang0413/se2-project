@@ -1,8 +1,11 @@
 package com.se2.midterm.controller;
 
 import com.se2.midterm.entity.Cart;
+import com.se2.midterm.entity.Order;
 import com.se2.midterm.entity.User;
 import com.se2.midterm.service.CartService;
+import com.se2.midterm.service.CheckOutService;
+import org.hibernate.annotations.Check;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +17,8 @@ public class CartController {
 
     @Autowired
     private CartService cartService;
+    @Autowired
+    private CheckOutService CheckOutService;
 
     //API lấy giỏ hàng của người dùng
     @GetMapping("/{userId}")
@@ -57,10 +62,8 @@ public class CartController {
 
     //API chuyển giỏ hàng sang trạng thái CHECKOUT
     @PostMapping("/checkout")
-    public Cart checkout(@RequestParam Long userId) {
-        User user = new User();
-        user.setId(userId);
-        return cartService.checkout(user);
+    public Order checkout(@RequestParam Long userId) {
+        return CheckOutService.checkoutCart(userId);
     }
 
     @GetMapping("/view/{userId}")

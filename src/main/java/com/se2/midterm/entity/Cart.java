@@ -19,6 +19,7 @@ public class Cart {
     private List<CartItem> cartItems;
 
     private double totalPrice;
+    private CartStatus status;
 
     public Cart() {
         this.totalPrice = 0.0;
@@ -52,4 +53,11 @@ public class Cart {
     public double getTotalPrice() { return totalPrice; }
     public void setTotalPrice(double totalPrice) { this.totalPrice = totalPrice; }
 
+    public void setStatus(CartStatus status) {
+        this.status = status;
+    }
+
+    public CartStatus getStatus() {
+        return status;
+    }
 }

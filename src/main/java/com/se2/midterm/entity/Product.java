@@ -1,6 +1,8 @@
 package com.se2.midterm.entity;
 
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,7 +20,7 @@ public class Product {
     private String description;
 
     @Column(nullable = false)
-    private double price;
+    private BigDecimal price;
 
     @Column(nullable = false)
     private int quantity;
@@ -36,7 +38,7 @@ public class Product {
     // Constructors
     public Product() {}
 
-    public Product(Long id, String name, String description, double price, int quantity, int statusId, String image, Category category) {
+    public Product(Long id, String name, String description, BigDecimal price, int quantity, int statusId, String image, Category category) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -72,11 +74,11 @@ public class Product {
         this.description = description;
     }
 
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

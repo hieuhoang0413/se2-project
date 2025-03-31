@@ -4,9 +4,13 @@ import com.se2.midterm.entity.Cart;
 import com.se2.midterm.entity.User;
 import com.se2.midterm.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+import java.math.BigDecimal;
+
+@Controller
 @RequestMapping("/cart")
 public class CartController {
 
@@ -14,10 +18,10 @@ public class CartController {
     private CartService cartService;
 
     //API lấy giỏ hàng của người dùng
-    @GetMapping("/{id}")
-    public Cart getCart(@PathVariable Long id) {
+    @GetMapping("/{userId}")
+    public Cart getCart(@PathVariable Long userId) {
         User user = new User();
-        user.setId(id);
+        user.setId(userId);
         return cartService.getOrCreateCart(user);
     }
 
@@ -46,10 +50,10 @@ public class CartController {
     }
 
     //API lấy tổng tiền giỏ hàng
-    @GetMapping("/total/{id}")
-    public double getTotalPrice(@PathVariable Long id) {
+    @GetMapping("/total/{userId}")
+    public BigDecimal getTotalPrice(@PathVariable Long userId) {
         User user = new User();
-        user.setId(id);
+        user.setId(userId);
         return cartService.getTotalPrice(user);
     }
 
@@ -61,12 +65,20 @@ public class CartController {
         return cartService.checkout(user);
     }
 
-    //API hoàn tất đơn hàng
-    @PostMapping("/complete")
-    public Cart completeOrder(@RequestParam Long id) {
+    @GetMapping("/view/{userId}")
+    public String viewCartPage(@PathVariable Long userId, Model model) {
         User user = new User();
-        user.setId(id);
-        return cartService.completeOrder(user);
+        user.setId(userId);
+
+        Cart cart = cartService.getOrCreateCart(user);
+        BigDecimal total = cartService.getTotalPrice(user);
+
+        model.addAttribute("cart", cart);
+        model.addAttribute("total", total);
+        model.addAttribute("userId", userId);
+
+        return "cart"; // Trỏ đến templates/cart.html
     }
+
 }
 

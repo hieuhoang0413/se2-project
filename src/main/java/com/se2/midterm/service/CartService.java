@@ -5,7 +5,8 @@ import com.se2.midterm.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CartService {
@@ -18,12 +19,11 @@ public class CartService {
     private ProductRepository productRepository;
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private OrderRepository orderRepository;
-    @Autowired
-    private OrderDetailRepository orderDetailRepository;
-    @Autowired
-    private OrderStatusRepository orderStatusRepository;
+    /*
+    @Autowired private OrderRepository orderRepository;
+    @Autowired private OrderDetailRepository orderDetailRepository;
+    @Autowired private OrderStatusRepository orderStatusRepository;
+     */
 
     // Lấy hoặc tạo giỏ hàng
     public Cart getOrCreateCart(User user) {
@@ -80,10 +80,10 @@ public class CartService {
     }
 
     // Lấy tổng tiền
-    public BigDecimal getTotalPrice(User user) {
+    public double getTotalPrice(User user) {
         return getOrCreateCart(user).getTotalPrice();
     }
-
+/*
     // ✅ Tạo order mới khi checkout
     public Cart checkout(User user) {
         Cart cart = getOrCreateCart(user);
@@ -120,6 +120,7 @@ public class CartService {
         cartRepository.save(cart);
 
         return cart;
+
+         */
     }
 }
-

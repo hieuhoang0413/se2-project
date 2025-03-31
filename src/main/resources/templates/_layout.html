@@ -13,11 +13,11 @@
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center">
                     <div class="translate-y-[3px] w-32">
-                        <img th:src="@{/images/logo/FurnitureDark.svg}" alt="Logo" />
+                        <img src="../static/images/logo/FurnitureDark.svg" alt="Logo" />
                     </div>
                     <div class="hidden md:block">
                         <div class="flex items-baseline ml-10 space-x-4">
-                            <a href="/"
+                            <a href="/home"
                                 class="text-gray-500 hover:text-black px-3 py-2 rounded-md text-sm font-medium">Home</a>
                             <a href="/shop"
                                 class="text-gray-500 hover:text-black px-3 py-2 rounded-md text-sm font-medium">Shop</a>
@@ -31,29 +31,48 @@
 
                 <div class="block">
                     <div class="flex items-center ml-4 md:ml-6">
-                        <div class="relative ml-3">
+                        <div class="relative ml-3 flex">
+                            <!-- User -->
                             <div class="relative inline-block text-left">
                                 <button type="button"
                                     class="flex items-center justify-center w-full rounded-md px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
                                     id="options-menu">
-                                    <svg width="20" fill="currentColor" height="20" class="text-gray-800"
-                                        viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none">
                                         <path
-                                            d="M1523 1339q-22-155-87.5-257.5t-184.5-118.5q-67 74-159.5 115.5t-195.5 41.5-195.5-41.5-159.5-115.5q-119 16-184.5 118.5t-87.5 257.5q106 150 271 237.5t356 87.5 356-87.5 271-237.5zm-243-699q0-159-112.5-271.5t-271.5-112.5-271.5 112.5-112.5 271.5 112.5 271.5 271.5 112.5 271.5-112.5 112.5-271.5zm512 256q0 182-71 347.5t-190.5 286-285.5 191.5-349 71q-182 0-348-71t-286-191-191-286-71-348 71-348 191-286 286-191 348-71 348 71 286 191 191 286 71 348z">
-                                        </path>
+                                            d="M18.5588 19.5488C17.5654 16.8918 15.0036 15 12 15C8.99638 15 6.4346 16.8918 5.44117 19.5488M18.5588 19.5488C20.6672 17.7154 22 15.0134 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 15.0134 3.33285 17.7154 5.44117 19.5488M18.5588 19.5488C16.8031 21.0756 14.5095 22 12 22C9.49052 22 7.19694 21.0756 5.44117 19.5488M15 9C15 10.6569 13.6569 12 12 12C10.3431 12 9 10.6569 9 9C9 7.34315 10.3431 6 12 6C13.6569 6 15 7.34315 15 9Z"
+                                            stroke="#141718" stroke-width="1.5" stroke-linejoin="round" />
                                     </svg>
                                 </button>
                                 <div
                                     class="absolute hidden z-50 right-0 w-56 mt-2 origin-top-right bg-white rounded-md shadow-2xl">
                                     <div class="py-1" role="menu" aria-orientation="vertical">
-                                        <a href="/#"
-                                            class="block px-4 py-2 text-md text-gray-700 hover:bg-gray-100">Settings</a>
-                                        <a href="/#"
-                                            class="block px-4 py-2 text-md text-gray-700 hover:bg-gray-100">Account</a>
-                                        <form class="block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 cursor-pointer" th:action="@{/logout}" method="post">
+                                        <a th:href="@{/profile}"
+                                            class="block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 text-center">Account</a>
+                                        <form
+                                            class="block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 cursor-pointer"
+                                            th:action="@{/logout}" method="post">
                                             <button class="w-full cursor-pointer" type="submit">Logout</button>
                                         </form>
                                     </div>
+                                </div>
+                            </div>
+                            <!-- Cart -->
+                            <div class="flex items-center">
+                                <a href="#" type="button"
+                                    class="flex items-center justify-center w-[28px] h-[36px] rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none">
+                                        <path d="M9 6L9 7C9 8.65685 10.3431 10 12 10C13.6569 10 15 8.65685 15 7V6"
+                                            stroke="#141718" stroke-width="1.5" stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                        <path
+                                            d="M15.6113 3H8.38836C6.433 3 4.76424 4.41365 4.44278 6.3424L2.77612 16.3424C2.36976 18.7805 4.24994 21 6.72169 21H17.278C19.7498 21 21.6299 18.7805 21.2236 16.3424L19.5569 6.3424C19.2355 4.41365 17.5667 3 15.6113 3Z"
+                                            stroke="#141718" stroke-width="1.5" stroke-linejoin="round" />
+                                    </svg>
+                                </a>
+                                <div class="bg-black w-5 h-5 rounded-full">
+                                    <p class="text-white font-[12px] text-center leading-[20px]">2</p>
                                 </div>
                             </div>
                         </div>
@@ -67,17 +86,17 @@
         <!-- content page will override this -->
     </div>
 
-    <footer class="w-full bg-black px-[85px] pt-[80px] pb-[32px]">
+    <footer class="relative z-50 bg-black px-[85px] pt-[80px] pb-[32px]">
         <div class="text-[#E8ECEF] flex justify-between border-b border-[#6C7275]">
             <div class="flex gap-8 pb-12">
                 <div class="-translate-y-[5px] w-[104px] h-10">
-                    <img th:src="@{/images/logo/FurnitureLight.svg}" alt="Logo" />
+                    <img src="../static/images/logo/FurnitureLight.svg" alt="Logo" />
                 </div>
                 <div class="w-[1px] h-6 bg-[#6C7275]"></div>
                 <p>Gift & Decoration Store</p>
             </div>
             <div class="flex h-fit gap-10 text-sm">
-                <a class="hover:text-white hover:font-semibold" th:href="@{/}">Home</a>
+                <a class="hover:text-white hover:font-semibold" th:href="@{/home}">Home</a>
                 <a class="hover:text-white hover:font-semibold" th:href="@{/shop}">Shop</a>
                 <a class="hover:text-white hover:font-semibold" th:href="@{/about}">About</a>
                 <a class="hover:text-white hover:font-semibold" th:href="@{/contact}">Contact Us</a>

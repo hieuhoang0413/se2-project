@@ -7,17 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/cart")
+@RequestMapping("/cart")
 public class CartController {
 
     @Autowired
     private CartService cartService;
 
     //API lấy giỏ hàng của người dùng
-    @GetMapping("/{userId}")
-    public Cart getCart(@PathVariable Long userId) {
+    @GetMapping("/{id}")
+    public Cart getCart(@PathVariable Long id) {
         User user = new User();
-        user.setId(userId);
+        user.setId(id);
         return cartService.getOrCreateCart(user);
     }
 
@@ -46,10 +46,10 @@ public class CartController {
     }
 
     //API lấy tổng tiền giỏ hàng
-    @GetMapping("/total/{userId}")
-    public double getTotalPrice(@PathVariable Long userId) {
+    @GetMapping("/total/{id}")
+    public double getTotalPrice(@PathVariable Long id) {
         User user = new User();
-        user.setId(userId);
+        user.setId(id);
         return cartService.getTotalPrice(user);
     }
 
@@ -63,9 +63,9 @@ public class CartController {
 
     //API hoàn tất đơn hàng
     @PostMapping("/complete")
-    public Cart completeOrder(@RequestParam Long userId) {
+    public Cart completeOrder(@RequestParam Long id) {
         User user = new User();
-        user.setId(userId);
+        user.setId(id);
         return cartService.completeOrder(user);
     }
 }

@@ -26,7 +26,7 @@ public class User {
     @Column(nullable = false)
     private String address;
 
-    @Column(unique = true ,nullable = false, length = 50)
+    @Column(unique = true, nullable = false, length = 50)
     private String username;
 
     @Column(nullable = false)
@@ -94,5 +94,13 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 }

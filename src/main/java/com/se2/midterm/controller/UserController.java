@@ -2,7 +2,6 @@ package com.se2.midterm.controller;
 
 import com.se2.midterm.entity.User;
 import com.se2.midterm.service.UserService;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

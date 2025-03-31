@@ -26,7 +26,7 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/product/add", "/product/edit/**", "/product/delete/**").hasRole("ADMIN")
-                        .requestMatchers("/product").permitAll()
+                        .requestMatchers("/product/**").permitAll()
                         .requestMatchers("/").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/register").permitAll()
                         .anyRequest().authenticated()

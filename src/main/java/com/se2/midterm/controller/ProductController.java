@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.*;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -89,6 +88,7 @@ public class ProductController {
         productService.deleteProduct(id);
         return "redirect:/admin";
     }
+
     @PostMapping("/delete-selected")
     public String deleteSelectedProducts(@RequestParam("selectedProducts") List<Long> selectedProductIds) {
         productService.deleteProducts(selectedProductIds);
@@ -111,14 +111,21 @@ public class ProductController {
         return "admin";
     }
 
-// Edit Product
-@GetMapping("/edit/{id}")
-public String showEditForm(@PathVariable Long id, Model model) {
-    Product product = productService.getProductById(id);
-    model.addAttribute("product", product);
-    model.addAttribute("categoryList", categoryService.getAllCategories());
-    return "editProduct";
-}
+    @GetMapping("/{id}")
+    public String getProductDetail(@PathVariable Long id, Model model) {
+        Product product = productService.getProductById(id);
+        model.addAttribute("product", product);
+        return "productDetail";
+    }
+
+    // Edit Product
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        Product product = productService.getProductById(id);
+        model.addAttribute("product", product);
+        model.addAttribute("categoryList", categoryService.getAllCategories());
+        return "editProduct";
+    }
 
     @PostMapping("/edit/{id}")
     public String updateProduct(@PathVariable Long id,
@@ -173,7 +180,6 @@ public String showEditForm(@PathVariable Long id, Model model) {
         productService.updateProduct(id, product);
         return "redirect:/admin";
     }
-
 
 
 }

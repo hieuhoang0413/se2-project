@@ -56,7 +56,7 @@ public class CartController {
 
     //API lấy tổng tiền giỏ hàng
     @GetMapping("/total/{userId}")
-    public BigDecimal getTotalPrice(@PathVariable Long userId) {
+    public double getTotalPrice(@PathVariable Long userId) {
         User user = new User();
         user.setId(userId);
         return cartService.getTotalPrice(user);
@@ -74,7 +74,7 @@ public class CartController {
         user.setId(userId);
 
         Cart cart = cartService.getOrCreateCart(user);
-        BigDecimal total = cartService.getTotalPrice(user);
+        double total = cartService.getTotalPrice(user);
 
         model.addAttribute("cart", cart);
         model.addAttribute("total", total);

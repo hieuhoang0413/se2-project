@@ -56,13 +56,12 @@ public class CheckOutService {
 
         // Calculate the total amount from cart items.
         List<CartItem> cartItems = cartItemRepository.findByCartId(cart.getId());
-        BigDecimal totalAmount = BigDecimal.ZERO;
+        double totalAmount = 0.0;
         for (CartItem item : cartItems) {
-            BigDecimal itemTotal = item.getProduct().getPrice()
-                    .multiply(new BigDecimal(item.getQuantity()));
-            totalAmount = totalAmount.add(itemTotal);
+            double itemTotal = item.getProduct().getPrice() * item.getQuantity();
+            totalAmount += itemTotal;
         }
-        order.setTotalAmount(totalAmount);
+        order.setTotalAmount(BigDecimal.valueOf(totalAmount));
 
         // Save the Order to generate its ID.
         Order savedOrder = orderRepository.save(order);

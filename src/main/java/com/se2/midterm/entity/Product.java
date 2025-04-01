@@ -20,7 +20,7 @@ public class Product {
     private String description;
 
     @Column(nullable = false)
-    private BigDecimal price;
+    private double price;
 
     @Column(nullable = false)
     private int quantity;
@@ -38,7 +38,7 @@ public class Product {
     // Constructors
     public Product() {}
 
-    public Product(Long id, String name, String description, BigDecimal price, int quantity, int statusId, String image, Category category) {
+    public Product(Long id, String name, String description, double price, int quantity, int statusId, String image, Category category) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -74,11 +74,11 @@ public class Product {
         this.description = description;
     }
 
-    public BigDecimal getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 

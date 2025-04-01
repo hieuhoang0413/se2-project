@@ -27,7 +27,7 @@ public class OrderDetail {
 
     // The price for the product in this order detail.
     @Column(nullable = false)
-    private BigDecimal price;
+    private double price;
 
     // Optional: If you are tracking changes via an OrderHistory entity.
     // If not needed, you can remove this field or replace it with a simple field.
@@ -69,11 +69,11 @@ public class OrderDetail {
         this.quantity = quantity;
     }
 
-    public BigDecimal getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 

@@ -19,7 +19,7 @@ public class Transaction {
     @JoinColumn(name = "paymentId", referencedColumnName = "id")
     private Payment payment;
 
-    private BigDecimal totalAmount;
+    private double totalAmount;
 
     // Getters and Setters
 }

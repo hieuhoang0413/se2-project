@@ -37,19 +37,27 @@ public class CartService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
+        // Kiểm tra xem sản phẩm đã có trong giỏ chưa
+        boolean found = false;
         for (CartItem item : cart.getCartItems()) {
             if (item.getProduct().getId().equals(productId)) {
+                // Nếu đã có, tăng số lượng và cập nhật subtotal
                 item.setQuantity(item.getQuantity() + quantity);
                 item.updateSubtotal();
                 cartItemRepository.save(item);
-                cart.updateTotalPrice();
-                return cartRepository.save(cart);
+                found = true;
+                break;
             }
         }
 
-        CartItem newItem = new CartItem(cart, product, quantity);
-        cartItemRepository.save(newItem);
-        cart.getCartItems().add(newItem);
+        // Nếu chưa có, tạo mới CartItem
+        if (!found) {
+            CartItem newItem = new CartItem(cart, product, quantity);
+            cart.getCartItems().add(newItem);
+            cartItemRepository.save(newItem);
+        }
+
+        // Cập nhật tổng tiền của giỏ hàng
         cart.updateTotalPrice();
         return cartRepository.save(cart);
     }

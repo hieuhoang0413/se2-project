@@ -2,6 +2,7 @@ package com.se2.midterm.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,7 +18,7 @@ public class Cart {
     private User user;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<CartItem> cartItems;
+    private List<CartItem> cartItems = new ArrayList<>();
 
     private double totalPrice;
     private CartStatus status;
@@ -28,6 +29,7 @@ public class Cart {
 
     public Cart(User user) {
         this.user = user;
+        this.cartItems = new ArrayList<>();
         this.totalPrice = 0.0;
     }
 

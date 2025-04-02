@@ -9,7 +9,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // Cho phép truy cập ảnh trong thư mục uploads/images
-        registry.addResourceHandler("/images/**")
+        registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:uploads/images/");
     }
 }

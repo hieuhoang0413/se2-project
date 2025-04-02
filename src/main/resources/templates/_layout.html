@@ -13,11 +13,11 @@
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center">
                     <div class="translate-y-[3px] w-32">
-                        <img src="../static/images/logo/FurnitureDark.svg" alt="Logo" />
+                        <img th:src="@{/images/FurnitureDark.svg}" alt="Logo" />
                     </div>
                     <div class="hidden md:block">
                         <div class="flex items-baseline ml-10 space-x-4">
-                            <a href="/home"
+                            <a href="/"
                                 class="text-gray-500 hover:text-black px-3 py-2 rounded-md text-sm font-medium">Home</a>
                             <a href="/shop"
                                 class="text-gray-500 hover:text-black px-3 py-2 rounded-md text-sm font-medium">Shop</a>
@@ -59,7 +59,7 @@
                             </div>
                             <!-- Cart -->
                             <div class="flex items-center">
-                                <a href="#" type="button"
+                                <a th:href="@{/cart/view/{id}(id=${user.id})}" type="button"
                                     class="flex items-center justify-center w-[28px] h-[36px] rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                         fill="none">
@@ -86,11 +86,11 @@
         <!-- content page will override this -->
     </div>
 
-    <footer class="relative z-50 bg-black px-[85px] pt-[80px] pb-[32px]">
+    <footer class="relative z-[1] bg-black px-[85px] pt-[80px] pb-[32px]">
         <div class="text-[#E8ECEF] flex justify-between border-b border-[#6C7275]">
             <div class="flex gap-8 pb-12">
                 <div class="-translate-y-[5px] w-[104px] h-10">
-                    <img src="../static/images/logo/FurnitureLight.svg" alt="Logo" />
+                    <img th:src="@{/images/FurnitureLight.svg}" alt="Logo" />
                 </div>
                 <div class="w-[1px] h-6 bg-[#6C7275]"></div>
                 <p>Gift & Decoration Store</p>

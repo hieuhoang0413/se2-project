@@ -5,13 +5,10 @@ import com.se2.midterm.entity.Order;
 import com.se2.midterm.entity.User;
 import com.se2.midterm.service.CartService;
 import com.se2.midterm.service.CheckOutService;
-import org.hibernate.annotations.Check;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.math.BigDecimal;
 
 @Controller
 @RequestMapping("/cart")

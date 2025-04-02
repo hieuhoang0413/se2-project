@@ -23,22 +23,13 @@ public class BaseController {
     @Autowired
     private UserService userService;
 
-//    @GetMapping()
-//    public String getGlobalPage(Model model) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String username = authentication.getName();
-//
-//        // Fetch the current user's details
-//        User currentUser = userService.findByUsername(username);
-//
-//        // Add user to the model to populate account details
-//        model.addAttribute("user", currentUser);
-//
-//        return "_layout";
-//    }
-
     @GetMapping("/")
-    public String getHomePage() {
+    public String getHomePage(Model model) {
+        List<Product> allProducts = productService.getAllProducts();
+        int limit = 4;
+        List<Product> limitedProducts = allProducts.size() > limit ? allProducts.subList(0, limit) : allProducts;
+
+        model.addAttribute("products", limitedProducts);
         return "index";
     }
 

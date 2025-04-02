@@ -30,9 +30,11 @@
                 </select>
             </div>
         </div>
-        
+
+        <!-- Product list -->
         <div class="w-full mt-10 flex gap-4 flex-wrap">
-            <a th:href="@{/product/{id}(id=${product.id})}" th:each="product : ${products}" class="group block hover:shadow-2xl hover:scale-[101%] h-[460px] w-[260px] border border-gray-200 cursor-pointer">
+            <a th:href="@{/product/{id}(id=${product.id})}" th:each="product : ${products}"
+                class="product-item block hover:shadow-2xl hover:scale-[101%] h-[460px] w-[260px] border border-gray-200 cursor-pointer">
                 <div class="relative flex flex-col items-center justify-end pt-6 bg-[#F3F5F7] w-full h-[350px] ">
                     <img class="absolute top-10 w-full h-auto" th:src="@{/images/{file}(file=${product.image})}"
                         alt="Error Image" />
@@ -78,7 +80,43 @@
                 </div>
             </a>
         </div>
+        <!-- Nút Show More -->
+        <button class="" id="showMore">Show More</button>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let visibleProducts = 12; // Ban đầu hiển thị tối đa 12 sản phẩm
+            const allProducts = document.querySelectorAll(".product-item");
+            const showMoreBtn = document.getElementById("showMore");
+
+            console.log(allProducts.length);
+            
+
+            function showProducts() {
+                for (let i = 0; i < allProducts.length; i++) {
+                    if (i < visibleProducts) {
+                        allProducts[i].style.display = "table-row"; // Hiển thị sản phẩm
+                    } else {
+                        allProducts[i].style.display = "none"; // Ẩn sản phẩm chưa hiển thị
+                    }
+                }
+
+                // Ẩn nút Show More nếu sản phẩm hiển thị >= tổng số sản phẩm
+                if (visibleProducts >= allProducts.length || allProducts.length <= 12) {
+                    showMoreBtn.style.display = "none";
+                }
+            }
+
+            showProducts(); // Hiển thị sản phẩm ban đầu
+
+            showMoreBtn.addEventListener("click", function () {
+                visibleProducts += 12; // Hiển thị thêm tối đa 12 sản phẩm nữa
+                showProducts();
+            });
+        });
+
+    </script>
 </body>
 <script src="https://cdn.tailwindcss.com"></script>
 

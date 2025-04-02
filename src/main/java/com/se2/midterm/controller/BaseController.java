@@ -24,7 +24,12 @@ public class BaseController {
     private UserService userService;
 
     @GetMapping("/")
-    public String getHomePage() {
+    public String getHomePage(Model model) {
+        List<Product> allProducts = productService.getAllProducts();
+        int limit = 4;
+        List<Product> limitedProducts = allProducts.size() > limit ? allProducts.subList(0, limit) : allProducts;
+
+        model.addAttribute("products", limitedProducts);
         return "index";
     }
 

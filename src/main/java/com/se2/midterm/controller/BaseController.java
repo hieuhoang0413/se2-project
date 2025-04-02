@@ -23,20 +23,6 @@ public class BaseController {
     @Autowired
     private UserService userService;
 
-//    @GetMapping()
-//    public String getGlobalPage(Model model) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String username = authentication.getName();
-//
-//        // Fetch the current user's details
-//        User currentUser = userService.findByUsername(username);
-//
-//        // Add user to the model to populate account details
-//        model.addAttribute("user", currentUser);
-//
-//        return "_layout";
-//    }
-
     @GetMapping("/")
     public String getHomePage() {
         return "index";

@@ -2,6 +2,7 @@ package com.se2.midterm.entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -19,23 +20,23 @@ public class Cart {
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CartItem> cartItems;
 
-    private double totalPrice;
+    private BigDecimal totalPrice;
     private CartStatus status;
 
     public Cart() {
-        this.totalPrice = 0.0;
+        this.totalPrice = BigDecimal.valueOf(0.0);
     }
 
     public Cart(User user) {
         this.user = user;
-        this.totalPrice = 0.0;
+        this.totalPrice = BigDecimal.valueOf(0.0);
     }
 
     // Tính tổng tiền từ CartItems
     public void updateTotalPrice() {
-        this.totalPrice = cartItems.stream()
+        this.totalPrice = BigDecimal.valueOf(cartItems.stream()
                 .mapToDouble(CartItem::getSubtotal)
-                .sum();
+                .sum());
     }
 
     // Getter & Setter
@@ -51,8 +52,8 @@ public class Cart {
         updateTotalPrice(); // Cập nhật tổng tiền khi có thay đổi
     }
 
-    public double getTotalPrice() { return totalPrice; }
-    public void setTotalPrice(double totalPrice) { this.totalPrice = totalPrice; }
+    public BigDecimal getTotalPrice() { return totalPrice; }
+    public void setTotalPrice(double totalPrice) { this.totalPrice = BigDecimal.valueOf(totalPrice); }
 
     public void setStatus(CartStatus status) {
         this.status = status;

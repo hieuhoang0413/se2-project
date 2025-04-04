@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+
 @Controller
 @RequestMapping("/cart")
 public class CartController {
@@ -53,7 +55,7 @@ public class CartController {
 
     //API lấy tổng tiền giỏ hàng
     @GetMapping("/total/{userId}")
-    public double getTotalPrice(@PathVariable Long userId) {
+    public BigDecimal getTotalPrice(@PathVariable Long userId) {
         User user = new User();
         user.setId(userId);
         return cartService.getTotalPrice(user);
@@ -71,7 +73,7 @@ public class CartController {
         user.setId(userId);
 
         Cart cart = cartService.getOrCreateCart(user);
-        double total = cartService.getTotalPrice(user);
+        BigDecimal total = cartService.getTotalPrice(user);
 
         model.addAttribute("cart", cart);
         model.addAttribute("total", total);

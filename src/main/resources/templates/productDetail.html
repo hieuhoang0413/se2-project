@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="_layout">
+      layout:decorate="_layout">
 
 <head>
     <meta charset="UTF-8">
@@ -9,134 +9,88 @@
 </head>
 
 <body>
-    <div layout:fragment="content" class="container mx-auto max-w-screen-lg px-4 my-8">
-        <div class="flex flex-col md:flex-row gap-8">
-            <!-- Product Image -->
-            <div class="w-full md:w-1/2 bg-gray-100 relative">
-                <div class="absolute z-50 top-4 left-4 bg-white px-3 py-1 text-sm font-medium">NEW</div>
-                <img class="absolute w-full h-full object-cover" th:src="@{/images/{file}(file=${product.image})}"
-                    alt="Error Image" />
+<div layout:fragment="content" class="container mx-auto max-w-screen-lg px-4 my-8">
+    <div class="flex flex-col md:flex-row gap-8">
+        <!-- Product Image - Điều chỉnh để hiển thị tốt hơn -->
+        <div class="w-full md:w-1/2 bg-gray-100 relative aspect-square md:aspect-auto md:min-h-[500px] rounded-lg overflow-hidden">
+            <div class="absolute z-50 top-4 left-4 bg-white px-3 py-1 text-sm font-medium rounded">NEW</div>
+            <img class="w-full h-full object-contain md:object-cover" th:src="@{/images/{file}(file=${product.image})}"
+                 alt="Product Image" />
+        </div>
+
+        <!-- Product Info -->
+        <form action="/cart/add" method="post" class="w-full md:w-1/2">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <!-- Ẩn product.id để gửi lên server -->
+            <input type="hidden" name="productId" th:value="${product.id}" />
+            <input type="hidden" name="userId" th:value="${user.id}" />
+
+            <h1 class="text-3xl font-bold mb-4" th:text="${product.name}">Product Name</h1>
+
+            <p class="text-gray-600 mb-6" th:text="${product.description}">
+                Product description here...
+            </p>
+
+            <div class="text-2xl font-bold mb-4" th:text="'$' + ${product.price}">Price</div>
+
+            <p class="text-sm text-gray-600 mb-2">
+                <strong>Category:</strong> <span th:text="${product.category.name}">Category</span>
+            </p>
+
+            <p class="text-sm text-gray-600 mb-4">
+                <strong>Available:</strong> <span th:text="${product.quantity}"></span> in stock
+            </p>
+
+            <!-- Quantity Selector - Sửa lại để hoạt động đúng -->
+            <div class="flex items-center mb-6">
+                <button type="button" onclick="decreaseQuantity()" class="border border-gray-300 w-8 h-8 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                         stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" />
+                    </svg>
+                </button>
+                <input name="quantity" id="quantity" type="text" value="1" class="w-10 h-8 text-center border-t border-b border-gray-300" />
+                <button type="button" onclick="increaseQuantity()" class="border border-gray-300 w-8 h-8 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                         stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                </button>
             </div>
 
-            <!-- Product Info -->
-            <form action="/cart/add" method="post" class="w-full md:w-1/2">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                <!-- Ẩn product.id để gửi lên server -->
-                <input type="hidden" name="productId" th:value="${product.id}" />
-                <input type="hidden" name="userId" th:value="${user.id}" />
-
-                <h1 class="text-3xl font-bold mb-4" th:text="${product.name}">Product Name</h1>
-
-                <p class="text-gray-600 mb-6" th:text="${product.description}">
-                    Product description here...
-                </p>
-
-                <div class="text-2xl font-bold mb-4" th:text="'$' + ${product.price}">Price</div>
-
-                <p class="text-sm text-gray-600 mb-2">
-                    <strong>Category:</strong> <span th:text="${product.category.name}">Category</span>
-                </p>
-
-                <p class="text-sm text-gray-600 mb-4">
-                    <strong>Available:</strong> <span th:text="${product.quantity}"></span> in stock
-                </p>
-
-                <!-- Quantity Selector -->
-                <div class="flex items-center mb-6">
-                    <button type="button" class="border border-gray-300 w-8 h-8 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="w-4 h-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" />
-                        </svg>
-                    </button>
-                    <input name="quantity" type="text" value="1" class="w-10 h-8 text-center border-t border-b border-gray-300" />
-                    <button type="button" class="border border-gray-300 w-8 h-8 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="w-4 h-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                        </svg>
-                    </button>
-                </div>
-
-                <button type="submit" class="w-full bg-black text-white py-3 font-medium">
-                    Add to Cart
-                </button>
-            </form>
-        </div>
+            <button type="submit" class="w-full bg-black text-white py-3 font-medium hover:bg-gray-800 transition">
+                Add to Cart
+            </button>
+        </form>
     </div>
 
-    <!-- Customer Reviews -->
-    <!-- <div class="mt-16">
-                <h2 class="text-2xl font-bold mb-4">Customer Reviews</h2>
+    <!-- Thêm script inline để đảm bảo hoạt động với Thymeleaf -->
+    <script th:inline="javascript">
+        function decreaseQuantity() {
+            var input = document.getElementById('quantity');
+            var value = parseInt(input.value);
+            if (value > 1) {
+                input.value = value - 1;
+            }
+        }
 
-                <div class="flex items-center mb-2">
-                    <div class="flex">
-                        <svg th:each="i : ${#numbers.sequence(1, 4)}" xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-yellow-400">
-                            <path fill-rule="evenodd"
-                                d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
-                                clip-rule="evenodd" />
-                        </svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="w-5 h-5 text-yellow-400">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
-                        </svg>
-                    </div>
-                    <span class="ml-2 text-sm text-gray-600" th:text="${reviewCount ?: '11'} + ' Reviews'">11
-                        Reviews</span>
-                </div>
+        function increaseQuantity() {
+            var input = document.getElementById('quantity');
+            var value = parseInt(input.value);
+            input.value = value + 1;
+        }
 
-                <div class="text-gray-700 mb-6" th:text="${product?.name ?: 'Tray Table'}">Tray Table</div> -->
+        // Đảm bảo giá trị nhập vào là số hợp lệ
+        document.getElementById('quantity').addEventListener('change', function() {
+            var value = parseInt(this.value);
+            if (isNaN(value) || value < 1) {
+                this.value = 1;
+            }
+        });
+    </script>
+</div>
 
-    <!-- Write Review & Input (Alpine.js) -->
-    <!-- <div class="flex flex-col items-end mb-8 space-y-4" x-data="{ showInput: false }">
-                    <button @click="showInput = !showInput" class="bg-black text-white px-4 py-2 rounded-full text-sm">
-                        Write Review
-                    </button>
-
-                    <input x-show="showInput" type="text" placeholder="Enter review..."
-                        class="w-full md:w-1/2 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
-                        x-transition />
-                </div>
-
-                <h2 class="text-2xl font-bold mb-6">Reviews</h2> -->
-
-    <!-- Review Items -->
-    <!-- <div class="space-y-8">
-                    <div th:each="review, stat : ${reviews ?: {'1', '2', '3', '4', '5'}}" class="border-b pb-8">
-                        <div class="flex items-start">
-                            <img th:src="${review?.avatarUrl ?: '/placeholder.svg?height=50&width=50'}" alt="Reviewer"
-                                class="w-12 h-12 rounded-full object-cover mr-4">
-                            <div>
-                                <h3 class="font-medium"
-                                    th:text="${review?.author ?: (stat.index == 0 ? 'Sofia Harvetz' : 'Nicolas Jensen')}">
-                                    Sofia Harvetz</h3>
-                                <div class="flex my-1">
-                                    <svg th:each="i : ${#numbers.sequence(1, 5)}" xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-yellow-400">
-                                        <path fill-rule="evenodd"
-                                            d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                </div>
-                                <p class="text-gray-700 mt-2"
-                                    th:text="${review?.content ?: 'Awesome Product. I really enjoy it!'}">
-                                    Awesome Product. I really enjoy it!
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
-
-    <!-- <div class="flex justify-center mt-8">
-                    <button class="border border-gray-300 rounded-full px-6 py-2 text-sm">Load more</button>
-                </div> -->
-    <!-- </div>
-    </div>
-    </div> -->
-</body>
-<!-- <script src="https://unpkg.com/@tailwindcss/browser@4"></script> -->
 <script src="https://cdn.tailwindcss.com"></script>
+</body>
 
 </html>

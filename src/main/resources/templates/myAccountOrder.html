@@ -64,40 +64,18 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="order : ${orders}" class="border-b border-gray-100">
-                                <td class="py-4" th:text="${order.number}">#3456_768</td>
-                                <td class="py-4" th:text="${#temporals.format(order.date, 'MMMM d, yyyy')}">October 17,
-                                    2023</td>
-                                <td class="py-4 text-green-700" th:text="${order.status}">Delivered</td>
-                                <td class="py-4" th:text="${'$' + #numbers.formatDecimal(order.price, 1, 2)}">$1234.00
-                                </td>
-                            </tr>
-                            <!-- Dữ liệu mẫu khi không có dữ liệu thực -->
-                            <tr th:if="${orders == null || orders.empty}" class="border-b border-gray-100">
-                                <td class="py-4">#3456_768</td>
-                                <td class="py-4">October 17, 2023</td>
-                                <td class="py-4 text-green-700">Delivered</td>
-                                <td class="py-4">$1234.00</td>
-                            </tr>
-                            <tr th:if="${orders == null || orders.empty}" class="border-b border-gray-100">
-                                <td class="py-4">#3456_980</td>
-                                <td class="py-4">October 11, 2023</td>
-                                <td class="py-4 text-green-700">Delivered</td>
-                                <td class="py-4">$345.00</td>
-                            </tr>
-                            <tr th:if="${orders == null || orders.empty}" class="border-b border-gray-100">
-                                <td class="py-4">#3456_120</td>
-                                <td class="py-4">August 24, 2023</td>
-                                <td class="py-4 text-green-700">Delivered</td>
-                                <td class="py-4">$2345.00</td>
-                            </tr>
-                            <tr th:if="${orders == null || orders.empty}" class="border-b border-gray-100">
-                                <td class="py-4">#3456_030</td>
-                                <td class="py-4">August 12, 2023</td>
-                                <td class="py-4 text-green-700">Delivered</td>
-                                <td class="py-4">$845.00</td>
-                            </tr>
+                        <tr th:each="order : ${orders}" class="border-b border-gray-100">
+                            <td class="py-4" th:text="${order.id}">#3456_768</td>
+                            <td class="py-4" th:text="${#temporals.format(order.orderDate, 'MMMM d, yyyy')}">October 17, 2023</td>
+                            <td class="py-4 text-green-700" th:text="${order.status}">Delivered</td>
+                            <td class="py-4" th:text="'$' + ${#numbers.formatDecimal(order.totalAmount, 1, 2)}">$1234.00</td>
+                        </tr>
+
+                        <tr th:if="${orders == null or orders.empty}">
+                            <td colspan="4" class="py-4 text-center text-gray-500">You have no orders yet.</td>
+                        </tr>
                         </tbody>
+
                     </table>
                 </div>
             </div>

@@ -63,7 +63,7 @@ public class UserController {
             return "register"; // Hiển thị lỗi nếu username trùng
         }
     }
-    @GetMapping("/profile")
+    @GetMapping("/myAccount")
     public String showAccountPage(Model model) {
         // Get the currently authenticated user
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -75,7 +75,7 @@ public class UserController {
         // Add user to the model to populate account details
         model.addAttribute("user", currentUser);
 
-        return "profile"; // This will return the profile.html template
+        return "myAccount"; // This will return the profile.html template
     }
     @PostMapping("/upload-avatar")
     public String uploadAvatar(@RequestParam("file") MultipartFile file, Model model) {
@@ -126,5 +126,50 @@ public class UserController {
         // model.addAttribute("orders", orderService.findOrdersByUser(currentUser));
 
         return "myAccountOrder";
+    }
+    @PostMapping("/account/update")
+    public String updateUser(@ModelAttribute User updatedUser,
+                             @RequestParam(required = false) String oldPassword,
+                             @RequestParam(required = false) String newPassword,
+                             @RequestParam(required = false) String confirmPassword) {
+
+        // Lấy thông tin người dùng hiện tại
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        User currentUser = userService.findByUsername(username);
+
+        // Cập nhật thông tin cơ bản
+        currentUser.setFullName(updatedUser.getFullName());
+        currentUser.setPhone(updatedUser.getPhone());
+        currentUser.setAddress(updatedUser.getAddress());
+
+        // Kiểm tra và cập nhật mật khẩu nếu cần
+        if (oldPassword != null && !oldPassword.isEmpty() &&
+                newPassword != null && !newPassword.isEmpty() &&
+                confirmPassword != null && !confirmPassword.isEmpty()) {
+
+            if (newPassword.equals(confirmPassword)) {
+                if (userService.checkPassword(username, oldPassword)) {
+                    userService.updatePassword(username, newPassword);
+                }
+            }
+        }
+
+        // Lưu thông tin đã cập nhật
+        userService.updateUser(currentUser);
+
+        return "redirect:/myAccount";
+    }
+    @GetMapping("/profile")
+    public String showProfilePage(Model model) {
+        // Lấy thông tin người dùng hiện tại
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        User currentUser = userService.findByUsername(username);
+
+        // Đưa thông tin người dùng vào model
+        model.addAttribute("user", currentUser);
+
+        return "profile";
     }
 }

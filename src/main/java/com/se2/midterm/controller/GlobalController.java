@@ -1,6 +1,8 @@
 package com.se2.midterm.controller;
 
+import com.se2.midterm.entity.Cart;
 import com.se2.midterm.entity.User;
+import com.se2.midterm.service.CartService;
 import com.se2.midterm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -15,12 +17,22 @@ public class GlobalController {
     @Autowired
     private UserService userService; // Service lấy thông tin user từ DB
 
+    @Autowired
+    private CartService cartService; // Service quản lý giỏ hàng
+
     @ModelAttribute
     public void addUserToModel(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             User user = userService.findByUsername(userDetails.getUsername()); // Lấy user từ DB
+
+            if (user != null) {
+                Cart cart = cartService.getOrCreateCart(user); // Fetch or create the cart for the user
+                int cartItemCount = cart.getCartItems().size(); // Get the count of cart items
+                model.addAttribute("cartItemCount", cartItemCount); // Add cart item count to model
+            }
+
             model.addAttribute("user", user);
         }
     }

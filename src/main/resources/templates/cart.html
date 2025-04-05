@@ -54,8 +54,7 @@
                         <!-- Product Info -->
                         <div class="flex-1">
                             <h3 class="text-lg font-semibold" th:text="${item.product.name}">Product Name</h3>
-                            <p class="text-sm text-gray-500" th:text="'Color: ' + ${item.product.color}">Color: Black
-                            </p>
+
 
                             <!-- Quantity control -->
                             <form th:action="@{/cart/update}" method="post" class="flex items-center gap-2 mt-2">

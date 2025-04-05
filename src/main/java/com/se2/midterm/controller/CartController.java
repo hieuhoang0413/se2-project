@@ -21,27 +21,26 @@ public class CartController {
 
     //API lấy giỏ hàng của người dùng
     @GetMapping("/{userId}")
-    @ResponseBody
     public Cart getCart(@PathVariable Long userId) {
         User user = new User();
         user.setId(userId);
         return cartService.getOrCreateCart(user);
     }
 
-    //API thêm sản phẩm vào giỏ hàng
+
     @PostMapping("/add")
-    @ResponseBody
-    public Cart addToCart(@RequestParam Long userId,
+    public String addToCart(@RequestParam Long userId,
                           @RequestParam Long productId,
                           @RequestParam int quantity) {
         User user = new User();
         user.setId(userId);
-        return cartService.addToCart(user, productId, quantity);
+         cartService.addToCart(user, productId, quantity);
+        return "redirect:/product/" + productId;
+
     }
 
     //API xóa sản phẩm khỏi giỏ hàng
     @DeleteMapping("/remove")
-    @ResponseBody
     public Cart removeFromCart(@RequestParam Long userId,
                                @RequestParam Long cartItemId) {
         User user = new User();
@@ -51,7 +50,6 @@ public class CartController {
 
     //API cập nhật số lượng sản phẩm trong giỏ hàng
     @PutMapping("/update")
-    @ResponseBody
     public Cart updateCartItemQuantity(@RequestParam Long userId,
                                        @RequestParam Long cartItemId,
                                        @RequestParam int quantity) {
@@ -62,7 +60,6 @@ public class CartController {
 
     //API lấy tổng tiền giỏ hàng
     @GetMapping("/total/{userId}")
-    @ResponseBody
     public double getTotalPrice(@PathVariable Long userId) {
         User user = new User();
         user.setId(userId);

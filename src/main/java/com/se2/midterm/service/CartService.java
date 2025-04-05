@@ -5,6 +5,7 @@ import com.se2.midterm.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,7 +33,34 @@ public class CartService {
     }
 
     // Thêm vào giỏ hàng
-    public Cart addToCart(User user, Long productId, int quantity) {
+    public void addToCart(User user, Long productId, int quantity) {
+        Cart cart = getOrCreateCart(user);
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+        if (!optionalProduct.isPresent()) {
+            throw new RuntimeException("Product not found");
+        }
+        Product product = optionalProduct.get();
+
+        Optional<CartItem> optionalCartItem = cartItemRepository.findByCartAndProduct(cart, product);
+        CartItem cartItem;
+        if (optionalCartItem.isPresent()) {
+            cartItem = optionalCartItem.get();
+            cartItem.setQuantity(cartItem.getQuantity() + quantity);
+        } else {
+            cartItem = new CartItem();
+            cartItem.setCart(cart);
+            cartItem.setProduct(product);
+            cartItem.setQuantity(quantity);
+            cartItem.setPrice(product.getPrice());
+        }
+        cartItemRepository.save(cartItem);
+
+        cart.updateTotalPrice();
+        cartRepository.save(cart);
+    }
+
+
+    /*public Cart addToCart(User user, Long productId, int quantity) {
         Cart cart = getOrCreateCart(user);
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
@@ -60,7 +88,7 @@ public class CartService {
         // Cập nhật tổng tiền của giỏ hàng
         cart.updateTotalPrice();
         return cartRepository.save(cart);
-    }
+    }*/
 
     // Xóa sản phẩm khỏi giỏ hàng
     public Cart removeFromCart(User user, Long cartItemId) {

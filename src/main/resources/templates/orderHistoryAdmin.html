@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="_layout_admin">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+<div layout:fragment="content" class="container">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Order Management Content goes here -->
+        <h1 class="text-2xl font-bold mb-6">Orders List</h1>
+
+        <!-- Search Bar -->
+        <form th:action="@{/product/admin}" method="get" class="relative w-full sm:w-80">
+            <!-- Icon Search -->
+            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                     stroke="currentColor" class="w-5 h-5 text-gray-400">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
+            </div>
+
+            <!-- Input -->
+            <input type="text" name="search"
+                   class="bg-white border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5"
+                   placeholder="Search Product Name..." th:value="${searchQuery}">
+        </form>
+
+        <!-- Orders List -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div th:each="order : ${orders}" class="bg-white p-6 shadow-lg rounded-lg">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="font-semibold text-lg" th:text="'Order: #' + ${order.id}"></h3>
+                        <p th:text="'Customer: ' + ${order.user.username}"></p>
+                    </div>
+                    <a th:href="@{/admin/orders/{orderId}(orderId=${order.id})}" class="text-blue-500 text-sm hover:underline">View Details</a>
+                </div>
+                <div class="mt-4">
+                    <p class="text-sm"><strong>Payment Status:</strong> <span th:text="${order.status.status}"></span></p>
+                    <p class="text-sm"><strong>Order Status:</strong> <span th:text="${order.status.status}"></span></p>
+                    <p class="font-bold mt-2" th:text="'Total: $' + ${order.totalAmount}"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex justify-center mt-6">
+            <button class="bg-blue-500 text-white py-2 px-4 rounded mr-2">Previous</button>
+            <button class="bg-blue-500 text-white py-2 px-4 rounded">Next</button>
+        </div>
+    </main>
+</div>
+</body>
+
+</html>

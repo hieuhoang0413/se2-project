@@ -2,6 +2,7 @@ package com.se2.midterm.entity;
 
 import jakarta.persistence.*;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +53,7 @@ public class Cart {
 
         // Print the updated total price for debugging
         System.out.println("Updated total price: " + this.totalPrice);
+
     }
 
 

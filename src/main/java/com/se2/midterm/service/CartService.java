@@ -5,6 +5,7 @@ import com.se2.midterm.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,11 +21,9 @@ public class CartService {
     private ProductRepository productRepository;
     @Autowired
     private UserRepository userRepository;
-    /*
     @Autowired private OrderRepository orderRepository;
     @Autowired private OrderDetailRepository orderDetailRepository;
     @Autowired private OrderStatusRepository orderStatusRepository;
-     */
 
     // Lấy hoặc tạo giỏ hàng
     public Cart getOrCreateCart(User user) {
@@ -77,6 +76,7 @@ public class CartService {
                 break;
             }
         }
+<<<<<<< HEAD
 
         // Nếu chưa có, tạo mới CartItem
         if (!found) {
@@ -86,6 +86,11 @@ public class CartService {
         }
 
         // Cập nhật tổng tiền của giỏ hàng
+=======
+        CartItem newItem = new CartItem(cart, product, quantity);
+        cartItemRepository.save(newItem);
+        cart.getCartItems().add(newItem);
+>>>>>>> 02ab21755c116c23145f88ffb4b4501c099805fb
         cart.updateTotalPrice();
         return cartRepository.save(cart);
     }*/
@@ -107,7 +112,6 @@ public class CartService {
         Cart cart = getOrCreateCart(user);
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new RuntimeException("CartItem not found"));
-
         cartItem.setQuantity(quantity);
         cartItem.updateSubtotal();
         cartItemRepository.save(cartItem);
@@ -119,7 +123,7 @@ public class CartService {
     public double getTotalPrice(User user) {
         return getOrCreateCart(user).getTotalPrice();
     }
-/*
+
     // ✅ Tạo order mới khi checkout
     public Cart checkout(User user) {
         Cart cart = getOrCreateCart(user);
@@ -129,14 +133,12 @@ public class CartService {
         // Tạo Order
         Order order = new Order();
         order.setUser(user);
-        order.setOrderDate(java.time.LocalDateTime.now());
+        order.setOrderDate(LocalDateTime.now());
         order.setTotalAmount(cart.getTotalPrice());
 
         // Gán trạng thái mặc định (nếu có OrderStatus entity)
-        OrderStatus status = orderStatusRepository.findByStatus("PENDING")
-                .orElseThrow(() -> new RuntimeException("OrderStatus 'PENDING' not found"));
+        OrderStatus status = orderStatusRepository.findByStatus(OrderStatus.Status.PENDING);
         order.setStatus(status);
-
         order = orderRepository.save(order);
 
         // Tạo OrderDetail cho từng item
@@ -157,5 +159,4 @@ public class CartService {
 
         return cart;
     }
- */
 }

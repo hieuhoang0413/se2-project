@@ -61,7 +61,7 @@ public class CheckOutService {
             double itemTotal = item.getProduct().getPrice() * item.getQuantity();
             totalAmount += itemTotal;
         }
-        order.setTotalAmount(BigDecimal.valueOf(totalAmount));
+        order.setTotalAmount(totalAmount);
 
         // Save the Order to generate its ID.
         Order savedOrder = orderRepository.save(order);

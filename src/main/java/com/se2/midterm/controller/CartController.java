@@ -5,6 +5,7 @@ import com.se2.midterm.entity.Order;
 import com.se2.midterm.entity.User;
 import com.se2.midterm.service.CartService;
 import com.se2.midterm.service.CheckOutService;
+import com.se2.midterm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,29 +21,23 @@ public class CartController {
     private CartService cartService;
     @Autowired
     private CheckOutService CheckOutService;
-
-    //API lấy giỏ hàng của người dùng
-    @GetMapping("/{userId}")
-    public Cart getCart(@PathVariable Long userId) {
-        User user = new User();
-        user.setId(userId);
-        return cartService.getOrCreateCart(user);
-    }
+    @Autowired
+    private UserService userService;
 
     //API thêm sản phẩm vào giỏ hàng
     @PostMapping("/add")
-    public Cart addToCart(@RequestParam Long userId, @RequestParam Long productId, @RequestParam int quantity) {
+    public String addToCart(@RequestParam Long userId, @RequestParam Long productId, @RequestParam int quantity) {
         User user = new User();
         user.setId(userId);
-        return cartService.addToCart(user, productId, quantity);
+        cartService.addToCart(user, productId, quantity);
+        return "redirect:/cart/view/" + userId;
     }
 
     //API xóa sản phẩm khỏi giỏ hàng
     @DeleteMapping("/remove")
-    public Cart removeFromCart(@RequestParam Long userId, @RequestParam Long cartItemId) {
-        User user = new User();
-        user.setId(userId);
-        return cartService.removeFromCart(user, cartItemId);
+    public String removeFromCart(@RequestParam User user, @RequestParam Long cartItemId) {
+        cartService.removeFromCart(user, cartItemId);
+        return "redirect:/cart/view/{id}";
     }
 
     //API cập nhật số lượng sản phẩm trong giỏ hàng

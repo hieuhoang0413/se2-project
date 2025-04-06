@@ -101,9 +101,11 @@ public class User {
     public String getAvatarUrl() {
         return avatarUrl;
     }
+
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
     }
+
     private String phone;
 
     public String getPhone() {

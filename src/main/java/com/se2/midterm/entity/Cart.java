@@ -3,6 +3,7 @@ package com.se2.midterm.entity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,7 +19,7 @@ public class Cart {
     private User user;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<CartItem> cartItems;
+    private List<CartItem> cartItems = new ArrayList<>();
 
     private BigDecimal totalPrice;
     private CartStatus status;
@@ -32,6 +33,16 @@ public class Cart {
         this.totalPrice = BigDecimal.valueOf(0.0);
     }
 
+    public void addItem(CartItem item) {
+        cartItems.add(item);
+        item.setCart(this);
+    }
+
+    public void removeItem(CartItem item) {
+        cartItems.remove(item);
+        item.setCart(null);
+    }
+
     // Tính tổng tiền từ CartItems
     public void updateTotalPrice() {
         this.totalPrice = BigDecimal.valueOf(cartItems.stream()
@@ -39,27 +50,48 @@ public class Cart {
                 .sum());
     }
 
-    // Getter & Setter
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public List<CartItem> getCartItems() {
+        return cartItems;
+    }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
-
-    public List<CartItem> getCartItems() { return cartItems; }
     public void setCartItems(List<CartItem> cartItems) {
         this.cartItems = cartItems;
         updateTotalPrice(); // Cập nhật tổng tiền khi có thay đổi
     }
 
-    public BigDecimal getTotalPrice() { return totalPrice; }
-    public void setTotalPrice(double totalPrice) { this.totalPrice = BigDecimal.valueOf(totalPrice); }
+    public BigDecimal getTotalPrice() {
+        return totalPrice;
+    }
 
-    public void setStatus(CartStatus status) {
-        this.status = status;
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = BigDecimal.valueOf(totalPrice);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setTotalPrice(BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
     public CartStatus getStatus() {
         return status;
+    }
+
+    public void setStatus(CartStatus status) {
+        this.status = status;
     }
 }

@@ -21,47 +21,49 @@
             <!-- Product Info -->
             <form action="/cart/add" method="post" class="w-full md:w-1/2">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                <!-- Ẩn product.id để gửi lên server -->
                 <input type="hidden" name="productId" th:value="${product.id}" />
                 <input type="hidden" name="userId" th:value="${user.id}" />
-
+            
                 <h1 class="text-3xl font-bold mb-4" th:text="${product.name}">Product Name</h1>
-
-                <p class="text-gray-600 mb-6" th:text="${product.description}">
-                    Product description here...
-                </p>
-
+                <p class="text-gray-600 mb-6" th:text="${product.description}">Product description here...</p>
                 <div class="text-2xl font-bold mb-4" th:text="'$' + ${product.price}">Price</div>
-
+            
                 <p class="text-sm text-gray-600 mb-2">
                     <strong>Category:</strong> <span th:text="${product.category.name}">Category</span>
                 </p>
-
                 <p class="text-sm text-gray-600 mb-4">
                     <strong>Available:</strong> <span th:text="${product.quantity}"></span> in stock
                 </p>
-
+            
                 <!-- Quantity Selector -->
                 <div class="flex items-center mb-6">
-                    <button type="button" class="border border-gray-300 w-8 h-8 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="w-4 h-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" />
-                        </svg>
+                    <button type="button" class="decrement border border-gray-300 w-8 h-8 flex items-center justify-center">
+                        -
                     </button>
-                    <input name="quantity" type="text" value="1" class="w-10 h-8 text-center border-t border-b border-gray-300" />
-                    <button type="button" class="border border-gray-300 w-8 h-8 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="w-4 h-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                        </svg>
+                    <input id="quantityInput" name="quantity" type="text" value="1"
+                        class="w-10 h-8 text-center border-t border-b border-gray-300" />
+                    <button type="button" class="increment border border-gray-300 w-8 h-8 flex items-center justify-center">
+                        +
                     </button>
                 </div>
-
+            
                 <button type="submit" class="w-full bg-black text-white py-3 font-medium">
                     Add to Cart
                 </button>
             </form>
+            
+            <!-- Optional: Tăng giảm số lượng bằng JS -->
+            <script>
+                const quantityInput = document.getElementById('quantityInput');
+                document.querySelector('.increment').addEventListener('click', () => {
+                    quantityInput.value = parseInt(quantityInput.value || '1') + 1;
+                });
+                document.querySelector('.decrement').addEventListener('click', () => {
+                    const current = parseInt(quantityInput.value || '1');
+                    if (current > 1) quantityInput.value = current - 1;
+                });
+            </script>
+            
         </div>
     </div>
 

@@ -47,14 +47,14 @@
                     <div th:each="item : ${cart.cartItems}" class="flex border-b py-6 gap-6 items-center">
                         <!-- Product Image -->
                         <div class="w-24 h-24 flex-shrink-0 border rounded overflow-hidden">
-                            <img th:src="@{${item.product.image}}" alt="Product Image"
+                            <img th:src="${item.product.image}" alt="Product Image"
                                 class="w-full h-full object-cover" />
                         </div>
 
                         <!-- Product Info -->
                         <div class="flex-1">
                             <h3 class="text-lg font-semibold" th:text="${item.product.name}">Product Name</h3>
-                            <p class="text-sm text-gray-500" th:text="'Color: ' + ${item.product.color}">Color: Black
+                            <!-- <p class="text-sm text-gray-500" th:text="'Color: ' + ${item.product.color}">Color: Black -->
                             </p>
 
                             <!-- Quantity control -->
@@ -73,9 +73,9 @@
                             </form>
 
                             <!-- Remove -->
-                            <form th:action="@{/cart/remove}" method="post" class="mt-2">
+                            <form th:action="@{/cart/remove}" method="delete" class="mt-2">
                                 <input type="hidden" name="_method" value="delete" />
-                                <input type="hidden" name="userId" th:value="${userId}" />
+                                <input type="hidden" name="user" th:value="${user.username}" />
                                 <input type="hidden" name="cartItemId" th:value="${item.id}" />
                                 <button type="submit" class="text-red-500 text-sm hover:underline">✕ Remove</button>
                             </form>

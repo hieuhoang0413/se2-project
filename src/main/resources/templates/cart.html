@@ -1,116 +1,389 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{_layout}">
+      layout:decorate="~{_layout}">
 
 <head>
     <title>Shopping Cart</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <script src="https://cdn.tailwindcss.com"></script>
 
 <body>
-    <div layout:fragment="content">
-        <div class="max-w-7xl mx-auto py-10 px-4">
-            <h1 class="text-3xl font-bold text-center mb-12">Cart</h1>
+<div layout:fragment="content">
+    <div class="max-w-7xl mx-auto py-6 sm:py-10 px-4 sm:px-6 lg:px-8">
+        <h1 class="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12">Cart</h1>
 
-            <div class="flex justify-center items-center gap-10 mb-10">
-                <div class="flex flex-col items-center">
-                    <div class="w-6 h-6 rounded-full bg-black text-white text-xs flex items-center justify-center">1
-                    </div>
-                    <p class="text-sm font-medium mt-2 text-black">Shopping cart</p>
-                    <div class="w-12 h-[2px] bg-black mt-1"></div>
-                </div>
-
-                <!-- (link to check out) -->
-                <a th:href="@{/checkout}" class="flex flex-col items-center group">
-                    <div
-                        class="w-6 h-6 rounded-full bg-gray-300 text-white text-xs flex items-center justify-center group-hover:bg-gray-400">
-                        2</div>
-                    <p class="text-sm font-medium mt-2 text-gray-400 group-hover:text-gray-600">Checkout details</p>
-                </a>
-
-                <!-- (link to order complete) -->
-                <a th:href="@{/order/complete}" class="flex flex-col items-center group">
-                    <div
-                        class="w-6 h-6 rounded-full bg-gray-300 text-white text-xs flex items-center justify-center group-hover:bg-gray-400">
-                        3</div>
-                    <p class="text-sm font-medium mt-2 text-gray-400 group-hover:text-gray-600">Order complete</p>
-                </a>
+        <!-- Progress Steps - Responsive -->
+        <div class="flex justify-center items-center gap-4 sm:gap-10 mb-8 sm:mb-10 overflow-x-auto px-2 w-full">
+            <div class="flex flex-col items-center flex-shrink-0">
+                <div class="w-6 h-6 rounded-full bg-black text-white text-xs flex items-center justify-center">1</div>
+                <p class="text-xs sm:text-sm font-medium mt-1 sm:mt-2 text-black">Shopping cart</p>
+                <div class="w-full h-[2px] bg-black mt-1"></div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- LEFT: CART ITEMS -->
-                <div class="lg:col-span-2">
-                    <div th:if="${#lists.isEmpty(cart.cartItems)}" class="text-center text-gray-500">
-                        Your cart is empty.
-                    </div>
+            <a th:href="@{/checkout}" class="flex flex-col items-center group flex-shrink-0">
+                <div class="w-6 h-6 rounded-full bg-gray-300 text-white text-xs flex items-center justify-center group-hover:bg-gray-400">2</div>
+                <p class="text-xs sm:text-sm font-medium mt-1 sm:mt-2 text-gray-400 group-hover:text-gray-600">Checkout details</p>
+            </a>
 
-                    <div th:each="item : ${cart.cartItems}" class="flex border-b py-6 gap-6 items-center">
-                        <!-- Product Image -->
-                        <div class="w-24 h-24 flex-shrink-0 border rounded overflow-hidden">
-                            <img th:src="@{${item.product.image}}" alt="Product Image"
-                                class="w-full h-full object-cover" />
-                        </div>
+            <a th:href="@{/order/complete}" class="flex flex-col items-center group flex-shrink-0">
+                <div class="w-6 h-6 rounded-full bg-gray-300 text-white text-xs flex items-center justify-center group-hover:bg-gray-400">3</div>
+                <p class="text-xs sm:text-sm font-medium mt-1 sm:mt-2 text-gray-400 group-hover:text-gray-600">Order complete</p>
+            </a>
+        </div>
 
-                        <!-- Product Info -->
-                        <div class="flex-1">
-                            <h3 class="text-lg font-semibold" th:text="${item.product.name}">Product Name</h3>
-
-
-                            <!-- Quantity control -->
-                            <form th:action="@{/cart/update}" method="post" class="flex items-center gap-2 mt-2">
-                                <input type="hidden" name="userId" th:value="${userId}" />
-                                <input type="hidden" name="cartItemId" th:value="${item.id}" />
-                                <div class="flex border rounded px-2">
-                                    <button type="button" onclick="this.nextElementSibling.stepDown()"
-                                        class="px-2">−</button>
-                                    <input type="number" name="quantity" min="1" th:value="${item.quantity}"
-                                        class="w-12 text-center border-none outline-none" />
-                                    <button type="button" onclick="this.previousElementSibling.stepUp()"
-                                        class="px-2">+</button>
-                                </div>
-                                <button type="submit" class="text-blue-600 text-sm">Update</button>
-                            </form>
-
-                            <!-- Remove -->
-                            <form th:action="@{/cart/remove}" method="post" class="mt-2">
-                                <input type="hidden" name="_method" value="delete" />
-                                <input type="hidden" name="userId" th:value="${userId}" />
-                                <input type="hidden" name="cartItemId" th:value="${item.id}" />
-                                <button type="submit" class="text-red-500 text-sm hover:underline">✕ Remove</button>
-                            </form>
-                        </div>
-
-                        <!-- Price + Subtotal -->
-                        <div class="text-right min-w-[80px]">
-                            <p th:text="'$' + ${item.product.price}" class="text-sm text-gray-700">$19.00</p>
-                            <p th:text="'$' + (${item.product.price * item.quantity})" class="font-semibold">$38.00</p>
-                        </div>
-                    </div>
+        <!-- Cart Content -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+            <!-- LEFT: CART ITEMS -->
+            <div class="lg:col-span-2 order-2 lg:order-1">
+                <div th:if="${#lists.isEmpty(cart.cartItems)}" class="text-center text-gray-500 py-10">
+                    Your cart is empty.
                 </div>
 
-                <!-- RIGHT: CART SUMMARY -->
-                <div class="border rounded-lg p-6 shadow-sm bg-gray-50">
-                    <h2 class="text-lg font-semibold mb-4">Cart Summary</h2>
+                <!-- Mobile Cart Summary (visible only on mobile) -->
+                <div class="lg:hidden mb-6 border rounded-lg p-4 bg-gray-50">
+                    <h2 class="text-lg font-semibold mb-2">Cart Summary</h2>
                     <div class="flex justify-between mb-2 text-sm">
                         <span>Free shipping</span>
                         <span>$0.00</span>
                     </div>
-                    <div class="flex justify-between font-bold text-lg mb-6">
+                    <div class="flex justify-between font-bold text-lg mb-4">
                         <span>Total</span>
-                        <span th:text="'$' + ${total}">$135.00</span>
+                        <span id="mobile-total-price" th:text="'$' + ${total}">$135.00</span>
                     </div>
-
-                    <!-- Checkout -->
                     <form th:action="@{/cart/checkout}" method="post">
                         <input type="hidden" name="userId" th:value="${userId}" />
-                        <button type="submit" class="w-full bg-black text-white py-2 rounded hover:bg-gray-800">
+                        <button type="submit" class="w-full bg-black text-white py-3 rounded hover:bg-gray-800">
                             Checkout
                         </button>
                     </form>
                 </div>
+
+                <!-- Table Header - Hidden on mobile -->
+                <div class="hidden sm:grid sm:grid-cols-12 gap-4 pb-2 border-b font-medium text-gray-500 mb-4">
+                    <div class="sm:col-span-6">Product</div>
+                    <div class="sm:col-span-2 text-center">Quantity</div>
+                    <div class="sm:col-span-2 text-right">Price</div>
+                    <div class="sm:col-span-2 text-right">Subtotal</div>
+                </div>
+
+                <!-- Cart Items -->
+                <div th:each="item : ${cart.cartItems}" th:id="'cart-item-' + ${item.id}" class="border-b py-4 sm:py-6">
+                    <!-- Mobile Layout -->
+                    <div class="sm:hidden">
+                        <div class="flex gap-4">
+                            <!-- Product Image -->
+                            <div class="w-24 h-24 flex-shrink-0 border rounded overflow-hidden">
+                                <img th:src="@{${item.product.image}}" alt="Product Image" class="w-full h-full object-cover" />
+                            </div>
+
+                            <!-- Product Info -->
+                            <div class="flex-1">
+                                <h3 class="font-medium" th:text="${item.product.name}">Product Name</h3>
+
+                                <!-- Quantity control -->
+                                <div class="flex items-center gap-2 mt-2">
+                                    <div class="inline-flex border rounded">
+                                        <button type="button"
+                                                th:data-item-id="${item.id}"
+                                                th:data-price="${item.product.price}"
+                                                th:data-current-qty="${item.quantity}"
+                                                class="decrease-qty px-2 py-1 border-r">−</button>
+                                        <span th:id="'qty-' + ${item.id}" class="px-3 py-1" th:text="${item.quantity}">1</span>
+                                        <button type="button"
+                                                th:data-item-id="${item.id}"
+                                                th:data-price="${item.product.price}"
+                                                th:data-current-qty="${item.quantity}"
+                                                class="increase-qty px-2 py-1 border-l">+</button>
+                                    </div>
+                                </div>
+
+                                <!-- Subtotal -->
+                                <p class="font-medium mt-2">$<span th:id="'subtotal-' + ${item.id}" th:text="${item.product.price * item.quantity}">38.00</span></p>
+
+                                <!-- Remove -->
+                                <button type="button"
+                                        th:data-item-id="${item.id}"
+                                        class="remove-item text-red-500 text-sm flex items-center gap-1 mt-2 hover:underline">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Desktop Layout -->
+                    <div class="hidden sm:grid sm:grid-cols-12 gap-4 items-center">
+                        <!-- Product -->
+                        <div class="sm:col-span-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 flex-shrink-0 border rounded overflow-hidden">
+                                    <img th:src="@{${item.product.image}}" alt="Product Image" class="w-full h-full object-cover" />
+                                </div>
+                                <div>
+                                    <h3 class="font-medium" th:text="${item.product.name}">Product Name</h3>
+                                    <!-- Remove -->
+                                    <button type="button"
+                                            th:data-item-id="${item.id}"
+                                            class="remove-item text-red-500 text-sm flex items-center gap-1 mt-1 hover:underline">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quantity -->
+                        <div class="sm:col-span-2 flex justify-center">
+                            <div class="inline-flex border rounded">
+                                <button type="button"
+                                        th:data-item-id="${item.id}"
+                                        th:data-price="${item.product.price}"
+                                        th:data-current-qty="${item.quantity}"
+                                        class="decrease-qty px-2 py-1 border-r">−</button>
+                                <span th:id="'qty-desktop-' + ${item.id}" class="px-3 py-1" th:text="${item.quantity}">1</span>
+                                <button type="button"
+                                        th:data-item-id="${item.id}"
+                                        th:data-price="${item.product.price}"
+                                        th:data-current-qty="${item.quantity}"
+                                        class="increase-qty px-2 py-1 border-l">+</button>
+                            </div>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="sm:col-span-2 text-right" th:text="'$' + ${item.product.price}">$19.00</div>
+
+                        <!-- Subtotal -->
+                        <div class="sm:col-span-2 text-right font-medium">$<span th:id="'subtotal-desktop-' + ${item.id}" th:text="${item.product.price * item.quantity}">38.00</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: CART SUMMARY - Hidden on mobile (shown at top instead) -->
+            <div class="hidden lg:block border rounded-lg p-4 sm:p-6 shadow-sm bg-gray-50 order-1 lg:order-2 sticky top-4">
+                <h2 class="text-lg font-semibold mb-4">Cart Summary</h2>
+                <div class="flex justify-between mb-2 text-sm">
+                    <span>Free shipping</span>
+                    <span>$0.00</span>
+                </div>
+                <div class="flex justify-between font-bold text-lg mb-4 sm:mb-6">
+                    <span>Total</span>
+                    <span id="desktop-total-price" th:text="'$' + ${total}">$135.00</span>
+                </div>
+
+                <!-- Checkout -->
+                <form th:action="@{/cart/checkout}" method="post">
+                    <input type="hidden" name="userId" th:value="${userId}" />
+                    <button type="submit" class="w-full bg-black text-white py-3 rounded hover:bg-gray-800">
+                        Checkout
+                    </button>
+                </form>
             </div>
         </div>
     </div>
+
+    <!-- Add CSRF token for AJAX requests -->
+    <input type="hidden" id="csrfToken" th:name="${_csrf != null ? _csrf.parameterName : '_csrf'}"
+           th:value="${_csrf != null ? _csrf.token : ''}" />
+    <input type="hidden" id="userId" th:value="${userId}" />
+
+    <!-- JavaScript for AJAX quantity updates and item removal -->
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all quantity buttons
+            const decreaseButtons = document.querySelectorAll('.decrease-qty');
+            const increaseButtons = document.querySelectorAll('.increase-qty');
+            const removeButtons = document.querySelectorAll('.remove-item');
+
+            // Add event listeners to decrease buttons
+            decreaseButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemId = this.getAttribute('data-item-id');
+                    const price = parseFloat(this.getAttribute('data-price'));
+                    const currentQty = parseInt(this.getAttribute('data-current-qty'));
+
+                    if (currentQty > 1) {
+                        updateQuantity(itemId, currentQty - 1, price);
+                    }
+                });
+            });
+
+            // Add event listeners to increase buttons
+            increaseButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemId = this.getAttribute('data-item-id');
+                    const price = parseFloat(this.getAttribute('data-price'));
+                    const currentQty = parseInt(this.getAttribute('data-current-qty'));
+
+                    updateQuantity(itemId, currentQty + 1, price);
+                });
+            });
+
+            // Add event listeners to remove buttons
+            removeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemId = this.getAttribute('data-item-id');
+                    removeItem(itemId);
+                });
+            });
+        });
+
+        // Function to update quantity via AJAX
+        function updateQuantity(itemId, newQuantity, price) {
+            if (newQuantity < 1) return; // Prevent negative quantities
+
+            const userId = document.getElementById('userId').value;
+            const csrfToken = document.getElementById('csrfToken');
+
+            // Create form data
+            const formData = new FormData();
+            formData.append('userId', userId);
+            formData.append('cartItemId', itemId);
+            formData.append('quantity', newQuantity);
+
+            // Add CSRF token if present
+            if (csrfToken) {
+                formData.append(csrfToken.name, csrfToken.value);
+            }
+
+            // Send AJAX request
+            fetch('/cart/update', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok');
+            })
+            .then(data => {
+                // Update UI with new values
+                updateUI(itemId, newQuantity, price, data.total);
+                updateCartIcon(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Update UI anyway for better UX (optimistic update)
+                updateUI(itemId, newQuantity, price);
+            });
+        }
+
+        // Function to update the cart icon with the number of unique items
+        function removeItem(itemId) {
+            const userId = document.getElementById('userId').value;
+            const csrfToken = document.getElementById('csrfToken').value;
+
+            // Create form data
+            const formData = new FormData();
+            formData.append('userId', userId);
+            formData.append('cartItemId', itemId);
+            formData.append('_csrf', csrfToken);
+
+            // Send AJAX request
+            fetch('/cart/remove', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Remove item from UI
+                const itemElement = document.getElementById('cart-item-' + itemId);
+                if (itemElement) {
+                    itemElement.remove();
+                }
+
+                // Update total price
+                updateTotalPrice(data.total);
+
+                // Update the cart icon to reflect the number of unique items in the cart
+                updateCartIcon();
+
+                // Check if cart is empty
+                if (data.cartItems && data.cartItems.length === 0) {
+                    const cartContainer = document.querySelector('.lg\\:col-span-2');
+                    if (cartContainer) {
+                        cartContainer.innerHTML = '<div class="text-center text-gray-500 py-10">Your cart is empty.</div>';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Remove item from UI anyway for better UX
+                const itemElement = document.getElementById('cart-item-' + itemId);
+                if (itemElement) {
+                    itemElement.remove();
+                }
+            });
+        }
+
+        // Function to update UI after quantity change
+        function updateUI(itemId, newQuantity, price, newTotal = null) {
+            // Update quantity display
+            const qtyElement = document.getElementById('qty-' + itemId);
+            const qtyDesktopElement = document.getElementById('qty-desktop-' + itemId);
+
+            if (qtyElement) qtyElement.textContent = newQuantity;
+            if (qtyDesktopElement) qtyDesktopElement.textContent = newQuantity;
+
+            // Update subtotal
+            const subtotal = (price * newQuantity).toFixed(2);
+            const subtotalElement = document.getElementById('subtotal-' + itemId);
+            const subtotalDesktopElement = document.getElementById('subtotal-desktop-' + itemId);
+
+            if (subtotalElement) subtotalElement.textContent = subtotal;
+            if (subtotalDesktopElement) subtotalDesktopElement.textContent = subtotal;
+
+            // Update buttons' data attributes
+            const decreaseButtons = document.querySelectorAll(`.decrease-qty[data-item-id="${itemId}"]`);
+            const increaseButtons = document.querySelectorAll(`.increase-qty[data-item-id="${itemId}"]`);
+
+            decreaseButtons.forEach(button => {
+                button.setAttribute('data-current-qty', newQuantity);
+            });
+
+            increaseButtons.forEach(button => {
+                button.setAttribute('data-current-qty', newQuantity);
+            });
+
+            // Update total price if provided
+            if (newTotal !== null) {
+                updateTotalPrice(parseFloat(newTotal));
+            }
+        }
+
+        // Function to update total price
+        function updateTotalPrice(newTotal) {
+            const numericTotal = parseFloat(newTotal);
+            if (isNaN(numericTotal)) return; // Guard against NaN
+            const formattedTotal = '$' + numericTotal.toFixed(2);
+            const mobileTotalElement = document.getElementById('mobile-total-price');
+            const desktopTotalElement = document.getElementById('desktop-total-price');
+            if (mobileTotalElement) mobileTotalElement.textContent = formattedTotal;
+            if (desktopTotalElement) desktopTotalElement.textContent = formattedTotal;
+        }
+
+
+        // Function to update the cart icon with the number of unique items
+        function updateCartIcon(cart) {
+            let totalQuantity = 0;
+            if (cart.cartItems && Array.isArray(cart.cartItems)) {
+                cart.cartItems.forEach(item => {
+                    totalQuantity += item.quantity;
+                });
+            }
+            const cartIcon = document.getElementById('cart-count-text');
+            if (cartIcon) {
+                cartIcon.innerText = totalQuantity;
+            }
+        }
+
+    </script>
+</div>
 </body>
 
 </html>

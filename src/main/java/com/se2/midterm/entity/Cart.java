@@ -41,16 +41,13 @@ public class Cart {
             System.out.println("No items in cart to update total price.");
             return;
         }
-
-        // Print the number of items in the cart to help debug
-        System.out.println("Updating total price for " + cartItems.size() + " items...");
-
-        // Sum up the subtotals of each cart item
-        this.totalPrice = cartItems.stream()
-                .filter(item -> item != null && item.getSubtotal() > 0)  // Make sure item is not null and has a positive subtotal
-                .mapToDouble(CartItem::getSubtotal)
-                .sum();
-
+        double total = 0;
+        int totalQuantity = 0;
+        for (CartItem item : cartItems) {
+            total += item.getSubtotal();
+            totalQuantity += item.getQuantity();
+        }
+        this.totalPrice = total;
         // Print the updated total price for debugging
         System.out.println("Updated total price: " + this.totalPrice);
 

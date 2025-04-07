@@ -77,11 +77,13 @@ public class CartController {
         }
         User user = new User();
         user.setId(userId);
+        cartService.checkout(user);
         Cart cart = cartService.getOrCreateCart(user);
 
         model.addAttribute("cart", cart);
         model.addAttribute("total", cart.getTotalPrice());
         model.addAttribute("userId", userId);
+
         return "checkout"; // Trỏ đến templates/checkout.html
     }
 
@@ -90,6 +92,9 @@ public class CartController {
     public String confirmCheckout(@RequestParam Long userId, Model model) {
         Order order = CheckOutService.checkout(userId);
         model.addAttribute("order", order);
+
+        System.out.println("✅ Đơn hàng đã lưu: Order ID = " + order.getId());
+
         return "orderComplete";
     }
 

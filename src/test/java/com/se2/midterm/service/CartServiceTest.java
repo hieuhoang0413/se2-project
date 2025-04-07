@@ -1,4 +1,4 @@
-package com.se2.midterm;
+package com.se2.midterm.service;
 
 import com.se2.midterm.entity.*;
 import com.se2.midterm.repository.*;
@@ -69,8 +69,10 @@ public class CartServiceTest {
     public void testUpdateCartItemQuantity() {
         CartItem item = new CartItem(testCart, testProduct, 1);
         item.setId(1L);
+        testCart.getCartItems().add(item);
 
         when(cartItemRepository.findById(1L)).thenReturn(Optional.of(item));
+        when(cartRepository.save(any())).thenReturn(testCart);
 
         Cart result = cartService.updateCartItemQuantity(testUser, 1L, 3);
 
@@ -85,16 +87,18 @@ public class CartServiceTest {
         CartItem item = new CartItem(testCart, testProduct, 1);
         item.setId(1L);
 
-        testCart.getCartItems().add(item);
+        testCart.getCartItems().add(item); // Cho item vào giỏ hàng
 
         when(cartItemRepository.findById(1L)).thenReturn(Optional.of(item));
+        when(cartRepository.save(any())).thenReturn(testCart); // ✅ mock save()
 
         Cart result = cartService.removeFromCart(testUser, 1L);
 
-        assertTrue(result.getCartItems().isEmpty());
-        verify(cartItemRepository).delete(item);
-        verify(cartRepository).save(result);
+        assertTrue(result.getCartItems().isEmpty()); // ✅ kiểm tra xoá thành công
+        verify(cartItemRepository).delete(item); // ✅ đảm bảo repo gọi đúng
+        verify(cartRepository).save(testCart);
     }
+
 
     @Test
     public void testCheckout() {
@@ -105,6 +109,10 @@ public class CartServiceTest {
         status.setId(1L);
         status.setStatus(OrderStatus.Status.PENDING);
 
+        Order savedOrder = new Order();
+        savedOrder.setId(1L); // mock ID
+        when(orderRepository.save(any())).thenReturn(savedOrder);
+
         when(orderStatusRepository.findByStatus(OrderStatus.Status.PENDING)).thenReturn(status);
         when(orderRepository.save(any(Order.class))).thenAnswer(i -> i.getArguments()[0]);
 
@@ -114,6 +122,28 @@ public class CartServiceTest {
         verify(orderDetailRepository).save(any(OrderDetail.class));
         verify(cartItemRepository).deleteAll(any());
         assertEquals(0, result.getCartItems().size());
+    }
+
+    @Test
+    public void testCheckoutWithEmptyCartThrowsException() {
+        // given
+        User user = new User();
+        user.setId(1L);
+
+        Cart emptyCart = new Cart(user); // giỏ hàng rỗng
+
+        // mock getOrCreateCart trả về emptyCart
+        when(cartRepository.findByUser(user)).thenReturn(Optional.of(emptyCart));
+
+        // when + then
+        RuntimeException thrown = assertThrows(RuntimeException.class, () -> {
+            cartService.checkout(user);
+        });
+
+        assertEquals("Cart is empty!", thrown.getMessage());
+
+        // verify không gọi save vì giỏ hàng rỗng
+        verify(cartRepository, never()).save(any());
     }
 }
 

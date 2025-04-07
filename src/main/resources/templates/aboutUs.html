@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="_layout">
+<head>
+    <title>About Us</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div class="max-w-6xl mx-auto px-4 py-16">
+        <h1 class="text-4xl font-bold text-center mb-10">About Elite Home</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+            <div>
+                <h2 class="text-2xl font-semibold mb-4">Who We Are</h2>
+                <p class="text-gray-700 leading-relaxed">
+                    At Elite Home, we believe your home should reflect your lifestyle. Founded with a passion for elegant, minimal design,
+                    our mission is to bring high-quality furniture and home décor that not only looks great but also feels like you.
+                </p>
+            </div>
+            <div>
+                <img src="/uploads/images/FurnitureDark.svg" alt="Elite Home Team"
+                     class="w-full rounded-lg shadow-md">
+            </div>
+        </div>
+
+        <div class="mt-16">
+            <h2 class="text-2xl font-semibold mb-4">Our Mission</h2>
+            <p class="text-gray-700 leading-relaxed">
+                We aim to create a seamless shopping experience where beauty meets functionality. Whether you're furnishing a new place
+                or revamping a cozy corner, we're here to inspire you with timeless design and unbeatable comfort.
+            </p>
+        </div>
+
+        <div class="mt-16 text-center">
+            <h2 class="text-2xl font-semibold mb-4">Visit Us</h2>
+            <p class="text-gray-700">
+                123 Elite Street, District 1, Ho Chi Minh City<br/>
+                Open: 9:00 AM – 9:00 PM | Every day
+            </p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -18,7 +18,7 @@ public class Order {
     private User user;
 
     // If you want a relationship to an OrderStatus entity:
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "status_id") // Must match the column in your 'orders' table
     private OrderStatus status;
 

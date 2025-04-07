@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{_layout}">
+      layout:decorate="_layout">
 
 <head>
     <title>Shopping Cart</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<script src="https://cdn.tailwindcss.com"></script>
 
 <body>
 <div layout:fragment="content">
@@ -21,7 +21,7 @@
                 <div class="w-full h-[2px] bg-black mt-1"></div>
             </div>
 
-            <a th:href="@{/checkout}" class="flex flex-col items-center group flex-shrink-0">
+            <a th:href="@{/cart/checkout}" class="flex flex-col items-center group flex-shrink-0">
                 <div class="w-6 h-6 rounded-full bg-gray-300 text-white text-xs flex items-center justify-center group-hover:bg-gray-400">2</div>
                 <p class="text-xs sm:text-sm font-medium mt-1 sm:mt-2 text-gray-400 group-hover:text-gray-600">Checkout details</p>
             </a>
@@ -51,12 +51,9 @@
                         <span>Total</span>
                         <span id="mobile-total-price" th:text="'$' + ${total}">$135.00</span>
                     </div>
-                    <form th:action="@{/cart/checkout}" method="post">
-                        <input type="hidden" name="userId" th:value="${userId}" />
-                        <button type="submit" class="w-full bg-black text-white py-3 rounded hover:bg-gray-800">
-                            Checkout
-                        </button>
-                    </form>
+                    <a th:href="@{/checkout}" class="block w-full bg-black text-white py-3 rounded hover:bg-gray-800 text-center">
+                        Checkout
+                    </a>
                 </div>
 
                 <!-- Table Header - Hidden on mobile -->
@@ -102,14 +99,21 @@
                                 <p class="font-medium mt-2">$<span th:id="'subtotal-' + ${item.id}" th:text="${item.product.price * item.quantity}">38.00</span></p>
 
                                 <!-- Remove -->
-                                <button type="button"
-                                        th:data-item-id="${item.id}"
-                                        class="remove-item text-red-500 text-sm flex items-center gap-1 mt-2 hover:underline">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                    Remove
-                                </button>
+                                <form th:action="@{/cart/remove}" method="post" class="inline">
+                                    <!-- Sử dụng hidden input để override method thành DELETE -->
+                                    <input type="hidden" name="_method" value="delete" />
+                                    <!-- CSRF token nếu cần -->
+                                    <!-- Truyền userId và cartItemId -->
+                                    <input type="hidden" name="userId" th:value="${userId}" />
+                                    <input type="hidden" name="cartItemId" th:value="${item.id}" />
+                                    <button type="submit" class="remove-item text-red-500 text-sm flex items-center gap-1 mt-2 hover:underline">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                        Remove
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -125,14 +129,21 @@
                                 <div>
                                     <h3 class="font-medium" th:text="${item.product.name}">Product Name</h3>
                                     <!-- Remove -->
-                                    <button type="button"
-                                            th:data-item-id="${item.id}"
-                                            class="remove-item text-red-500 text-sm flex items-center gap-1 mt-1 hover:underline">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                        </svg>
-                                        Remove
-                                    </button>
+                                    <form th:action="@{/cart/remove}" method="post" class="inline">
+                                        <!-- Sử dụng hidden input để override method thành DELETE -->
+                                        <input type="hidden" name="_method" value="delete" />
+                                        <!-- CSRF token nếu cần -->
+                                        <!-- Truyền userId và cartItemId -->
+                                        <input type="hidden" name="userId" th:value="${userId}" />
+                                        <input type="hidden" name="cartItemId" th:value="${item.id}" />
+                                        <button type="submit" class="remove-item text-red-500 text-sm flex items-center gap-1 mt-2 hover:underline">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                      d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                            Remove
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -175,8 +186,8 @@
                     <span id="desktop-total-price" th:text="'$' + ${total}">$135.00</span>
                 </div>
 
-                <!-- Checkout -->
-                <form th:action="@{/cart/checkout}" method="post">
+
+                <form th:action="@{/cart/checkout}" method="get">
                     <input type="hidden" name="userId" th:value="${userId}" />
                     <button type="submit" class="w-full bg-black text-white py-3 rounded hover:bg-gray-800">
                         Checkout

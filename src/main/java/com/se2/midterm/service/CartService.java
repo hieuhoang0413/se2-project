@@ -4,10 +4,6 @@ import com.se2.midterm.entity.*;
 import com.se2.midterm.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -122,41 +118,5 @@ public class CartService {
     // Lấy tổng tiền
     public double getTotalPrice(User user) {
         return getOrCreateCart(user).getTotalPrice();
-    }
-
-    // ✅ Tạo order mới khi checkout
-    public Cart checkout(User user) {
-        Cart cart = getOrCreateCart(user);
-        if (cart.getCartItems().isEmpty()) {
-            throw new RuntimeException("Cart is empty!");
-        }
-        // Tạo Order
-        Order order = new Order();
-        order.setUser(user);
-        order.setOrderDate(LocalDateTime.now());
-        order.setTotalAmount(cart.getTotalPrice());
-
-        // Gán trạng thái mặc định (nếu có OrderStatus entity)
-        OrderStatus status = orderStatusRepository.findByStatus(OrderStatus.Status.PENDING);
-        order.setStatus(status);
-        order = orderRepository.save(order);
-
-        // Tạo OrderDetail cho từng item
-        for (CartItem item : cart.getCartItems()) {
-            OrderDetail detail = new OrderDetail();
-            detail.setOrder(order);
-            detail.setProduct(item.getProduct());
-            detail.setQuantity(item.getQuantity());
-            detail.setPrice(item.getProduct().getPrice());
-            orderDetailRepository.save(detail);
-        }
-
-        // Dọn sạch cart
-        cartItemRepository.deleteAll(cart.getCartItems());
-        cart.getCartItems().clear();
-        cart.updateTotalPrice();
-        cartRepository.save(cart);
-
-        return cart;
     }
 }

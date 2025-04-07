@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="_layout" lang="en">
+<head>
+    <title>Checkout</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="max-w-7xl mx-auto py-6 sm:py-10 px-4 sm:px-6 lg:px-8">
+        <!-- Page title and progress steps -->
+        <h1 class="text-2xl sm:text-3xl font-bold text-center mb-8">Checkout</h1>
+
+        <!-- Progress Steps - Responsive -->
+        <div class="flex justify-center items-center gap-4 sm:gap-10 mb-8 sm:mb-10 overflow-x-auto px-2 w-full">
+            <a th:href="@{/cart/view/{userId}(userId=${userId})}" class="flex flex-col items-center group flex-shrink-0">
+                <div class="w-6 h-6 rounded-full bg-gray-300 text-white text-xs flex items-center justify-center group-hover:bg-gray-400">1</div>
+                <p class="text-xs sm:text-sm font-medium mt-1 sm:mt-2 text-gray-400 group-hover:text-gray-600">Shopping cart</p>
+            </a>
+
+            <div class="flex flex-col items-center flex-shrink-0">
+                <div class="w-6 h-6 rounded-full bg-black text-white text-xs flex items-center justify-center">2</div>
+                <p class="text-xs sm:text-sm font-medium mt-1 sm:mt-2 text-black">Checkout details</p>
+                <div class="w-full h-[2px] bg-black mt-1"></div>
+            </div>
+
+            <div class="flex flex-col items-center group flex-shrink-0 cursor-default">
+                <div class="w-6 h-6 rounded-full bg-gray-300 text-white text-xs flex items-center justify-center">3</div>
+                <p class="text-xs sm:text-sm font-medium mt-1 sm:mt-2 text-gray-400">Order complete</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+            <!-- Checkout Form (Left Side) -->
+            <div class="lg:col-span-2 order-2 lg:order-1">
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <h2 class="text-xl font-semibold mb-6">Billing &amp; Shipping Details</h2>
+
+                    <!-- Checkout Form -->
+                    <form th:action="@{/orders}" method="post" class="space-y-6">
+                        <!-- CSRF token -->
+                        <input type="hidden" id="csrfToken" th:name="${_csrf != null ? _csrf.parameterName : '_csrf'}"
+                               th:value="${_csrf != null ? _csrf.token : ''}" />
+                        <input type="hidden" name="userId" th:value="${userId}" />
+
+                        <!-- Name Fields -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                                <input type="text" id="firstName" name="firstName" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-2 focus:ring-black focus:border-transparent outline-none" required>
+                            </div>
+                            <div>
+                                <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                                <input type="text" id="lastName" name="lastName" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-2 focus:ring-black focus:border-transparent outline-none" required>
+                            </div>
+                        </div>
+
+                        <!-- Email Field -->
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                            <input type="email" id="email" name="email" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-2 focus:ring-black focus:border-transparent outline-none" required>
+                        </div>
+
+                        <!-- Phone Field -->
+                        <div>
+                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-2 focus:ring-black focus:border-transparent outline-none" required>
+                        </div>
+
+                        <!-- Address Fields -->
+                        <div>
+                            <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Street Address</label>
+                            <input type="text" id="address" name="address" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-2 focus:ring-black focus:border-transparent outline-none" required>
+                        </div>
+
+                        <!-- City, State, Zip -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label for="city" class="block text-sm font-medium text-gray-700 mb-1">City</label>
+                                <input type="text" id="city" name="city" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-2 focus:ring-black focus:border-transparent outline-none" required>
+                            </div>
+                            <div>
+                                <label for="state" class="block text-sm font-medium text-gray-700 mb-1">State/Province</label>
+                                <input type="text" id="state" name="state" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-2 focus:ring-black focus:border-transparent outline-none" required>
+                            </div>
+                            <div>
+                                <label for="zip" class="block text-sm font-medium text-gray-700 mb-1">ZIP/Postal Code</label>
+                                <input type="text" id="zip" name="zip" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-2 focus:ring-black focus:border-transparent outline-none" required>
+                            </div>
+                        </div>
+
+                        <!-- Payment Method -->
+                        <div>
+                            <h3 class="text-lg font-medium mb-3">Payment Method</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center">
+                                    <input id="payment-cash" name="paymentMethod" type="radio" value="cash" class="h-4 w-4 text-black focus:ring-black border-gray-300" checked>
+                                    <label for="payment-cash" class="ml-3 block text-sm font-medium text-gray-700">Cash on Delivery</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input id="payment-card" name="paymentMethod" type="radio" value="card" class="h-4 w-4 text-black focus:ring-black border-gray-300">
+                                    <label for="payment-card" class="ml-3 block text-sm font-medium text-gray-700">Credit/Debit Card</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Place Order Button -->
+                        <div class="pt-4">
+                            <button type="submit" class="w-full bg-black text-white py-3 rounded hover:bg-gray-800 transition duration-200">
+                                Place Order
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Order Summary (Right Side) -->
+            <div class="lg:col-span-1 order-1 lg:order-2">
+                <!-- Mobile Order Summary -->
+                <div class="lg:hidden mb-6 border rounded-lg p-4 sm:p-6 bg-gray-50">
+                    <h2 class="text-lg font-semibold mb-4">Order Summary</h2>
+                    <div class="space-y-3 mb-4">
+                        <div th:each="item : ${cart.cartItems}" class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <span class="font-medium" th:text="${item.product.name}">Product Name</span>
+                                <span class="text-gray-500 text-sm ml-2" th:text="'x' + ${item.quantity}">x1</span>
+                            </div>
+                            <span class="font-medium" th:text="'$' + ${item.subtotal}">$0.00</span>
+                        </div>
+                    </div>
+                    <div class="border-t pt-3">
+                        <div class="flex justify-between text-sm mb-2">
+                            <span>Shipping</span>
+                            <span>Free</span>
+                        </div>
+                        <div class="flex justify-between font-bold text-lg">
+                            <span>Total</span>
+                            <span id="mobile-total-price" th:text="'$' + ${total}">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Desktop Order Summary -->
+                <div class="hidden lg:block border rounded-lg p-6 bg-gray-50 sticky top-4">
+                    <h2 class="text-lg font-semibold mb-4">Order Summary</h2>
+
+                    <!-- Order Items -->
+                    <div class="space-y-3 mb-6">
+                        <div th:each="item : ${cart.cartItems}" class="flex justify-between items-center">
+                            <div>
+                                <span class="font-medium" th:text="${item.product.name}">Product Name</span>
+                                <span class="text-gray-500 text-sm ml-1" th:text="'x' + ${item.quantity}">x1</span>
+                            </div>
+                            <span class="font-medium" th:text="'$' + ${item.subtotal}">$0.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Order Totals -->
+                    <div class="border-t pt-4 space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span>Subtotal</span>
+                            <span th:text="'$' + ${total}">$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>Shipping</span>
+                            <span>Free</span>
+                        </div>
+                        <div class="flex justify-between font-bold text-lg pt-2">
+                            <span>Total</span>
+                            <span id="desktop-total-price" th:text="'$' + ${total}">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

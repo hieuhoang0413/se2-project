@@ -56,4 +56,12 @@ public class CartItem {
 
     public double getPrice() { return price; }
     public double getSubtotal() { return subtotal; }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public void setSubtotal(double subtotal) {
+        this.subtotal = subtotal;
+    }
 }

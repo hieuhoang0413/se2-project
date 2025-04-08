@@ -28,6 +28,9 @@ public class CheckOutService {
     @Autowired
     private OrderStatusRepository orderStatusRepository;
 
+    @Autowired
+    private CartService cartService;
+
     /**
      * Processes the checkout for a given user's cart.
      * It retrieves the cart, calculates the total, creates an Order and OrderDetail records,
@@ -36,51 +39,45 @@ public class CheckOutService {
      * @param userId the id of the user checking out.
      * @return the created Order.
      */
-    public Order checkoutCart(Long userId) {
-        // Retrieve the user's active cart.
-        // Assume there's a method to find a cart by user and status 'CHECKOUT'
-        Optional<Cart> cartOptional = cartRepository.findByUserIdAndStatus(userId, CartStatus.CHECKOUT);
-        if (cartOptional.isEmpty()) {
-            throw new RuntimeException("No active checkout cart found for user id " + userId);
+    // ✅ Tạo order mới khi checkout
+    public Order checkout(Long userId) {
+        // Khởi tạo đối tượng User chỉ với id
+        User user = new User();
+        user.setId(userId);
+
+        // Lấy giỏ hàng của người dùng
+        Cart cart = cartService.getOrCreateCart(user);
+        if (cart.getCartItems().isEmpty()) {
+            throw new RuntimeException("Cart is empty!");
         }
-        Cart cart = cartOptional.get();
+
+        // Tạo Order
         Order order = new Order();
-        order.setUser(cart.getUser());
-
-        // Set default order status to PENDING.
-        OrderStatus pendingStatus = orderStatusRepository.findByStatus(OrderStatus.Status.PENDING);
-        order.setStatus(pendingStatus);
-
-        // Set the order date to current time.
+        order.setUser(user);
         order.setOrderDate(LocalDateTime.now());
+        order.setTotalAmount(cart.getTotalPrice());
 
-        // Calculate the total amount from cart items.
-        List<CartItem> cartItems = cartItemRepository.findByCartId(cart.getId());
-        double totalAmount = 0.0;
-        for (CartItem item : cartItems) {
-            double itemTotal = item.getProduct().getPrice() * item.getQuantity();
-            totalAmount += itemTotal;
-        }
-        order.setTotalAmount(BigDecimal.valueOf(totalAmount));
+        // Gán trạng thái mặc định (nếu có OrderStatus entity)
+        OrderStatus status = orderStatusRepository.findByStatus(OrderStatus.Status.PENDING);
+        order.setStatus(status);
+        order = orderRepository.save(order);
 
-        // Save the Order to generate its ID.
-        Order savedOrder = orderRepository.save(order);
-
-        // Create OrderDetail for each CartItem.
-        for (CartItem item : cartItems) {
-            OrderDetail orderDetail = new OrderDetail();
-            orderDetail.setOrder(savedOrder);
-            orderDetail.setProduct(item.getProduct());
-            orderDetail.setQuantity(item.getQuantity());
-            orderDetail.setPrice(item.getProduct().getPrice());
-            // If you use an OrderHistory mechanism, set it accordingly; otherwise, omit.
-            orderDetailRepository.save(orderDetail);
+        // Tạo OrderDetail cho từng item
+        for (CartItem item : cart.getCartItems()) {
+            OrderDetail detail = new OrderDetail();
+            detail.setOrder(order);
+            detail.setProduct(item.getProduct());
+            detail.setQuantity(item.getQuantity());
+            detail.setPrice(item.getProduct().getPrice());
+            orderDetailRepository.save(detail);
         }
 
-        // Update the cart status to COMPLETE (or clear the cart) to mark that it has been processed.
-        cart.setStatus(CartStatus.COMPLETED);
+        // Dọn sạch cart
+        cartItemRepository.deleteAll(cart.getCartItems());
+        cart.getCartItems().clear();
+        cart.updateTotalPrice();
         cartRepository.save(cart);
 
-        return savedOrder;
+        return order;
     }
 }

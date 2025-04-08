@@ -2,10 +2,11 @@ package com.se2.midterm.service;
 
 import com.se2.midterm.entity.*;
 import com.se2.midterm.repository.*;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -19,11 +20,9 @@ public class CartService {
     private ProductRepository productRepository;
     @Autowired
     private UserRepository userRepository;
-    /*
     @Autowired private OrderRepository orderRepository;
     @Autowired private OrderDetailRepository orderDetailRepository;
     @Autowired private OrderStatusRepository orderStatusRepository;
-     */
 
     // Lấy hoặc tạo giỏ hàng
     public Cart getOrCreateCart(User user) {
@@ -32,27 +31,68 @@ public class CartService {
     }
 
     // Thêm vào giỏ hàng
-    public Cart addToCart(User user, Long productId, int quantity) {
+    public void addToCart(User user, Long productId, int quantity) {
+        Cart cart = getOrCreateCart(user);
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+        if (!optionalProduct.isPresent()) {
+            throw new RuntimeException("Product not found");
+        }
+        Product product = optionalProduct.get();
+
+        Optional<CartItem> optionalCartItem = cartItemRepository.findByCartAndProduct(cart, product);
+        CartItem cartItem;
+        if (optionalCartItem.isPresent()) {
+            cartItem = optionalCartItem.get();
+            cartItem.setQuantity(cartItem.getQuantity() + quantity);
+        } else {
+            cartItem = new CartItem();
+            cartItem.setCart(cart);
+            cartItem.setProduct(product);
+            cartItem.setQuantity(quantity);
+            cartItem.setPrice(product.getPrice());
+        }
+        cartItemRepository.save(cartItem);
+
+        cart.updateTotalPrice();
+        cartRepository.save(cart);
+    }
+
+
+    /*public Cart addToCart(User user, Long productId, int quantity) {
         Cart cart = getOrCreateCart(user);
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
+        // Kiểm tra xem sản phẩm đã có trong giỏ chưa
+        boolean found = false;
         for (CartItem item : cart.getCartItems()) {
             if (item.getProduct().getId().equals(productId)) {
+                // Nếu đã có, tăng số lượng và cập nhật subtotal
                 item.setQuantity(item.getQuantity() + quantity);
                 item.updateSubtotal();
                 cartItemRepository.save(item);
-                cart.updateTotalPrice();
-                return cartRepository.save(cart);
+                found = true;
+                break;
             }
         }
+<<<<<<< HEAD
 
+        // Nếu chưa có, tạo mới CartItem
+        if (!found) {
+            CartItem newItem = new CartItem(cart, product, quantity);
+            cart.getCartItems().add(newItem);
+            cartItemRepository.save(newItem);
+        }
+
+        // Cập nhật tổng tiền của giỏ hàng
+=======
         CartItem newItem = new CartItem(cart, product, quantity);
         cartItemRepository.save(newItem);
         cart.getCartItems().add(newItem);
+>>>>>>> 02ab21755c116c23145f88ffb4b4501c099805fb
         cart.updateTotalPrice();
         return cartRepository.save(cart);
-    }
+    }*/
 
     // Xóa sản phẩm khỏi giỏ hàng
     public Cart removeFromCart(User user, Long cartItemId) {
@@ -71,7 +111,6 @@ public class CartService {
         Cart cart = getOrCreateCart(user);
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new RuntimeException("CartItem not found"));
-
         cartItem.setQuantity(quantity);
         cartItem.updateSubtotal();
         cartItemRepository.save(cartItem);
@@ -83,27 +122,28 @@ public class CartService {
     public double getTotalPrice(User user) {
         return getOrCreateCart(user).getTotalPrice();
     }
-/*
-    // ✅ Tạo order mới khi checkout
+
+    @Transactional
     public Cart checkout(User user) {
         Cart cart = getOrCreateCart(user);
         if (cart.getCartItems().isEmpty()) {
             throw new RuntimeException("Cart is empty!");
         }
-        // Tạo Order
+
+        // ➤ Tạo Order
         Order order = new Order();
         order.setUser(user);
-        order.setOrderDate(java.time.LocalDateTime.now());
+        order.setOrderDate(LocalDateTime.now());
         order.setTotalAmount(cart.getTotalPrice());
 
-        // Gán trạng thái mặc định (nếu có OrderStatus entity)
-        OrderStatus status = orderStatusRepository.findByStatus("PENDING")
-                .orElseThrow(() -> new RuntimeException("OrderStatus 'PENDING' not found"));
+        // Trạng thái mặc định
+        OrderStatus status = orderStatusRepository.findByStatus(OrderStatus.Status.PENDING);
         order.setStatus(status);
 
-        order = orderRepository.save(order);
+        order = orderRepository.save(order); // ✅ Dòng này là quan trọng nhất
+        System.out.println("✅ Đã lưu đơn hàng ID = " + order.getId());
 
-        // Tạo OrderDetail cho từng item
+        // ➤ Lưu chi tiết đơn hàng
         for (CartItem item : cart.getCartItems()) {
             OrderDetail detail = new OrderDetail();
             detail.setOrder(order);
@@ -113,7 +153,7 @@ public class CartService {
             orderDetailRepository.save(detail);
         }
 
-        // Dọn sạch cart
+        // ➤ Clear giỏ hàng
         cartItemRepository.deleteAll(cart.getCartItems());
         cart.getCartItems().clear();
         cart.updateTotalPrice();
@@ -121,5 +161,4 @@ public class CartService {
 
         return cart;
     }
- */
 }

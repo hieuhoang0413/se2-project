@@ -2,6 +2,8 @@ package com.se2.midterm.entity;
 
 import jakarta.persistence.*;
 
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,7 +19,7 @@ public class Cart {
     private User user;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<CartItem> cartItems;
+    private List<CartItem> cartItems = new ArrayList<>();
 
     private double totalPrice;
     private CartStatus status;
@@ -28,15 +30,29 @@ public class Cart {
 
     public Cart(User user) {
         this.user = user;
+        this.cartItems = new ArrayList<>();
         this.totalPrice = 0.0;
     }
 
     // Tính tổng tiền từ CartItems
     public void updateTotalPrice() {
-        this.totalPrice = cartItems.stream()
-                .mapToDouble(CartItem::getSubtotal)
-                .sum();
+        // Ensure the cartItems list is not null
+        if (cartItems == null || cartItems.isEmpty()) {
+            System.out.println("No items in cart to update total price.");
+            return;
+        }
+        double total = 0;
+        int totalQuantity = 0;
+        for (CartItem item : cartItems) {
+            total += item.getSubtotal();
+            totalQuantity += item.getQuantity();
+        }
+        this.totalPrice = total;
+        // Print the updated total price for debugging
+        System.out.println("Updated total price: " + this.totalPrice);
+
     }
+
 
     // Getter & Setter
     public Long getId() { return id; }

@@ -57,8 +57,7 @@
                     </svg>
                 </button>
             </div>
-
-            <button type="submit" class="w-full bg-black text-white py-3 font-medium hover:bg-gray-800 transition">
+            <button type="submit" id="addToCartBtn" class="w-full bg-black text-white py-3 font-medium hover:bg-gray-800 transition">
                 Add to Cart
             </button>
         </form>
@@ -86,6 +85,55 @@
             if (isNaN(value) || value < 1) {
                 this.value = 1;
             }
+        });
+        // Thêm sự kiện click cho nút "Add to Cart"
+        const addToCartBtn = document.getElementById('addToCartBtn');
+        addToCartBtn.addEventListener('click', function() {
+            const userId = document.getElementsByName('userId')[0].value;
+            const productId = document.getElementsByName('productId')[0].value;
+            const quantity = document.getElementById('quantity').value;
+
+        // Submit the form with the user, product, and quantity data
+        document.getElementById('addToCartForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Get the form data
+            var userId = document.getElementsByName('userId')[0].value;
+            var productId = document.getElementsByName('productId')[0].value;
+            var quantity = document.getElementById('quantity').value;
+
+            // Send data to backend using AJAX
+            fetch('/cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    userId: userId,
+                    productId: productId,
+                    quantity: quantity
+                })
+            })
+            .then(response => response.json())
+            .then(updatedCart => {
+                console.log("Added to cart:", updatedCart);
+                updateCartIcon(updatedCart); // Optional, update the cart icon to show new cart count
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        // Update the cart icon with the total quantity of items in the cart
+        function updateCartIcon(cart) {
+            let totalQuantity = 0;
+            if (cart.cartItems && Array.isArray(cart.cartItems)) {
+                cart.cartItems.forEach(item => {
+                    totalQuantity += item.quantity;
+                });
+            }
+            document.getElementById('cart-count-text').innerText = totalQuantity;
+        }
         });
     </script>
 </div>

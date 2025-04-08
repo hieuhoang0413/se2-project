@@ -10,7 +10,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -39,5 +42,22 @@ public class BaseController {
         products = productService.getAllProducts();
         model.addAttribute("products", products);
         return "shop";
+    }
+    @GetMapping("/about")
+    public String aboutPage() {
+        return "aboutUs";
+    }
+    @GetMapping("/contact")
+    public String contactPage() {
+        return "contact";
+    }
+    @PostMapping("/contact")
+    public String handleContactForm(@RequestParam String name,
+                                    @RequestParam String email,
+                                    @RequestParam String message,
+                                    RedirectAttributes redirectAttributes) {
+        System.out.println("📩 Contact from " + name + " (" + email + "): " + message);
+        redirectAttributes.addFlashAttribute("successMessage", "Thanks for contacting us!");
+        return "redirect:/contact";
     }
 }

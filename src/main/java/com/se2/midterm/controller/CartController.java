@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+
 @Controller
 @RequestMapping("/cart")
 public class CartController {
@@ -27,25 +29,33 @@ public class CartController {
         return cartService.getOrCreateCart(user);
     }
 
-    //API thêm sản phẩm vào giỏ hàng
+
     @PostMapping("/add")
-    public Cart addToCart(@RequestParam Long userId, @RequestParam Long productId, @RequestParam int quantity) {
+    public String addToCart(@RequestParam Long userId,
+                          @RequestParam Long productId,
+                          @RequestParam int quantity) {
         User user = new User();
         user.setId(userId);
-        return cartService.addToCart(user, productId, quantity);
+         cartService.addToCart(user, productId, quantity);
+        return "redirect:/product/" + productId;
+
     }
 
     //API xóa sản phẩm khỏi giỏ hàng
-    @DeleteMapping("/remove")
-    public Cart removeFromCart(@RequestParam Long userId, @RequestParam Long cartItemId) {
+    @PostMapping("/remove")
+    public String removeFromCart(@RequestParam Long userId,
+                               @RequestParam Long cartItemId) {
         User user = new User();
         user.setId(userId);
-        return cartService.removeFromCart(user, cartItemId);
-    }
+        cartService.removeFromCart(user, cartItemId);
 
+        return "redirect:/cart/view/" + userId;
+    }
     //API cập nhật số lượng sản phẩm trong giỏ hàng
     @PutMapping("/update")
-    public Cart updateCartItemQuantity(@RequestParam Long userId, @RequestParam Long cartItemId, @RequestParam int quantity) {
+    public Cart updateCartItemQuantity(@RequestParam Long userId,
+                                       @RequestParam Long cartItemId,
+                                       @RequestParam int quantity) {
         User user = new User();
         user.setId(userId);
         return cartService.updateCartItemQuantity(user, cartItemId, quantity);
@@ -60,10 +70,34 @@ public class CartController {
     }
 
     //API chuyển giỏ hàng sang trạng thái CHECKOUT
-    @PostMapping("/checkout")
-    public Order checkout(@RequestParam Long userId) {
-        return CheckOutService.checkoutCart(userId);
+    @GetMapping("/checkout")
+    public String checkout(@RequestParam(required = false) Long userId, Model model) {
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID is required");
+        }
+        User user = new User();
+        user.setId(userId);
+        cartService.checkout(user);
+        Cart cart = cartService.getOrCreateCart(user);
+
+        model.addAttribute("cart", cart);
+        model.addAttribute("total", cart.getTotalPrice());
+        model.addAttribute("userId", userId);
+
+        return "checkout"; // Trỏ đến templates/checkout.html
     }
+
+    //API xác nhận thanh toán
+    @RequestMapping(value = "/checkout/confirm", method = {RequestMethod.GET, RequestMethod.POST})
+    public String confirmCheckout(@RequestParam Long userId, Model model) {
+        Order order = CheckOutService.checkout(userId);
+        model.addAttribute("order", order);
+
+        System.out.println("✅ Đơn hàng đã lưu: Order ID = " + order.getId());
+
+        return "orderComplete";
+    }
+
 
     @GetMapping("/view/{userId}")
     public String viewCartPage(@PathVariable Long userId, Model model) {

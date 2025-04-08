@@ -18,13 +18,13 @@ public class Order {
     private User user;
 
     // If you want a relationship to an OrderStatus entity:
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "status_id") // Must match the column in your 'orders' table
     private OrderStatus status;
 
     private LocalDateTime orderDate;
 
-    private BigDecimal totalAmount;
+    private double totalAmount;
 
     // --- GETTERS & SETTERS (manually defined) ---
     public Long getId() {
@@ -59,11 +59,12 @@ public class Order {
         this.orderDate = orderDate;
     }
 
-    public BigDecimal getTotalAmount() {
+    public double getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(BigDecimal totalAmount) {
+    public void setTotalAmount(double totalAmount) {
         this.totalAmount = totalAmount;
     }
+
 }

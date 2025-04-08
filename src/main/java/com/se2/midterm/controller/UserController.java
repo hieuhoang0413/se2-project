@@ -1,6 +1,8 @@
 package com.se2.midterm.controller;
 
+import com.se2.midterm.entity.Order;
 import com.se2.midterm.entity.User;
+import com.se2.midterm.service.OrderService;
 import com.se2.midterm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -9,10 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -21,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 
 //@AllArgsConstructor
 @Controller
@@ -30,6 +30,8 @@ public class UserController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private OrderService orderService;
 
     @GetMapping("/login")
     public String getLogin() {
@@ -63,7 +65,7 @@ public class UserController {
             return "register"; // Hiển thị lỗi nếu username trùng
         }
     }
-    @GetMapping("/profile")
+    @GetMapping("/myAccount")
     public String showAccountPage(Model model) {
         // Get the currently authenticated user
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -75,7 +77,7 @@ public class UserController {
         // Add user to the model to populate account details
         model.addAttribute("user", currentUser);
 
-        return "profile"; // This will return the profile.html template
+        return "myAccount"; // This will return the profile.html template
     }
     @PostMapping("/upload-avatar")
     public String uploadAvatar(@RequestParam("file") MultipartFile file, Model model) {
@@ -113,18 +115,83 @@ public class UserController {
 
     @GetMapping("/myAccountOrder")
     public String showMyAccountOrder(Model model) {
+        // Get current user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        User currentUser = userService.findByUsername(username);
+
+        // Add user to model
+        model.addAttribute("user", currentUser);
+
+        // Add user's orders to model
+        model.addAttribute("orders", orderService.findOrdersByUser(currentUser));
+//        model.addAttribute("orders", new ArrayList<Order>());
+
+        return "myAccountOrder";
+    }
+    @GetMapping("/order/{id}")
+    public String viewOrderDetails(@PathVariable Long id, Model model) {
+        // Get the current user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        User currentUser = userService.findByUsername(username);
+
+        // Get the order
+        Order order = orderService.getOrderById(id);
+
+        // Check if the order belongs to the current user
+        if (!order.getUser().getId().equals(currentUser.getId())) {
+            return "redirect:/myAccountOrder";
+        }
+
+        model.addAttribute("order", order);
+        // model.addAttribute("orderDetails", orderDetailService.findByOrder(order));
+
+        return "orderDetails";
+    }
+    @PostMapping("/account/update")
+    public String updateUser(@ModelAttribute User updatedUser,
+                             @RequestParam(required = false) String oldPassword,
+                             @RequestParam(required = false) String newPassword,
+                             @RequestParam(required = false) String confirmPassword) {
+
         // Lấy thông tin người dùng hiện tại
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-
-        // Lấy thông tin người dùng
         User currentUser = userService.findByUsername(username);
 
-        // Thêm thông tin người dùng vào model
+        // Cập nhật thông tin cơ bản
+        currentUser.setFullName(updatedUser.getFullName());
+        currentUser.setPhone(updatedUser.getPhone());
+        currentUser.setAddress(updatedUser.getAddress());
+
+        // Kiểm tra và cập nhật mật khẩu nếu cần
+        if (oldPassword != null && !oldPassword.isEmpty() &&
+                newPassword != null && !newPassword.isEmpty() &&
+                confirmPassword != null && !confirmPassword.isEmpty()) {
+
+            if (newPassword.equals(confirmPassword)) {
+                if (userService.checkPassword(username, oldPassword)) {
+                    userService.updatePassword(username, newPassword);
+                }
+            }
+        }
+
+        // Lưu thông tin đã cập nhật
+        userService.updateUser(currentUser);
+
+        return "redirect:/myAccount";
+    }
+    @GetMapping("/profile")
+    public String showProfilePage(Model model) {
+        // Lấy thông tin người dùng hiện tại
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        User currentUser = userService.findByUsername(username);
+
+        // Đưa thông tin người dùng vào model
         model.addAttribute("user", currentUser);
 
-        // model.addAttribute("orders", orderService.findOrdersByUser(currentUser));
-
-        return "myAccountOrder";
+        return "profile";
     }
 }

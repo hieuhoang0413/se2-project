@@ -34,9 +34,11 @@ public class CartService {
     public void addToCart(User user, Long productId, int quantity) {
         Cart cart = getOrCreateCart(user);
         Optional<Product> optionalProduct = productRepository.findById(productId);
+
         if (!optionalProduct.isPresent()) {
             throw new RuntimeException("Product not found");
         }
+
         Product product = optionalProduct.get();
 
         Optional<CartItem> optionalCartItem = cartItemRepository.findByCartAndProduct(cart, product);
@@ -56,43 +58,6 @@ public class CartService {
         cart.updateTotalPrice();
         cartRepository.save(cart);
     }
-
-
-    /*public Cart addToCart(User user, Long productId, int quantity) {
-        Cart cart = getOrCreateCart(user);
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-
-        // Kiểm tra xem sản phẩm đã có trong giỏ chưa
-        boolean found = false;
-        for (CartItem item : cart.getCartItems()) {
-            if (item.getProduct().getId().equals(productId)) {
-                // Nếu đã có, tăng số lượng và cập nhật subtotal
-                item.setQuantity(item.getQuantity() + quantity);
-                item.updateSubtotal();
-                cartItemRepository.save(item);
-                found = true;
-                break;
-            }
-        }
-<<<<<<< HEAD
-
-        // Nếu chưa có, tạo mới CartItem
-        if (!found) {
-            CartItem newItem = new CartItem(cart, product, quantity);
-            cart.getCartItems().add(newItem);
-            cartItemRepository.save(newItem);
-        }
-
-        // Cập nhật tổng tiền của giỏ hàng
-=======
-        CartItem newItem = new CartItem(cart, product, quantity);
-        cartItemRepository.save(newItem);
-        cart.getCartItems().add(newItem);
->>>>>>> 02ab21755c116c23145f88ffb4b4501c099805fb
-        cart.updateTotalPrice();
-        return cartRepository.save(cart);
-    }*/
 
     // Xóa sản phẩm khỏi giỏ hàng
     public Cart removeFromCart(User user, Long cartItemId) {

@@ -1,7 +1,9 @@
 package com.se2.midterm.service;
 
+import com.se2.midterm.entity.Cart;
 import com.se2.midterm.entity.Role;
 import com.se2.midterm.entity.User;
+import com.se2.midterm.repository.CartRepository;
 import com.se2.midterm.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +17,9 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CartRepository cartRepository;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -30,7 +35,13 @@ public class UserService implements UserDetailsService {
             user.setRole(Role.USER);
         }
 
+        // Lưu user trước để có ID
         userRepository.save(user);
+
+        // Tạo và gán Cart
+        Cart cart = new Cart(user);
+        cart.setUser(user);
+        cartRepository.save(cart);
         return "successful";
     }
 
@@ -41,7 +52,7 @@ public class UserService implements UserDetailsService {
 
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
-                .password(user.getPassword()) // Lấy mật khẩu đã mã hóa
+                .password(user.getPassword())
                 .roles(user.getRole().name())
                 .build();
     }

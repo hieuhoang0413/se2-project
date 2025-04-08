@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="_layout">
+    layout:decorate="_layout">
 
 <head>
     <meta charset="UTF-8">
@@ -9,49 +9,52 @@
 </head>
 
 <body>
-<div layout:fragment="content" class="container mx-auto max-w-screen-lg px-4 my-8">
-    <div class="flex flex-col md:flex-row gap-8">
-        <!-- Product Image - Điều chỉnh để hiển thị tốt hơn -->
-        <div class="w-full md:w-1/2 bg-gray-100 relative aspect-square md:aspect-auto md:min-h-[500px] rounded-lg overflow-hidden">
-            <div class="absolute z-50 top-4 left-4 bg-white px-3 py-1 text-sm font-medium rounded">NEW</div>
-            <img class="w-full h-full object-contain md:object-cover" th:src="@{/images/{file}(file=${product.image})}"
-                 alt="Product Image" />
-        </div>
+    <div layout:fragment="content" class="container mx-auto max-w-screen-lg px-4 my-8">
+        <div class="flex flex-col md:flex-row gap-8">
+            <!-- Product Image - Điều chỉnh để hiển thị tốt hơn -->
+            <div
+                class="w-full md:w-1/2 bg-gray-100 relative aspect-square md:aspect-auto md:min-h-[500px] rounded-lg overflow-hidden">
+                <div class="absolute z-50 top-4 left-4 bg-white px-3 py-1 text-sm font-medium rounded">NEW</div>
+                <img class="w-full h-full object-contain md:object-cover"
+                    th:src="@{/images/{file}(file=${product.image})}" alt="Product Image" />
+            </div>
 
             <!-- Product Info -->
-            <form action="/cart/add" method="post" class="w-full md:w-1/2">
+            <form id="addToCartForm" action="/cart/add" method="post" class="w-full md:w-1/2">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <input type="hidden" name="productId" th:value="${product.id}" />
                 <input type="hidden" name="userId" th:value="${user.id}" />
-            
+
                 <h1 class="text-3xl font-bold mb-4" th:text="${product.name}">Product Name</h1>
                 <p class="text-gray-600 mb-6" th:text="${product.description}">Product description here...</p>
                 <div class="text-2xl font-bold mb-4" th:text="'$' + ${product.price}">Price</div>
-            
+
                 <p class="text-sm text-gray-600 mb-2">
                     <strong>Category:</strong> <span th:text="${product.category.name}">Category</span>
                 </p>
                 <p class="text-sm text-gray-600 mb-4">
                     <strong>Available:</strong> <span th:text="${product.quantity}"></span> in stock
                 </p>
-            
+
                 <!-- Quantity Selector -->
                 <div class="flex items-center mb-6">
-                    <button type="button" class="decrement border border-gray-300 w-8 h-8 flex items-center justify-center">
+                    <button type="button"
+                        class="decrement border border-gray-300 w-8 h-8 flex items-center justify-center">
                         -
                     </button>
                     <input id="quantityInput" name="quantity" type="text" value="1"
                         class="w-10 h-8 text-center border-t border-b border-gray-300" />
-                    <button type="button" class="increment border border-gray-300 w-8 h-8 flex items-center justify-center">
+                    <button type="button"
+                        class="increment border border-gray-300 w-8 h-8 flex items-center justify-center">
                         +
                     </button>
                 </div>
-            
+
                 <button type="submit" class="w-full bg-black text-white py-3 font-medium">
                     Add to Cart
                 </button>
             </form>
-            
+
             <!-- Optional: Tăng giảm số lượng bằng JS -->
             <script>
                 const quantityInput = document.getElementById('quantityInput');
@@ -63,7 +66,7 @@
                     if (current > 1) quantityInput.value = current - 1;
                 });
             </script>
-            
+
         </div>
     </div>
 
@@ -84,7 +87,7 @@
         }
 
         // Đảm bảo giá trị nhập vào là số hợp lệ
-        document.getElementById('quantity').addEventListener('change', function() {
+        document.getElementById('quantity').addEventListener('change', function () {
             var value = parseInt(this.value);
             if (isNaN(value) || value < 1) {
                 this.value = 1;
@@ -93,58 +96,58 @@
 
         // Thêm sự kiện click cho nút "Add to Cart"
         const addToCartBtn = document.getElementById('addToCartBtn');
-        addToCartBtn.addEventListener('click', function() {
+        addToCartBtn.addEventListener('click', function () {
             const userId = document.getElementsByName('userId')[0].value;
             const productId = document.getElementsByName('productId')[0].value;
             const quantity = document.getElementById('quantity').value;
 
-        // Submit the form with the user, product, and quantity data
-        document.getElementById('addToCartForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission
+            // Submit the form with the user, product, and quantity data
+            document.getElementById('addToCartForm').addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent default form submission
 
-            // Get the form data
-            var userId = document.getElementsByName('userId')[0].value;
-            var productId = document.getElementsByName('productId')[0].value;
-            var quantity = document.getElementById('quantity').value;
+                // Get the form data
+                var userId = document.getElementsByName('userId')[0].value;
+                var productId = document.getElementsByName('productId')[0].value;
+                var quantity = document.getElementById('quantity').value;
 
-            // Send data to backend using AJAX
-            fetch('/cart/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: new URLSearchParams({
-                    userId: userId,
-                    productId: productId,
-                    quantity: quantity
+                // Send data to backend using AJAX
+                fetch('/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({
+                        userId: userId,
+                        productId: productId,
+                        quantity: quantity
+                    })
                 })
-            })
-            .then(response => response.json())
-            .then(updatedCart => {
-                console.log("Added to cart:", updatedCart);
-                updateCartIcon(updatedCart); // Optional, update the cart icon to show new cart count
-            })
-            .catch(error => {
-                console.error('Error:', error);
+                    .then(response => response.json())
+                    .then(updatedCart => {
+                        console.log("Added to cart:", updatedCart);
+                        updateCartIcon(updatedCart); // Optional, update the cart icon to show new cart count
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
             });
-        });
 
-        // Update the cart icon with the total quantity of items in the cart
-        function updateCartIcon(cart) {
-            let totalQuantity = 0;
-            if (cart.cartItems && Array.isArray(cart.cartItems)) {
-                cart.cartItems.forEach(item => {
-                    totalQuantity += item.quantity;
-                });
+            // Update the cart icon with the total quantity of items in the cart
+            function updateCartIcon(cart) {
+                let totalQuantity = 0;
+                if (cart.cartItems && Array.isArray(cart.cartItems)) {
+                    cart.cartItems.forEach(item => {
+                        totalQuantity += item.quantity;
+                    });
+                }
+                document.getElementById('cart-count-text').innerText = totalQuantity;
             }
-            document.getElementById('cart-count-text').innerText = totalQuantity;
-        }
         });
 
     </script>
-</div>
+    </div>
 
-<script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </body>
 
 </html>

@@ -23,7 +23,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/css/**", "/js/**","/uploads/**").permitAll()
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/css/**", "/js/**","/uploads/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/product/add", "/product/edit/**", "/product/delete/**").hasRole("ADMIN")
                         .requestMatchers("/").hasAnyRole("USER", "ADMIN")
@@ -31,10 +32,10 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login") // Chỉ định trang login tùy chỉnh
-                        .loginProcessingUrl("/login") // URL xử lý form login
-                        .successHandler(customAuthenticationSuccessHandler()) // Trang sau khi login thành công
-                        .failureUrl("/login?error=true") // Trang sau khi login thất bại
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .successHandler(customAuthenticationSuccessHandler())
+                        .failureUrl("/login?error=true")
                         .permitAll()
                 )
                 .logout(logout -> logout

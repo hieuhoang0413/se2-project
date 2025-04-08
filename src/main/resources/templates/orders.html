@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="_layout_admin">
+
+<head>
+    <title>Orders</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+<div layout:fragment="content" class="p-6 max-w-7xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-semibold">Orders List</h1>
+        <input type="text" placeholder="Search..." class="border p-2 rounded w-64"/>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div th:each="order : ${orders}" class="border rounded shadow p-4 relative">
+            <!-- Actions -->
+            <div class="absolute top-3 right-3 flex gap-2">
+                <a th:href="@{'/admin/orders/' + ${order.id} + '/edit'}" class="text-blue-500 hover:text-blue-700">
+                    ✏️
+                </a>
+            </div>
+
+            <h2 class="text-lg font-bold" th:text="'Order: #' + ${order.id}">Order #12345</h2>
+            <p class="text-sm text-gray-500" th:text="${#temporals.format(order.orderDate, 'MMMM d, h:mm a')}">April 7, 2:13 PM</p>
+
+            <div class="mt-2 text-sm">
+                <p><strong>Customer:</strong> <span th:text="${order.user.fullName}">Tom Anderson</span></p>
+                <p><strong>Payment status:</strong>
+                    <span class="text-green-600 font-semibold">Paid</span>
+                </p>
+                <p><strong>Order status:</strong>
+                    <span class="text-xs px-2 py-1 rounded font-semibold"
+                          th:if="${order.status != null}"
+                          th:switch="${order.status.status.name()}">
+                        <span th:case="'PENDING'" class="bg-yellow-200 text-yellow-800">PENDING</span>
+                        <span th:case="'COMPLETED'" class="bg-green-200 text-green-800">COMPLETED</span>
+                        <span th:case="'SHIPPED'" class="bg-blue-200 text-blue-800">SHIPPED</span>
+                        <span th:case="'CANCELLED'" class="bg-red-200 text-red-800">CANCELLED</span>
+                        <span th:case="*">UNKNOWN</span>
+                    </span>
+
+                    <!-- Nếu status bị null -->
+                    <span class="bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded font-semibold"
+                          th:unless="${order.status != null}">UNKNOWN
+                    </span>
+                </p>
+                <p class="mt-2"><strong>Total:</strong> $<span th:text="${order.totalAmount}">49.50</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex justify-center mt-6 space-x-2">
+        <a th:if="${currentPage > 0}" th:href="@{'/admin/orders?page=' + ${currentPage - 1}}" class="px-2 py-1">&larr;</a>
+        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+        <a th:href="@{'/admin/orders?page=' + ${i}}"
+           th:text="${i + 1}"
+           th:classappend="${i == currentPage} ? 'bg-black text-white px-2 py-1 rounded' : 'px-2 py-1 text-gray-600'">
+        </a>
+    </span>
+        <a th:if="${currentPage < totalPages - 1}" th:href="@{'/admin/orders?page=' + ${currentPage + 1}}" class="px-2 py-1">&rarr;</a>
+    </div>
+
+
+</div>
+</body>
+</html>

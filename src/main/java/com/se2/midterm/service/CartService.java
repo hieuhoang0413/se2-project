@@ -2,12 +2,11 @@ package com.se2.midterm.service;
 
 import com.se2.midterm.entity.*;
 import com.se2.midterm.repository.*;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -124,24 +123,27 @@ public class CartService {
         return getOrCreateCart(user).getTotalPrice();
     }
 
-    // ✅ Tạo order mới khi checkout
+    @Transactional
     public Cart checkout(User user) {
         Cart cart = getOrCreateCart(user);
         if (cart.getCartItems().isEmpty()) {
             throw new RuntimeException("Cart is empty!");
         }
-        // Tạo Order
+
+        // ➤ Tạo Order
         Order order = new Order();
         order.setUser(user);
         order.setOrderDate(LocalDateTime.now());
         order.setTotalAmount(cart.getTotalPrice());
 
-        // Gán trạng thái mặc định (nếu có OrderStatus entity)
+        // Trạng thái mặc định
         OrderStatus status = orderStatusRepository.findByStatus(OrderStatus.Status.PENDING);
         order.setStatus(status);
-        order = orderRepository.save(order);
 
-        // Tạo OrderDetail cho từng item
+        order = orderRepository.save(order); // ✅ Dòng này là quan trọng nhất
+        System.out.println("✅ Đã lưu đơn hàng ID = " + order.getId());
+
+        // ➤ Lưu chi tiết đơn hàng
         for (CartItem item : cart.getCartItems()) {
             OrderDetail detail = new OrderDetail();
             detail.setOrder(order);
@@ -151,7 +153,7 @@ public class CartService {
             orderDetailRepository.save(detail);
         }
 
-        // Dọn sạch cart
+        // ➤ Clear giỏ hàng
         cartItemRepository.deleteAll(cart.getCartItems());
         cart.getCartItems().clear();
         cart.updateTotalPrice();

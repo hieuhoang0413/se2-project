@@ -14,8 +14,9 @@ public class OrderStatus {
 
     public enum Status {
         PENDING,
-        DELIVERING,
-        DELIVERED
+        SHIPPED,
+        COMPLETED,
+        CANCELLED
     }
 
     public Long getId() {

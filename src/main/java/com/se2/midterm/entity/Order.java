@@ -24,7 +24,7 @@ public class Order {
 
     private LocalDateTime orderDate;
 
-    private BigDecimal totalAmount;
+    private double totalAmount;
 
     // --- GETTERS & SETTERS (manually defined) ---
     public Long getId() {
@@ -59,12 +59,12 @@ public class Order {
         this.orderDate = orderDate;
     }
 
-    public BigDecimal getTotalAmount() {
+    public double getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(BigDecimal totalAmount) {
+    public void setTotalAmount(double totalAmount) {
         this.totalAmount = totalAmount;
     }
-    
+
 }

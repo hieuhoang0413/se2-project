@@ -71,8 +71,8 @@
                                             stroke="#141718" stroke-width="1.5" stroke-linejoin="round" />
                                     </svg>
                                 </a>
-                                <div class="bg-black w-5 h-5 rounded-full">
-                                    <p class="text-white font-[12px] text-center leading-[20px]">2</p>
+                                <div class="bg-black w-5 h-5 rounded-full" id="cart-icon">
+                                    <p class="text-white font-[12px] text-center leading-[20px]" id="cart-count-text" th:text="${cartItemCount}">0</p>
                                 </div>
                             </div>
                         </div>
@@ -83,7 +83,6 @@
     </nav>
 
     <div layout:fragment="content">
-        <!-- content page will override this -->
     </div>
 
     <footer class="relative z-[1] bg-black px-[85px] pt-[80px] pb-[32px]">
@@ -115,13 +114,79 @@
             </div>
         </div>
     </footer>
+
+    <!-- Script JS dùng chung cho toàn trang -->
+    <script>
+        // Xử lý tăng giảm số lượng và submit form Add to Cart qua AJAX
+        document.addEventListener('DOMContentLoaded', function() {
+            const minusBtn = document.getElementById('minusBtn');
+            const plusBtn = document.getElementById('plusBtn');
+            const quantityInput = document.getElementById('quantityInput');
+            if (minusBtn && plusBtn && quantityInput) {
+                minusBtn.addEventListener('click', function() {
+                    let currentVal = parseInt(quantityInput.value, 10);
+                    if (currentVal > 1) {
+                        quantityInput.value = currentVal - 1;
+                    }
+                });
+                plusBtn.addEventListener('click', function() {
+                    let currentVal = parseInt(quantityInput.value, 10);
+                    quantityInput.value = currentVal + 1;
+                });
+            }
+
+            const addToCartForm = document.getElementById('addToCartForm');
+            if (addToCartForm) {
+                addToCartForm.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    const formData = new FormData(addToCartForm);
+                    const userId = formData.get('userId');
+                    const productId = formData.get('productId');
+                    const quantity = formData.get('quantity');
+                    addToCart(userId, productId, quantity);
+                });
+            }
+        });
+
+        function addToCart(userId, productId, quantity) {
+            fetch('/cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    userId: userId,
+                    productId: productId,
+                    quantity: quantity
+                })
+            })
+<!--            .then(response => {-->
+<!--                if (!response.ok) {-->
+<!--                    throw new Error('Failed to add to cart');-->
+<!--                }-->
+<!--                return response.json();-->
+<!--            })-->
+<!--            .then(updatedCart => {-->
+<!--                let totalQuantity = 0;-->
+<!--                if (updatedCart.cartItems && Array.isArray(updatedCart.cartItems)) {-->
+<!--                    updatedCart.cartItems.forEach(item => {-->
+<!--                        totalQuantity += item.quantity;-->
+<!--                    });-->
+<!--                }-->
+<!--                document.getElementById('cart-count-text').innerText = totalQuantity;-->
+<!--            })-->
+<!--            .catch(error => console.error('Error:', error));-->
+<!--        }-->
+    </script>
+    <!-- Script xử lý menu tùy chọn -->
+    <script>
+        document.getElementById('options-menu').addEventListener('click', function () {
+            var menu = this.nextElementSibling;
+            menu.classList.toggle('hidden');
+        });
+    </script>
 </body>
-<script>
-    document.getElementById('options-menu').addEventListener('click', function () {
-        var menu = this.nextElementSibling; // Lấy menu liên quan
-        menu.classList.toggle('hidden');
-    });
-</script>
+
 <!-- <script src="https://unpkg.com/@tailwindcss/browser@4"></script> -->
 <script src="https://cdn.tailwindcss.com"></script>
 

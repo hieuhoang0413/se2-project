@@ -5,7 +5,6 @@ import com.se2.midterm.entity.Order;
 import com.se2.midterm.entity.User;
 import com.se2.midterm.service.CartService;
 import com.se2.midterm.service.CheckOutService;
-import com.se2.midterm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,28 +20,41 @@ public class CartController {
     private CartService cartService;
     @Autowired
     private CheckOutService CheckOutService;
-    @Autowired
-    private UserService userService;
 
-    //API thêm sản phẩm vào giỏ hàng
-    @PostMapping("/add")
-    public String addToCart(@RequestParam Long userId, @RequestParam Long productId, @RequestParam int quantity) {
+    //API lấy giỏ hàng của người dùng
+    @GetMapping("/{userId}")
+    public Cart getCart(@PathVariable Long userId) {
         User user = new User();
         user.setId(userId);
-        cartService.addToCart(user, productId, quantity);
-        return "redirect:/cart/view/" + userId;
+        return cartService.getOrCreateCart(user);
+    }
+
+
+    @PostMapping("/add")
+    public String addToCart(@RequestParam Long userId,
+                          @RequestParam Long productId,
+                          @RequestParam int quantity) {
+        User user = new User();
+        user.setId(userId);
+         cartService.addToCart(user, productId, quantity);
+        return "redirect:/product/" + productId;
+
     }
 
     //API xóa sản phẩm khỏi giỏ hàng
     @DeleteMapping("/remove")
-    public String removeFromCart(@RequestParam User user, @RequestParam Long cartItemId) {
-        cartService.removeFromCart(user, cartItemId);
-        return "redirect:/cart/view/{id}";
+    public Cart removeFromCart(@RequestParam Long userId,
+                               @RequestParam Long cartItemId) {
+        User user = new User();
+        user.setId(userId);
+        return cartService.removeFromCart(user, cartItemId);
     }
 
     //API cập nhật số lượng sản phẩm trong giỏ hàng
     @PutMapping("/update")
-    public Cart updateCartItemQuantity(@RequestParam Long userId, @RequestParam Long cartItemId, @RequestParam int quantity) {
+    public Cart updateCartItemQuantity(@RequestParam Long userId,
+                                       @RequestParam Long cartItemId,
+                                       @RequestParam int quantity) {
         User user = new User();
         user.setId(userId);
         return cartService.updateCartItemQuantity(user, cartItemId, quantity);
@@ -50,7 +62,7 @@ public class CartController {
 
     //API lấy tổng tiền giỏ hàng
     @GetMapping("/total/{userId}")
-    public BigDecimal getTotalPrice(@PathVariable Long userId) {
+    public double getTotalPrice(@PathVariable Long userId) {
         User user = new User();
         user.setId(userId);
         return cartService.getTotalPrice(user);
@@ -68,7 +80,7 @@ public class CartController {
         user.setId(userId);
 
         Cart cart = cartService.getOrCreateCart(user);
-        BigDecimal total = cartService.getTotalPrice(user);
+        double total = cartService.getTotalPrice(user);
 
         model.addAttribute("cart", cart);
         model.addAttribute("total", total);

@@ -1,93 +1,153 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="_layout">
-
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{_layout}" lang="en">
 <head>
-    <meta charset="UTF-8">
+    <title>Order Complete</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Complete - Elite Home</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .step-active {
+          color: black;
+        }
+        .step-completed {
+          color: #10b981;
+        }
+        .step-circle {
+          width: 2rem;
+          height: 2rem;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .step-circle-active {
+          background-color: black;
+          color: white;
+        }
+        .step-circle-completed {
+          background-color: #10b981;
+          color: white;
+        }
+        .item-badge {
+          position: absolute;
+          top: -8px;
+          right: -8px;
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background-color: black;
+          color: white;
+          font-size: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+    </style>
 </head>
-<body class="bg-white">
-<!-- Header (already implemented) -->
-<div th:replace="fragments/header :: header"></div>
+<body>
+<div layout:fragment="content">
+    <div class="max-w-3xl mx-auto py-6 sm:py-10 px-4 sm:px-6 lg:px-8">
+        <!-- Page title -->
+        <h1 class="text-3xl font-bold text-center mb-8">Complete!</h1>
 
-<main class="max-w-6xl mx-auto px-4 py-8">
-    <h1 class="text-4xl font-bold text-center mb-8">Complete!</h1>
-
-    <!-- Progress Steps -->
-    <div class="flex justify-center mb-12">
-        <div class="flex items-center space-x-4 w-full max-w-2xl">
-            <div class="flex flex-col items-center flex-1">
-                <div class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center">
+        <!-- Progress Steps -->
+        <div class="flex justify-between items-center mb-12 relative">
+            <!-- Step 1: Shopping cart -->
+            <div class="flex flex-col items-center z-10 step-completed">
+                <div class="step-circle step-circle-completed">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                     </svg>
                 </div>
-                <div class="text-sm mt-2 font-medium text-green-500">Shopping cart</div>
-                <div class="w-full h-1 bg-green-500 mt-2"></div>
+                <p class="text-sm mt-2">Shopping cart</p>
             </div>
-            <div class="flex flex-col items-center flex-1">
-                <div class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center">
+
+            <!-- Step 2: Checkout details -->
+            <div class="flex flex-col items-center z-10 step-completed">
+                <div class="step-circle step-circle-completed">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                     </svg>
                 </div>
-                <div class="text-sm mt-2 font-medium text-green-500">Checkout details</div>
-                <div class="w-full h-1 bg-green-500 mt-2"></div>
+                <p class="text-sm mt-2">Checkout details</p>
             </div>
-            <div class="flex flex-col items-center flex-1">
-                <div class="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center font-bold">3</div>
-                <div class="text-sm mt-2 font-medium">Order complete</div>
+
+            <!-- Step 3: Order complete -->
+            <div class="flex flex-col items-center z-10 step-active">
+                <div class="step-circle step-circle-active">
+                    <span>3</span>
+                </div>
+                <p class="text-sm mt-2 font-medium">Order complete</p>
+            </div>
+
+            <!-- Progress line -->
+            <div class="absolute h-0.5 bg-gray-200 w-full top-4 -z-10"></div>
+        </div>
+
+        <!-- Order Complete Card -->
+        <div class="bg-white rounded-lg shadow-md p-8 mb-8">
+            <div class="text-center mb-8">
+                <p class="text-lg mb-2">Thank you! 🎉</p>
+                <h2 class="text-2xl font-bold">Your order has been received</h2>
+            </div>
+
+            <!-- Order Items Preview -->
+            <div class="flex justify-center mb-10">
+                <div th:if="${not #lists.isEmpty(order.items)}" class="flex items-center justify-center">
+                    <!-- Show up to 3 items -->
+                    <div th:each="item, itemStat : ${order.items}" th:if="${itemStat.index < 3}" class="relative mx-2">
+                        <div class="w-20 h-20 border rounded overflow-hidden">
+                            <img th:src="@{${item.product.image}}" alt="Product Image" class="w-full h-full object-cover" />
+                        </div>
+                        <div class="item-badge" th:text="${item.quantity}">1</div>
+                    </div>
+
+                    <!-- Show "+" indicator if more than 3 items -->
+                    <div th:if="${#lists.size(order.items) > 3}" class="ml-2 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                        <span class="font-medium text-gray-700">+</span>
+                    </div>
+                </div>
+
+                <!-- Fallback for empty order -->
+                <div th:if="${#lists.isEmpty(order.items)}" class="text-gray-500">
+                    No items in this order
+                </div>
+            </div>
+
+            <!-- Order Details -->
+            <div class="max-w-md mx-auto">
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div class="text-gray-600">Order code:</div>
+                    <div th:text="${order.code ?: '#2023_45678'}" class="text-right">
+                        #2023_45678
+                    </div>
+
+                    <div class="text-gray-600">Date:</div>
+                    <div th:text="${#dates.format(order.date, 'MMMM dd, yyyy') ?: 'October 15, 2023'}" class="text-right">
+                        October 15, 2023
+                    </div>
+
+                    <div class="text-gray-600">Total:</div>
+                    <div th:text="${'$' + #numbers.formatDecimal(order.total, 1, 2) ?: '$1,345.00'}" class="text-right font-medium">
+                        $1,345.00
+                    </div>
+
+                    <div class="text-gray-600">Payment method:</div>
+                    <div th:text="${order.paymentMethod ?: 'Credit Card'}" class="text-right">
+                        Credit Card
+                    </div>
+                </div>
+            </div>
+
+            <!-- Purchase History Button -->
+            <div class="text-center mt-10">
+                <a th:href="@{/orders/history}" class="inline-block bg-black text-white px-6 py-3 rounded-full hover:bg-gray-800 transition duration-200">
+                    Purchase history
+                </a>
             </div>
         </div>
     </div>
-
-    <!-- Order Complete Content -->
-    <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-8 relative">
-        <div class="text-center mb-8">
-            <h2 class="text-2xl font-medium mb-2">Thank you! 🎉</h2>
-            <p class="text-2xl font-bold mb-6">Your order has been received</p>
-
-            <!-- Product Images -->
-            <div class="flex justify-center space-x-6 mb-8">
-                <div class="relative">
-                    <img src="/images/tray-table-black.jpg" alt="Tray Table" class="w-20 h-20 object-contain"/>
-                    <div class="absolute -top-2 -right-2 w-5 h-5 bg-black text-white rounded-full flex items-center justify-center text-xs">2</div>
-                </div>
-                <div class="relative">
-                    <img src="/images/tray-table-red.jpg" alt="Tray Table" class="w-20 h-20 object-contain"/>
-                    <div class="absolute -top-2 -right-2 w-5 h-5 bg-black text-white rounded-full flex items-center justify-center text-xs">2</div>
-                </div>
-                <div class="relative">
-                    <img src="/images/table-lamp.jpg" alt="Table Lamp" class="w-20 h-20 object-contain"/>
-                    <div class="absolute -top-2 -right-2 w-5 h-5 bg-black text-white rounded-full flex items-center justify-center text-xs">1</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Order Details -->
-        <div class="grid grid-cols-2 gap-4 text-sm">
-            <div class="text-gray-600">Order code:</div>
-            <div class="font-medium">#0123_45678</div>
-
-            <div class="text-gray-600">Date:</div>
-            <div class="font-medium">October 19, 2023</div>
-
-            <div class="text-gray-600">Total:</div>
-            <div class="font-medium">$1,345.00</div>
-
-            <div class="text-gray-600">Payment method:</div>
-            <div class="font-medium">COD</div>
-        </div>
-
-        <div class="text-center mt-8">
-            <a href="/account/orders" class="inline-block px-6 py-2 bg-black text-white rounded">Purchase history</a>
-        </div>
-    </div>
-</main>
-
-<!-- Footer (already implemented) -->
-<div th:replace="fragments/footer :: footer"></div>
+</div>
 </body>
 </html>

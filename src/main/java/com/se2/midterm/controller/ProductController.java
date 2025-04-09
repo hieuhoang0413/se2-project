@@ -2,8 +2,12 @@ package com.se2.midterm.controller;
 
 import com.se2.midterm.entity.Category;
 import com.se2.midterm.entity.Product;
+import com.se2.midterm.entity.Review;
+import com.se2.midterm.entity.User;
 import com.se2.midterm.service.CategoryService;
 import com.se2.midterm.service.ProductService;
+import com.se2.midterm.service.ReviewService;
+import com.se2.midterm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.*;
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,6 +30,11 @@ public class ProductController {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private ReviewService reviewService;
     @GetMapping("/add")
     public String showAddProductForm(Model model) {
         model.addAttribute("product", new Product());
@@ -33,12 +43,10 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public String addProduct(
-            @ModelAttribute Product product,
-            @RequestParam("imageFile") MultipartFile imageFile,
-            @RequestParam(value = "categoryId", required = false) Long categoryId,
-            @RequestParam(value = "newCategory", required = false) String newCategory
-            ) {
+    public String addProduct(@ModelAttribute Product product,
+                             @RequestParam("imageFile") MultipartFile imageFile,
+                             @RequestParam(value = "categoryId", required = false) Long categoryId,
+                             @RequestParam(value = "newCategory", required = false) String newCategory) {
 
         try {
             if (!imageFile.isEmpty()) {
@@ -97,7 +105,7 @@ public class ProductController {
         return "redirect:/admin";
     }
 
-    // Tra cứu sản phẩm admin
+    //Tra cứu sản phẩm admin
     @GetMapping("/admin")
     public String showAdminPage(@RequestParam(value = "search", required = false) String searchQuery, Model model) {
         List<Product> products;
@@ -114,11 +122,27 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public String getProductDetail(@PathVariable Long id, Model model) {
+    public String showProductDetail(@PathVariable Long id, Model model, Principal principal) {
         Product product = productService.getProductById(id);
+        List<Review> reviews = reviewService.getReviewByProduct(product);
+
         model.addAttribute("product", product);
+        model.addAttribute("reviews", reviews);
+
+        double average = 0.0;
+        if (!reviews.isEmpty()) {
+            average = reviews.stream().mapToDouble(Review::getRating).average().orElse(5.0);
+        }
+        model.addAttribute("averageRating", Math.round(average * 10.0) / 10.0);
+
+        if (principal != null) {
+            User user = userService.findByUsername(principal.getName());
+            model.addAttribute("user", user);
+        }
+
         return "productDetail";
     }
+
 
     // Edit Product
     @GetMapping("/edit/{id}")
@@ -131,11 +155,11 @@ public class ProductController {
 
     @PostMapping("/edit/{id}")
     public String updateProduct(@PathVariable Long id,
-            @ModelAttribute Product product,
-            @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
-            @RequestParam(value = "categoryId", required = false) Long categoryId,
-            @RequestParam(value = "newCategory", required = false) String newCategory,
-            @RequestParam(value = "oldImage", required = false) String oldImage) {
+                                @ModelAttribute Product product,
+                                @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
+                                @RequestParam(value = "categoryId", required = false) Long categoryId,
+                                @RequestParam(value = "newCategory", required = false) String newCategory,
+                                @RequestParam(value = "oldImage", required = false) String oldImage) {
 
         try {
             if (imageFile != null && !imageFile.isEmpty()) {
@@ -148,11 +172,9 @@ public class ProductController {
                 // Lưu ảnh mới
                 String fileName = UUID.randomUUID() + "_" + imageFile.getOriginalFilename();
                 Path uploadPath = Paths.get("uploads/images");
-                if (!Files.exists(uploadPath))
-                    Files.createDirectories(uploadPath);
+                if (!Files.exists(uploadPath)) Files.createDirectories(uploadPath);
 
-                Files.copy(imageFile.getInputStream(), uploadPath.resolve(fileName),
-                        StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(imageFile.getInputStream(), uploadPath.resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
                 product.setImage(fileName);
             } else {
                 // Không chọn ảnh mới → giữ lại ảnh cũ
@@ -184,5 +206,6 @@ public class ProductController {
         productService.updateProduct(id, product);
         return "redirect:/admin";
     }
+
 
 }

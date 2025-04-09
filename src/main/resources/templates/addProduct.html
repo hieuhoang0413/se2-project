@@ -69,11 +69,11 @@
                 <!-- Price + Quantity -->
                 <div class="mb-8">
                     <h2 class="text-lg font-medium mb-4">Pricing</h2>
-                    <input type="number" th:field="*{price}" placeholder="Price..."
-                        class="w-full border border-gray-300 rounded-md px-3 py-2 mb-4 focus:ring-2 focus:ring-blue-500" />
-
+                    <input type="number" th:field="*{price}" step="0.01" placeholder="Price..."
+                           class="w-full border border-gray-300 rounded-md px-3 py-2 mb-4 focus:ring-2 focus:ring-blue-500" />
+                    <h2 class="text-lg font-medium mb-4">Quantity in stock</h2>
                     <input type="number" th:field="*{quantity}" placeholder="Quantity..."
-                        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500" />
+                           class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500" />
                 </div>
 
                 <!-- Buttons -->

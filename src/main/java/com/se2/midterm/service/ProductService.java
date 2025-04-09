@@ -88,7 +88,7 @@ public class ProductService {
                 try {
                     Files.deleteIfExists(imagePath);
                 } catch (IOException e) {
-                    System.err.println("Không thể xóa file ảnh: " + imagePath);
+                    System.err.println("Cannot delete image file: " + imagePath);
                     e.printStackTrace();
                 }
             }

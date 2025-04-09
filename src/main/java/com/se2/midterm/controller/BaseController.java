@@ -43,14 +43,17 @@ public class BaseController {
         model.addAttribute("products", products);
         return "shop";
     }
+
     @GetMapping("/about")
     public String aboutPage() {
         return "aboutUs";
     }
+
     @GetMapping("/contact")
     public String contactPage() {
         return "contact";
     }
+
     @PostMapping("/contact")
     public String handleContactForm(@RequestParam String name,
                                     @RequestParam String email,

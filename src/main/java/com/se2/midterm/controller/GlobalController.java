@@ -28,7 +28,7 @@ public class GlobalController {
             User user = userService.findByUsername(userDetails.getUsername()); // Lấy user từ DB
 
             if (user != null) {
-                Cart cart = cartService.getOrCreateCart(user); // Fetch or create the cart for the user
+                Cart cart = user.getCart(); // Fetch or create the cart for the user
                 int cartItemCount = cart.getCartItems().size(); // Get the count of cart items
                 model.addAttribute("cartItemCount", cartItemCount); // Add cart item count to model
             }

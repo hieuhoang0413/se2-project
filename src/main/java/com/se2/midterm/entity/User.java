@@ -37,10 +37,14 @@ public class User {
     @Column(name = "avatar_url")
     private String avatarUrl;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-
+    @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Cart cart;
+
+    private String phone;
 
     public Long getId() {
         return id;
@@ -98,13 +102,9 @@ public class User {
         this.role = role;
     }
 
-    public String getAvatarUrl() {
-        return avatarUrl;
-    }
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
     }
-    private String phone;
 
     public String getPhone() {
         return phone;
@@ -112,5 +112,17 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
     }
 }

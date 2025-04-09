@@ -9,7 +9,8 @@
 </head>
 
 <body>
-    <div class="w-full px-[80px] pt-[60px] pb-[100px]" layout:fragment="content">
+    <div class="flex flex-col justify-center items-center w-full px-[80px] pt-[60px] pb-[100px]"
+        layout:fragment="content">
         <div class="w-full flex gap-6">
             <div class="w-[262px]">
                 <label class="block text-[#6C7275] mb-2" for="categories">CATEGORIES:</label>
@@ -81,42 +82,45 @@
             </a>
         </div>
         <!-- Nút Show More -->
-        <button class="" id="showMore">Show More</button>
-    </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            let visibleProducts = 12; // Ban đầu hiển thị tối đa 12 sản phẩm
-            const allProducts = document.querySelectorAll(".product-item");
-            const showMoreBtn = document.getElementById("showMore");
-
-            console.log(allProducts.length);
+        <button
+            class="border border-[#141718] mt-20 rounded-[80px] w-[164px] h-[40px] font-[500] hover:bg-black hover:text-white"
+            id="showMore">Show More</button>
             
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                let visibleProducts = 12; // Ban đầu hiển thị tối đa 12 sản phẩm
+                const allProducts = document.querySelectorAll(".product-item");
+                const showMoreBtn = document.getElementById("showMore");
 
-            function showProducts() {
-                for (let i = 0; i < allProducts.length; i++) {
-                    if (i < visibleProducts) {
-                        allProducts[i].style.display = "table-row"; // Hiển thị sản phẩm
-                    } else {
-                        allProducts[i].style.display = "none"; // Ẩn sản phẩm chưa hiển thị
+                console.log(allProducts.length);
+
+
+                function showProducts() {
+                    for (let i = 0; i < allProducts.length; i++) {
+                        if (i < visibleProducts) {
+                            allProducts[i].style.display = "table-row"; // Hiển thị sản phẩm
+                        } else {
+                            allProducts[i].style.display = "none"; // Ẩn sản phẩm chưa hiển thị
+                        }
+                    }
+
+                    // Ẩn nút Show More nếu sản phẩm hiển thị >= tổng số sản phẩm
+                    if (visibleProducts >= allProducts.length || allProducts.length <= 12) {
+                        showMoreBtn.style.display = "none";
                     }
                 }
 
-                // Ẩn nút Show More nếu sản phẩm hiển thị >= tổng số sản phẩm
-                if (visibleProducts >= allProducts.length || allProducts.length <= 12) {
-                    showMoreBtn.style.display = "none";
-                }
-            }
+                showProducts(); // Hiển thị sản phẩm ban đầu
 
-            showProducts(); // Hiển thị sản phẩm ban đầu
-
-            showMoreBtn.addEventListener("click", function () {
-                visibleProducts += 12; // Hiển thị thêm tối đa 12 sản phẩm nữa
-                showProducts();
+                showMoreBtn.addEventListener("click", function () {
+                    visibleProducts += 12; // Hiển thị thêm tối đa 12 sản phẩm nữa
+                    showProducts();
+                });
             });
-        });
 
-    </script>
+        </script>
+    </div>
+
 </body>
 <script src="https://cdn.tailwindcss.com"></script>
 

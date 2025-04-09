@@ -9,13 +9,12 @@ import java.util.List;
 @Entity
 @Table(name = "cart")
 public class Cart {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @MapsId
+    @JoinColumn(name = "id") // đây là user_id luôn
     private User user;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -55,20 +54,26 @@ public class Cart {
 
 
     // Getter & Setter
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
-
-    public List<CartItem> getCartItems() { return cartItems; }
-    public void setCartItems(List<CartItem> cartItems) {
-        this.cartItems = cartItems;
-        updateTotalPrice(); // Cập nhật tổng tiền khi có thay đổi
+    public Long getId() {
+        return id;
     }
 
-    public double getTotalPrice() { return totalPrice; }
-    public void setTotalPrice(double totalPrice) { this.totalPrice = totalPrice; }
+    public User getUser() {
+        return user;
+    }
+
+    public List<CartItem> getCartItems() {
+        return cartItems;
+    }
+
+    public void setCartItems(List<CartItem> cartItems) {
+        this.cartItems = cartItems != null ? cartItems : new ArrayList<>();
+        updateTotalPrice();
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
 
     public void setStatus(CartStatus status) {
         this.status = status;
@@ -76,5 +81,17 @@ public class Cart {
 
     public CartStatus getStatus() {
         return status;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
     }
 }

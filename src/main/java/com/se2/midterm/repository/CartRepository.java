@@ -16,4 +16,5 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
 
     // Or, if you prefer to look up by userId (assuming 'user' is a ManyToOne relationship):
     Optional<Cart> findByUserIdAndStatus(Long userId, CartStatus status);
+
 }

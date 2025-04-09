@@ -25,12 +25,15 @@ public class OrderService {
         return orderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
     }
+
     public List<Order> findOrdersByUser(User user) {
         return orderRepository.findByUser(user);
     }
+
     public Order save(Order order) {
         return orderRepository.save(order);
     }
+
     public Page<Order> getAllOrdersPaged(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("orderDate").descending());
         return orderRepository.findAll(pageable);

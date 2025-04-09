@@ -2,8 +2,12 @@ package com.se2.midterm.controller;
 
 import com.se2.midterm.entity.Category;
 import com.se2.midterm.entity.Product;
+import com.se2.midterm.entity.Review;
+import com.se2.midterm.entity.User;
 import com.se2.midterm.service.CategoryService;
 import com.se2.midterm.service.ProductService;
+import com.se2.midterm.service.ReviewService;
+import com.se2.midterm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.*;
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,6 +30,11 @@ public class ProductController {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private ReviewService reviewService;
     @GetMapping("/add")
     public String showAddProductForm(Model model) {
         model.addAttribute("product", new Product());
@@ -112,11 +122,27 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public String getProductDetail(@PathVariable Long id, Model model) {
+    public String showProductDetail(@PathVariable Long id, Model model, Principal principal) {
         Product product = productService.getProductById(id);
+        List<Review> reviews = reviewService.getReviewByProduct(product);
+
         model.addAttribute("product", product);
+        model.addAttribute("reviews", reviews);
+
+        double average = 0.0;
+        if (!reviews.isEmpty()) {
+            average = reviews.stream().mapToDouble(Review::getRating).average().orElse(5.0);
+        }
+        model.addAttribute("averageRating", Math.round(average * 10.0) / 10.0);
+
+        if (principal != null) {
+            User user = userService.findByUsername(principal.getName());
+            model.addAttribute("user", user);
+        }
+
         return "productDetail";
     }
+
 
     // Edit Product
     @GetMapping("/edit/{id}")

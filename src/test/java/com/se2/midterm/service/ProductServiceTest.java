@@ -25,11 +25,11 @@ class ProductServiceTest {
     private ProductService productService;
     @Test
     void getAllProducts() {
-            Product p1 = new Product();
-            Product p2 = new Product();
-            when(productRepository.findAll()).thenReturn(Arrays.asList(p1,p2));
-            List<Product> products = productService.getAllProducts();
-            assertEquals(2, products.size());
+        Product p1 = new Product();
+        Product p2 = new Product();
+        when(productRepository.findAll()).thenReturn(Arrays.asList(p1,p2));
+        List<Product> products = productService.getAllProducts();
+        assertEquals(2, products.size());
     }
 
     @Test

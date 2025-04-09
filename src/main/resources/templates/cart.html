@@ -71,7 +71,7 @@
                         <div class="flex gap-4">
                             <!-- Product Image -->
                             <div class="w-24 h-24 flex-shrink-0 border rounded overflow-hidden">
-                                <img th:src="@{${item.product.image}}" alt="Product Image" class="w-full h-full object-cover" />
+                                <img th:src="@{/uploads/images/{img}(img=${item.product.image})}" alt="Product Image" class="w-full h-full object-cover" />
                             </div>
 
                             <!-- Product Info -->
@@ -79,21 +79,29 @@
                                 <h3 class="font-medium" th:text="${item.product.name}">Product Name</h3>
 
                                 <!-- Quantity control -->
-                                <div class="flex items-center gap-2 mt-2">
-                                    <div class="inline-flex border rounded">
-                                        <button type="button"
-                                                th:data-item-id="${item.id}"
-                                                th:data-price="${item.product.price}"
-                                                th:data-current-qty="${item.quantity}"
-                                                class="decrease-qty px-2 py-1 border-r">−</button>
-                                        <span th:id="'qty-' + ${item.id}" class="px-3 py-1" th:text="${item.quantity}">1</span>
-                                        <button type="button"
-                                                th:data-item-id="${item.id}"
-                                                th:data-price="${item.product.price}"
-                                                th:data-current-qty="${item.quantity}"
-                                                class="increase-qty px-2 py-1 border-l">+</button>
-                                    </div>
+                                <div class="inline-flex border rounded">
+                                    <!-- Decrease Quantity Form -->
+                                    <form th:action="@{/cart/update}" method="post" class="flex">
+                                        <input type="hidden" name="userId" th:value="${userId}" />
+                                        <input type="hidden" name="cartItemId" th:value="${item.id}" />
+                                        <input type="hidden" name="quantity" th:value="${item.quantity - 1}" />
+                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                        <button type="submit" class="px-2 py-1 border-r">−</button>
+                                    </form>
+
+                                    <!-- Quantity Display -->
+                                    <span th:id="'qty-' + ${item.id}" class="px-3 py-1" th:text="${item.quantity}">1</span>
+
+                                    <!-- Increase Quantity Form -->
+                                    <form th:action="@{/cart/update}" method="post" class="flex">
+                                        <input type="hidden" name="userId" th:value="${userId}" />
+                                        <input type="hidden" name="cartItemId" th:value="${item.id}" />
+                                        <input type="hidden" name="quantity" th:value="${item.quantity + 1}" />
+                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                        <button type="submit" class="px-2 py-1 border-l">+</button>
+                                    </form>
                                 </div>
+
 
                                 <!-- Subtotal -->
                                 <p class="font-medium mt-2">$<span th:id="'subtotal-' + ${item.id}" th:text="${item.product.price * item.quantity}">38.00</span></p>
@@ -106,7 +114,8 @@
                                     <!-- Truyền userId và cartItemId -->
                                     <input type="hidden" name="userId" th:value="${userId}" />
                                     <input type="hidden" name="cartItemId" th:value="${item.id}" />
-                                    <button type="submit" class="remove-item text-red-500 text-sm flex items-center gap-1 mt-2 hover:underline">
+                                    <button type="submit"  class="remove-item text-sm flex items-center gap-1 mt-2 hover:underline"
+                                            style="color: #6C7275">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                   d="M6 18L18 6M6 6l12 12" />
@@ -124,7 +133,7 @@
                         <div class="sm:col-span-6">
                             <div class="flex items-center gap-4">
                                 <div class="w-16 h-16 flex-shrink-0 border rounded overflow-hidden">
-                                    <img th:src="@{${item.product.image}}" alt="Product Image" class="w-full h-full object-cover" />
+                                    <img th:src="@{/uploads/images/{img}(img=${item.product.image})}" alt="Product Image" class="w-full h-full object-cover" />
                                 </div>
                                 <div>
                                     <h3 class="font-medium" th:text="${item.product.name}">Product Name</h3>
@@ -136,7 +145,8 @@
                                         <!-- Truyền userId và cartItemId -->
                                         <input type="hidden" name="userId" th:value="${userId}" />
                                         <input type="hidden" name="cartItemId" th:value="${item.id}" />
-                                        <button type="submit" class="remove-item text-red-500 text-sm flex items-center gap-1 mt-2 hover:underline">
+                                        <button type="submit"  class="remove-item text-sm flex items-center gap-1 mt-2 hover:underline"
+                                                style="color: #6C7275">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                       d="M6 18L18 6M6 6l12 12" />
@@ -150,20 +160,32 @@
 
                         <!-- Quantity -->
                         <div class="sm:col-span-2 flex justify-center">
-                            <div class="inline-flex border rounded">
-                                <button type="button"
-                                        th:data-item-id="${item.id}"
-                                        th:data-price="${item.product.price}"
-                                        th:data-current-qty="${item.quantity}"
-                                        class="decrease-qty px-2 py-1 border-r">−</button>
+                            <div class="inline-flex border rounded items-center">
+                                <!-- Decrease Quantity Form -->
+                                <form th:action="@{/cart/update}" method="post">
+                                    <input type="hidden" name="userId" th:value="${userId}" />
+                                    <input type="hidden" name="cartItemId" th:value="${item.id}" />
+                                    <input type="hidden" name="quantity" th:value="${item.quantity - 1}" />
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                    <button type="submit"
+                                            class="decrease-qty px-2 py-1 border-r"
+                                            th:disabled="${item.quantity == 1}">−</button>
+                                </form>
+
+                                <!-- Quantity Display -->
                                 <span th:id="'qty-desktop-' + ${item.id}" class="px-3 py-1" th:text="${item.quantity}">1</span>
-                                <button type="button"
-                                        th:data-item-id="${item.id}"
-                                        th:data-price="${item.product.price}"
-                                        th:data-current-qty="${item.quantity}"
-                                        class="increase-qty px-2 py-1 border-l">+</button>
+
+                                <!-- Increase Quantity Form -->
+                                <form th:action="@{/cart/update}" method="post">
+                                    <input type="hidden" name="userId" th:value="${userId}" />
+                                    <input type="hidden" name="cartItemId" th:value="${item.id}" />
+                                    <input type="hidden" name="quantity" th:value="${item.quantity + 1}" />
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                    <button type="submit" class="increase-qty px-2 py-1 border-l">+</button>
+                                </form>
                             </div>
                         </div>
+
 
                         <!-- Price -->
                         <div class="sm:col-span-2 text-right" th:text="'$' + ${item.product.price}">$19.00</div>

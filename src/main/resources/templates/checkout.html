@@ -40,7 +40,7 @@
                     <h2 class="text-xl font-semibold mb-6">Billing &amp; Shipping Details</h2>
 
                     <!-- Checkout Form -->
-                    <form th:action="@{/orders}" method="post" class="space-y-6">
+                    <form th:action="@{/cart/checkout/confirm}" method="post" class="space-y-6">
                         <!-- CSRF token -->
                         <input type="hidden" id="csrfToken" th:name="${_csrf != null ? _csrf.parameterName : '_csrf'}"
                                th:value="${_csrf != null ? _csrf.token : ''}" />

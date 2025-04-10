@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{_layout}" lang="en">
+      layout:decorate="_layout">
+
 <head>
     <title>Order Complete</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -43,12 +44,14 @@
           align-items: center;
           justify-content: center;
         }
+        .faded-item {
+          opacity: 0.5;
+        }
     </style>
 </head>
 <body>
 <div layout:fragment="content">
     <div class="max-w-3xl mx-auto py-6 sm:py-10 px-4 sm:px-6 lg:px-8">
-        <!-- Page title -->
         <h1 class="text-3xl font-bold text-center mb-8">Complete!</h1>
 
         <!-- Progress Steps -->
@@ -94,6 +97,7 @@
 
             <!-- Order Items Preview -->
             <div class="flex justify-center mb-10">
+                <!-- Loop through items in the order -->
                 <div th:if="${not #lists.isEmpty(order.items)}" class="flex items-center justify-center">
                     <!-- Show up to 3 items -->
                     <div th:each="item, itemStat : ${order.items}" th:if="${itemStat.index < 3}" class="relative mx-2">

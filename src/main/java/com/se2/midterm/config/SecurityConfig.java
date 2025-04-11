@@ -86,7 +86,7 @@ public class SecurityConfig {
             @Override
             public void addResourceHandlers(ResourceHandlerRegistry registry) {
                 registry.addResourceHandler("/uploads/**")
-                        .addResourceLocations("file:uploads/"); // Không cần cấu hình này nếu ảnh của bạn đã ở static/
+                        .addResourceLocations("file:uploads/");
             }
         };
     }

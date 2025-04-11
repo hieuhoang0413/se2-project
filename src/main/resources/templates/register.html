@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8" xmlns:th="http://www.thymeleaf.org">
@@ -15,9 +15,8 @@
                 <!-- Assuming FurnitureDark is a component, replaced with placeholder text -->
                 <span class="text-2xl font-bold">Furniture</span>
             </a>
-            <img class="w-full h-full scale-110 translate-x-[100px] translate-y-[100px] object-cover"
-                src="https://s3-alpha-sig.figma.com/img/2c01/ae8d/ce147d8554c2cda7530244569e9d8515?Expires=1742774400&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=sOXCmuXI0XUTmeDNeTmQAP6hRbuBkejfBebtFdeB9SOpH6w8~g2i7B7X3deBZ~Fhskn6P80JUa8~WHPtqiIkV8epLzVnS2TJb9JsdqJVX7U3cNLJdAuA3sVuEqt1aCxv2LDM4GZnKd83DyJMu6FJLp8gJ354CEBVMks73Bk1d0-C2xjdFin55CadwBTab2TnXco1vAsRPi1rJlW5QEd2geeH-PlpZPRLQwMjc~2RIAgvK-lDPB84inpGOsVnY2Ive~SfJoAe3QSQpPZALthC852ExEpPXNq1-mGEPhQewknsrh019uU2xf1kb9v5Nzu8ks1EEQexOTDVT~PQ6G4Tpg__"
-                alt="" />
+            <img th:src="@{/images/sofa.png}" alt="Logo"
+                 class="absolute z-10 left-1/2 -translate-x-1/2 w-full h-auto" />
         </div>
 
         <!-- Mobile logo - Only visible on mobile -->

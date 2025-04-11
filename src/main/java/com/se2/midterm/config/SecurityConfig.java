@@ -26,10 +26,8 @@ public class SecurityConfig {
         System.out.println("Configuring security filter chain...");
 
         httpSecurity
-
                 .authorizeRequests(auth -> auth
                         .requestMatchers("/login", "/css/**", "/js/**", "/images/**", "/uploads/**").permitAll()
-
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/product/add", "/product/edit/**", "/product/delete/**").hasRole("ADMIN")
                         .requestMatchers("/").hasAnyRole("USER", "ADMIN")
@@ -38,7 +36,6 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-
                         .permitAll()
                         .successHandler(customAuthenticationSuccessHandler())  // Make sure handler is set here
                 )

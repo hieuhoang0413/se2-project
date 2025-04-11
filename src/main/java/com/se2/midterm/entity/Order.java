@@ -1,7 +1,7 @@
 package com.se2.midterm.entity;
 
 import jakarta.persistence.*;
-import java.math.BigDecimal;
+import java.util.UUID;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +23,9 @@ public class Order {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "status_id") // Must match the column in your 'orders' table
     private OrderStatus status;
+
+    @Column(unique = true)
+    private String code;
 
     @OneToMany(mappedBy = "order")
     private List<OrderDetail> orderDetails = new ArrayList<>();
@@ -78,6 +81,19 @@ public class Order {
 
     public void setTotalAmount(double totalAmount) {
         this.totalAmount = totalAmount;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String generateRandomCode() {
+        // Generates a UUID and takes the first 8 characters as an example
+        return UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 
 }

@@ -21,12 +21,12 @@
                 <div class="w-full h-[2px] bg-black mt-1"></div>
             </div>
 
-            <a th:href="@{/cart/checkout}" class="flex flex-col items-center group flex-shrink-0">
+            <a class="flex flex-col items-center group flex-shrink-0">
                 <div class="w-6 h-6 rounded-full bg-gray-300 text-white text-xs flex items-center justify-center group-hover:bg-gray-400">2</div>
                 <p class="text-xs sm:text-sm font-medium mt-1 sm:mt-2 text-gray-400 group-hover:text-gray-600">Checkout details</p>
             </a>
 
-            <a th:href="@{/order/complete}" class="flex flex-col items-center group flex-shrink-0">
+            <a class="flex flex-col items-center group flex-shrink-0">
                 <div class="w-6 h-6 rounded-full bg-gray-300 text-white text-xs flex items-center justify-center group-hover:bg-gray-400">3</div>
                 <p class="text-xs sm:text-sm font-medium mt-1 sm:mt-2 text-gray-400 group-hover:text-gray-600">Order complete</p>
             </a>
@@ -51,10 +51,23 @@
                         <span>Total</span>
                         <span id="mobile-total-price" th:text="'$' + ${total}">$135.00</span>
                     </div>
-                    <a th:href="@{/checkout}" class="block w-full bg-black text-white py-3 rounded hover:bg-gray-800 text-center">
-                        Checkout
-                    </a>
+                    <!-- Conditionally render checkout link if cart is not empty -->
+                    <div th:if="${!cart.cartItems.empty}">
+                        <a th:href="@{/checkout}" class="block w-full bg-black text-white py-3 rounded hover:bg-gray-800 text-center">
+                            Checkout
+                        </a>
+                    </div>
+                    <!-- Otherwise, show a disabled-like element -->
+                    <div th:if="${cart.cartItems.empty}">
+                        <span class="block w-full bg-gray-400 text-white py-3 rounded text-center">
+                            Checkout
+                        </span>
+                        <div class="mt-2 text-center text-sm text-gray-600">
+                            Your cart is empty. Please add products before checking out.
+                        </div>
+                    </div>
                 </div>
+
 
                 <!-- Table Header - Hidden on mobile -->
                 <div class="hidden sm:grid sm:grid-cols-12 gap-4 pb-2 border-b font-medium text-gray-500 mb-4">
@@ -196,7 +209,7 @@
                 </div>
             </div>
 
-            <!-- RIGHT: CART SUMMARY - Hidden on mobile (shown at top instead) -->
+            <!-- RIGHT: CART SUMMARY - Hidden on mobile (shown on desktop) -->
             <div class="hidden lg:block border rounded-lg p-4 sm:p-6 shadow-sm bg-gray-50 order-1 lg:order-2 sticky top-4">
                 <h2 class="text-lg font-semibold mb-4">Cart Summary</h2>
                 <div class="flex justify-between mb-2 text-sm">
@@ -208,13 +221,19 @@
                     <span id="desktop-total-price" th:text="'$' + ${total}">$135.00</span>
                 </div>
 
-
                 <form th:action="@{/cart/checkout}" method="get">
                     <input type="hidden" name="userId" th:value="${userId}" />
-                    <button type="submit" class="w-full bg-black text-white py-3 rounded hover:bg-gray-800">
+                    <!-- Disable the button if cart is empty -->
+                    <button type="submit" class="w-full bg-black text-white py-3 rounded hover:bg-gray-800"
+                            th:disabled="${cart.cartItems.empty}">
                         Checkout
                     </button>
                 </form>
+
+                <!-- Optional: Display a message if the cart is empty -->
+                <div th:if="${cart.cartItems.empty}" class="text-center text-gray-500 mt-4">
+                    Please add products before checking out.
+                </div>
             </div>
         </div>
     </div>

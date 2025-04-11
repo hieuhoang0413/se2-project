@@ -82,6 +82,11 @@ public class CartController {
         user.setId(userId);
         Cart cart = cartService.getOrCreateCart(user);
 
+        // Check that the cart exists and has items
+        if (cart == null || cart.getCartItems() == null || cart.getCartItems().isEmpty()) {
+            throw new IllegalStateException("Cart is empty! Please add items before checking out.");
+        }
+
         model.addAttribute("cart", cart);
         model.addAttribute("total", cart.getTotalPrice());
         model.addAttribute("userId", userId);

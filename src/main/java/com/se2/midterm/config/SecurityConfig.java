@@ -14,6 +14,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.io.IOException;
 
@@ -21,9 +23,11 @@ import java.io.IOException;
 public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        System.out.println("Configuring security filter chain...");
+
         httpSecurity
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/css/**", "/js/**","/uploads/**").permitAll()
+                .authorizeRequests(auth -> auth
+                        .requestMatchers("/login", "/css/**", "/js/**", "/images/**", "/uploads/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/product/add", "/product/edit/**", "/product/delete/**").hasRole("ADMIN")
                         .requestMatchers("/").hasAnyRole("USER", "ADMIN")
@@ -31,11 +35,9 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login") // Chỉ định trang login tùy chỉnh
-                        .loginProcessingUrl("/login") // URL xử lý form login
-                        .successHandler(customAuthenticationSuccessHandler()) // Trang sau khi login thành công
-                        .failureUrl("/login?error=true") // Trang sau khi login thất bại
+                        .loginPage("/login")
                         .permitAll()
+                        .successHandler(customAuthenticationSuccessHandler())  // Make sure handler is set here
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
@@ -45,7 +47,6 @@ public class SecurityConfig {
 
         return httpSecurity.build();
     }
-
     @Bean
     public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
         return new AuthenticationSuccessHandler() {
@@ -78,5 +79,15 @@ public class SecurityConfig {
                 .passwordEncoder(passwordEncoder)
                 .and()
                 .build();
+    }
+    @Bean
+    public WebMvcConfigurer webMvcConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addResourceHandlers(ResourceHandlerRegistry registry) {
+                registry.addResourceHandler("/uploads/**")
+                        .addResourceLocations("file:uploads/"); // Không cần cấu hình này nếu ảnh của bạn đã ở static/
+            }
+        };
     }
 }

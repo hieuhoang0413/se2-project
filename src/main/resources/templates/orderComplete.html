@@ -1,91 +1,50 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="_layout">
-
 <head>
     <title>Order Complete</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .step-active {
-          color: black;
-        }
-        .step-completed {
-          color: #10b981;
-        }
-        .step-circle {
-          width: 2rem;
-          height: 2rem;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        .step-circle-active {
-          background-color: black;
-          color: white;
-        }
-        .step-circle-completed {
-          background-color: #10b981;
-          color: white;
-        }
-        .item-badge {
-          position: absolute;
-          top: -8px;
-          right: -8px;
-          width: 20px;
-          height: 20px;
-          border-radius: 50%;
-          background-color: black;
-          color: white;
-          font-size: 12px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        .faded-item {
-          opacity: 0.5;
-        }
-    </style>
 </head>
 <body>
 <div layout:fragment="content">
     <div class="max-w-3xl mx-auto py-6 sm:py-10 px-4 sm:px-6 lg:px-8">
+        <!-- Page title -->
         <h1 class="text-3xl font-bold text-center mb-8">Complete!</h1>
 
-        <!-- Progress Steps -->
-        <div class="flex justify-between items-center mb-12 relative">
-            <!-- Step 1: Shopping cart -->
-            <div class="flex flex-col items-center z-10 step-completed">
-                <div class="step-circle step-circle-completed">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                    </svg>
+        <div class="flex justify-center items-center gap-4 sm:gap-10 mb-8 sm:mb-10 overflow-x-auto px-2 w-full">
+
+            <!-- Step 1: Shopping cart (Completed) -->
+            <div class="flex flex-col items-center flex-shrink-0">
+                <!-- Completed step: green circle with ✓ -->
+                <div class="w-6 h-6 rounded-full bg-green-500 text-white text-xs flex items-center justify-center">
+                    ✓
                 </div>
-                <p class="text-sm mt-2">Shopping cart</p>
+                <p class="text-xs sm:text-sm font-medium mt-1 sm:mt-2 text-green-600">
+                    Shopping cart
+                </p>
             </div>
 
-            <!-- Step 2: Checkout details -->
-            <div class="flex flex-col items-center z-10 step-completed">
-                <div class="step-circle step-circle-completed">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                    </svg>
+            <!-- Step 2: Checkout details (Completed) -->
+            <div class="flex flex-col items-center flex-shrink-0">
+                <div class="w-6 h-6 rounded-full bg-green-500 text-white text-xs flex items-center justify-center">
+                    ✓
                 </div>
-                <p class="text-sm mt-2">Checkout details</p>
+                <p class="text-xs sm:text-sm font-medium mt-1 sm:mt-2 text-green-600">
+                    Checkout details
+                </p>
             </div>
 
-            <!-- Step 3: Order complete -->
-            <div class="flex flex-col items-center z-10 step-active">
-                <div class="step-circle step-circle-active">
-                    <span>3</span>
+            <!-- Step 3: Order complete (Active) -->
+            <div class="flex flex-col items-center flex-shrink-0">
+                <!-- Active step: black circle with step number -->
+                <div class="w-6 h-6 rounded-full bg-black text-white text-xs flex items-center justify-center">
+                    3
                 </div>
-                <p class="text-sm mt-2 font-medium">Order complete</p>
+                <p class="text-xs sm:text-sm font-medium mt-1 sm:mt-2 text-black">
+                    Order complete
+                </p>
             </div>
-
-            <!-- Progress line -->
-            <div class="absolute h-0.5 bg-gray-200 w-full top-4 -z-10"></div>
         </div>
 
         <!-- Order Complete Card -->
@@ -95,58 +54,33 @@
                 <h2 class="text-2xl font-bold">Your order has been received</h2>
             </div>
 
-            <!-- Order Items Preview -->
-            <div class="flex justify-center mb-10">
-                <!-- Loop through items in the order -->
-                <div th:if="${not #lists.isEmpty(order.items)}" class="flex items-center justify-center">
-                    <!-- Show up to 3 items -->
-                    <div th:each="item, itemStat : ${order.items}" th:if="${itemStat.index < 3}" class="relative mx-2">
-                        <div class="w-20 h-20 border rounded overflow-hidden">
-                            <img th:src="@{${item.product.image}}" alt="Product Image" class="w-full h-full object-cover" />
-                        </div>
-                        <div class="item-badge" th:text="${item.quantity}">1</div>
-                    </div>
-
-                    <!-- Show "+" indicator if more than 3 items -->
-                    <div th:if="${#lists.size(order.items) > 3}" class="ml-2 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
-                        <span class="font-medium text-gray-700">+</span>
-                    </div>
-                </div>
-
-                <!-- Fallback for empty order -->
-                <div th:if="${#lists.isEmpty(order.items)}" class="text-gray-500">
-                    No items in this order
-                </div>
-            </div>
-
             <!-- Order Details -->
             <div class="max-w-md mx-auto">
                 <div class="grid grid-cols-2 gap-4 text-sm">
                     <div class="text-gray-600">Order code:</div>
-                    <div th:text="${order.code ?: '#2023_45678'}" class="text-right">
+                    <div th:text="${order.code ?: '#2023_45678'}" class="text-right font-medium">
                         #2023_45678
                     </div>
 
                     <div class="text-gray-600">Date:</div>
-                    <div th:text="${#dates.format(order.date, 'MMMM dd, yyyy') ?: 'October 15, 2023'}" class="text-right">
+                    <div th:text="${#temporals.format(order.orderDate, 'MMMM dd, yyyy') ?: 'October 15, 2023'}" class="text-right font-medium">
                         October 15, 2023
                     </div>
 
                     <div class="text-gray-600">Total:</div>
-                    <div th:text="${'$' + #numbers.formatDecimal(order.total, 1, 2) ?: '$1,345.00'}" class="text-right font-medium">
+                    <div th:text="'$' + ${#numbers.formatDecimal(order.totalAmount, 1, 2) ?: '$1,345.00'}" class="text-right font-medium">
                         $1,345.00
                     </div>
 
+
                     <div class="text-gray-600">Payment method:</div>
-                    <div th:text="${order.paymentMethod ?: 'Credit Card'}" class="text-right">
-                        Credit Card
-                    </div>
+                    <div class="text-right font-medium">COD</div>
                 </div>
             </div>
 
             <!-- Purchase History Button -->
             <div class="text-center mt-10">
-                <a th:href="@{/orders/history}" class="inline-block bg-black text-white px-6 py-3 rounded-full hover:bg-gray-800 transition duration-200">
+                <a th:href="@{/myAccountOrder}" class="inline-block bg-black text-white px-6 py-3 rounded-full hover:bg-gray-800 transition duration-200">
                     Purchase history
                 </a>
             </div>

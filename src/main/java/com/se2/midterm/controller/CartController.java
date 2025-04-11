@@ -3,6 +3,7 @@ package com.se2.midterm.controller;
 import com.se2.midterm.entity.Cart;
 import com.se2.midterm.entity.Order;
 import com.se2.midterm.entity.User;
+import com.se2.midterm.repository.CartRepository;
 import com.se2.midterm.service.CartService;
 import com.se2.midterm.service.CheckOutService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ public class CartController {
     private CartService cartService;
     @Autowired
     private CheckOutService CheckOutService;
+    @Autowired
+    private CartRepository cartRepository;
 
     //API lấy giỏ hàng của người dùng
     @GetMapping("/{userId}")
@@ -99,7 +102,14 @@ public class CartController {
     public String confirmCheckout(@RequestParam Long userId, Model model) {
         // Call the checkout service to convert the cart into an Order.
         Order order = CheckOutService.checkout(userId);
-        CheckOutService.clearOrderedCartItems(order.getOrderDetails());
+        // Retrieve the user's cart based on the user in the order
+        // (Make sure you have access to cartRepository or cartService here)
+        Cart cart = cartRepository.findByUser(order.getUser())
+                .orElseThrow(() -> new RuntimeException("Cart not found for the user"));
+
+        // Clear the cart using the centralized service method
+        cartService.clearCart(cart);
+
         // Add the Order object to the model so you can display its data in the view.
         model.addAttribute("order", order);
 

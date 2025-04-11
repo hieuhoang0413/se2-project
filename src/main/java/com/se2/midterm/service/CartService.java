@@ -83,6 +83,18 @@ public class CartService {
         return cartRepository.save(cart);
     }
 
+    public void clearCart(Cart cart) {
+        if (cart == null) {
+            throw new RuntimeException("Cart cannot be null");
+        }
+        if (cart.getCartItems() != null && !cart.getCartItems().isEmpty()) {
+            cart.getCartItems().clear();
+            cartRepository.save(cart);
+            System.out.println("Cleared cart items for user: " + (cart.getUser() != null ? cart.getUser().getUsername() : "unknown user"));
+        }
+    }
+
+
     // Lấy tổng tiền
     public double getTotalPrice(User user) {
         return getOrCreateCart(user).getTotalPrice();

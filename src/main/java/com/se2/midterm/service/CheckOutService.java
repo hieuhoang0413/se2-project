@@ -80,54 +80,6 @@ public class CheckOutService {
         return order;
     }
 
-    public void clearOrderedCartItems(List<OrderDetail> orderDetails) {
-        // Retrieve the authenticated user from the security context
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user;
-
-        // If the principal is already an instance of your custom User, use it,
-        // otherwise, use authentication.getName() to get the username.
-        if (authentication.getPrincipal() instanceof User) {
-            user = (User) authentication.getPrincipal();
-        } else {
-            // Use authentication.getName(), which returns the username,
-            // to look up your custom User entity in the database.
-            user = userRepository.findByUsername(authentication.getName())
-                    .orElseThrow(() -> new RuntimeException("User not found in the database"));
-        }
-
-        // Retrieve the user's cart using the userId
-        Cart userCart = cartRepository.findByUser(user)
-                .orElse(null);
-
-        // Loop through each ordered item
-        for (OrderDetail orderItem : orderDetails) {
-            // Get the product variant from the order item
-            Product product = orderItem.getProduct();
-            if (product != null) {
-                // Retrieve all cart items in the user's cart that correspond to this product variant
-                List<CartItem> cartItems = cartItemRepository.findByProductAndCart(product, userCart);
-
-                // The quantity ordered for the variant
-                int orderedQuantity = orderItem.getQuantity();
-
-                // Process each cart item individually
-                for (CartItem cartItem : cartItems) {
-                    int cartQuantity = cartItem.getQuantity();
-
-                    // If the cart quantity is greater than the ordered quantity, simply update the quantity
-                    if (cartQuantity > orderedQuantity) {
-                        cartItem.setQuantity(cartQuantity - orderedQuantity);
-                        cartItemRepository.save(cartItem);
-                    } else {
-                        // Otherwise, delete the cart item entirely
-                        cartItemRepository.delete(cartItem);
-                    }
-                }
-            }
-        }
-    }
-
     public String generateRandomCode(int length) {
         StringBuilder sb = new StringBuilder(length);
         for (int i = 0; i < length; i++) {

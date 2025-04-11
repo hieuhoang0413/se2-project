@@ -67,7 +67,16 @@
                         <tr th:each="order : ${orders}" class="border-b border-gray-100">
                             <td class="py-4" th:text="${order.id}">#3456_768</td>
                             <td class="py-4" th:text="${#temporals.format(order.orderDate, 'MMMM d, yyyy')}">October 17, 2023</td>
-                            <td class="py-4 text-green-700" th:text="${order.status}">Delivered</td>
+                            <td class="py-4">
+                                <span th:if="${order.status != null}" th:switch="${order.status.status.name()}">
+                                    <span th:case="'PENDING'" class="text-green-700">PENDING</span>
+                                    <span th:case="'COMPLETED'" class="text-green-700">COMPLETED</span>
+                                    <span th:case="'SHIPPED'" class="text-green-700">SHIPPED</span>
+                                    <span th:case="'CANCELLED'" class="text-green-700">CANCELLED</span>
+                                    <span th:case="*">UNKNOWN</span>
+                                </span>
+                                <span th:unless="${order.status != null}" class="text-green-700">UNKNOWN</span>
+                            </td>
                             <td class="py-4" th:text="'$' + ${#numbers.formatDecimal(order.totalAmount, 1, 2)}">$1234.00</td>
                         </tr>
 

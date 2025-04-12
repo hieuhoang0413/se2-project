@@ -17,7 +17,7 @@ public class Cart {
     @JoinColumn(name = "id") // đây là user_id luôn
     private User user;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<CartItem> cartItems = new ArrayList<>();
 
     private double totalPrice;

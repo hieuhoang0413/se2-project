@@ -16,10 +16,16 @@
 
         <!-- Progress Steps - Responsive -->
         <div class="flex justify-center items-center gap-4 sm:gap-10 mb-8 sm:mb-10 overflow-x-auto px-2 w-full">
-            <a th:href="@{/cart/view/{userId}(userId=${userId})}" class="flex flex-col items-center group flex-shrink-0">
-                <div class="w-6 h-6 rounded-full bg-gray-300 text-white text-xs flex items-center justify-center group-hover:bg-gray-400">1</div>
-                <p class="text-xs sm:text-sm font-medium mt-1 sm:mt-2 text-gray-400 group-hover:text-gray-600">Shopping cart</p>
-            </a>
+            <!-- Step 1: Shopping cart (Completed) -->
+            <div class="flex flex-col items-center flex-shrink-0">
+                <!-- Completed step: green circle with ✓ -->
+                <div class="w-6 h-6 rounded-full bg-green-500 text-white text-xs flex items-center justify-center">
+                    ✓
+                </div>
+                <p class="text-xs sm:text-sm font-medium mt-1 sm:mt-2 text-green-600">
+                    Shopping cart
+                </p>
+            </div>
 
             <div class="flex flex-col items-center flex-shrink-0">
                 <div class="w-6 h-6 rounded-full bg-black text-white text-xs flex items-center justify-center">2</div>
@@ -131,9 +137,9 @@
                 <div class="border rounded-lg p-6 bg-white sticky top-4">
                     <h2 class="text-xl font-medium mb-6">Order summary</h2>
 
-                    <!-- Order Items -->
+                    <!--&lt;!&ndash; Order Items &ndash;&gt;
                     <div class="space-y-6 mb-6">
-                        <!-- Cart Items -->
+                        &lt;!&ndash; Cart Items &ndash;&gt;
                         <div th:each="item : ${cart.cartItems}" class="flex items-center justify-between">
                             <div class="flex items-center gap-4">
                                 <div class="w-16 h-16 flex-shrink-0">
@@ -142,14 +148,41 @@
                                 <div>
                                     <p class="font-medium" th:text="${item.product.name}">Product Name</p>
                                     <div class="flex items-center mt-2 border rounded-md inline-flex">
-                                        <!-- Quantity Display -->
+                                        &lt;!&ndash; Quantity Display &ndash;&gt;
                                         <span class="px-3 py-1 border-l border-r" th:text="${item.quantity}">1</span>
                                     </div>
                                 </div>
                             </div>
                             <span class="font-medium" th:text="'$' + ${item.product.price}">$38.00</span>
                         </div>
+                    </div>-->
+
+                    <!-- Order Items -->
+                    <div class="space-y-6 mb-6">
+                        <!-- Cart Items -->
+                        <div th:each="item : ${cart.cartItems}" class="flex items-center justify-between">
+                            <!-- Left Section: Image & Product Name -->
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 flex-shrink-0">
+                                    <img th:src="@{/uploads/images/{img}(img=${item.product.image})}"
+                                         alt="Product Image"
+                                         class="w-full h-full object-contain" />
+                                </div>
+                                <div>
+                                    <p class="font-medium" th:text="${item.product.name}">Product Name</p>
+                                </div>
+                            </div>
+
+                            <!-- Right Section: Quantity & Price on the same line -->
+                            <div class="flex items-center gap-2">
+                                <!-- "x {quantity}" -->
+                                <span class="text-gray-600" th:text="'x ' + ${item.quantity}">x 1</span>
+                                <!-- Price -->
+                                <span class="font-medium" th:text="'$' + ${item.product.price}">$38.00</span>
+                            </div>
+                        </div>
                     </div>
+
 
                     <!-- Order Totals -->
                     <div class="border-t pt-4 space-y-2">

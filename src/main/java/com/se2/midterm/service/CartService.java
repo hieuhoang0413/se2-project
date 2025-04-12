@@ -34,8 +34,7 @@ public class CartService {
     public void addToCart(User user, Long productId, int quantity) {
         Cart cart = getOrCreateCart(user);
         Optional<Product> optionalProduct = productRepository.findById(productId);
-
-        if (!optionalProduct.isPresent()) {
+        if (optionalProduct.isEmpty()) {
             throw new RuntimeException("Product not found");
         }
 
@@ -55,7 +54,8 @@ public class CartService {
         }
         cartItemRepository.save(cartItem);
 
-        cart.updateTotalPrice();
+        cart = cartRepository.findById(cart.getId()).orElse(cart);
+        cart.getTotalPrice();
         cartRepository.save(cart);
     }
 
@@ -67,7 +67,7 @@ public class CartService {
 
         cart.getCartItems().remove(cartItem);
         cartItemRepository.delete(cartItem);
-        cart.updateTotalPrice();
+        cart.getTotalPrice();
         return cartRepository.save(cart);
     }
 
@@ -78,17 +78,29 @@ public class CartService {
                 .orElseThrow(() -> new RuntimeException("CartItem not found"));
         cartItem.setQuantity(quantity);
         cartItem.updateSubtotal();
+        cart.getTotalPrice();
         cartItemRepository.save(cartItem);
-        cart.updateTotalPrice();
         return cartRepository.save(cart);
     }
+
+    public void clearCart(Cart cart) {
+        if (cart == null) {
+            throw new RuntimeException("Cart cannot be null");
+        }
+        if (cart.getCartItems() != null && !cart.getCartItems().isEmpty()) {
+            cart.getCartItems().clear();
+            cartRepository.save(cart);
+            System.out.println("Cleared cart items for user: " + (cart.getUser() != null ? cart.getUser().getUsername() : "unknown user"));
+        }
+    }
+
 
     // Lấy tổng tiền
     public double getTotalPrice(User user) {
         return getOrCreateCart(user).getTotalPrice();
     }
 
-    @Transactional
+/*    @Transactional
     public Cart checkout(User user) {
         Cart cart = getOrCreateCart(user);
         if (cart.getCartItems().isEmpty()) {
@@ -125,5 +137,5 @@ public class CartService {
         cartRepository.save(cart);
 
         return cart;
-    }
+    }*/
 }

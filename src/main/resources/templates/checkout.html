@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="_layout" lang="en">
+      layout:decorate="~{_layout}" lang="en">
 <head>
     <title>Checkout</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,10 +16,16 @@
 
         <!-- Progress Steps - Responsive -->
         <div class="flex justify-center items-center gap-4 sm:gap-10 mb-8 sm:mb-10 overflow-x-auto px-2 w-full">
-            <a th:href="@{/cart/view/{userId}(userId=${userId})}" class="flex flex-col items-center group flex-shrink-0">
-                <div class="w-6 h-6 rounded-full bg-gray-300 text-white text-xs flex items-center justify-center group-hover:bg-gray-400">1</div>
-                <p class="text-xs sm:text-sm font-medium mt-1 sm:mt-2 text-gray-400 group-hover:text-gray-600">Shopping cart</p>
-            </a>
+            <!-- Step 1: Shopping cart (Completed) -->
+            <div class="flex flex-col items-center flex-shrink-0">
+                <!-- Completed step: green circle with ✓ -->
+                <div class="w-6 h-6 rounded-full bg-green-500 text-white text-xs flex items-center justify-center">
+                    ✓
+                </div>
+                <p class="text-xs sm:text-sm font-medium mt-1 sm:mt-2 text-green-600">
+                    Shopping cart
+                </p>
+            </div>
 
             <div class="flex flex-col items-center flex-shrink-0">
                 <div class="w-6 h-6 rounded-full bg-black text-white text-xs flex items-center justify-center">2</div>
@@ -36,141 +42,157 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
             <!-- Checkout Form (Left Side) -->
             <div class="lg:col-span-2 order-2 lg:order-1">
-                <div class="bg-white p-6 rounded-lg shadow-sm">
-                    <h2 class="text-xl font-semibold mb-6">Billing &amp; Shipping Details</h2>
+                <form th:action="@{/cart/checkout/confirm}" method="post" class="space-y-6">
+                    <!-- CSRF token -->
+                    <input type="hidden" id="csrfToken" th:name="${_csrf != null ? _csrf.parameterName : '_csrf'}"
+                           th:value="${_csrf != null ? _csrf.token : ''}" />
+                    <input type="hidden" name="userId" th:value="${userId}" />
 
-                    <!-- Checkout Form -->
-                    <form th:action="@{/orders}" method="post" class="space-y-6">
-                        <!-- CSRF token -->
-                        <input type="hidden" id="csrfToken" th:name="${_csrf != null ? _csrf.parameterName : '_csrf'}"
-                               th:value="${_csrf != null ? _csrf.token : ''}" />
-                        <input type="hidden" name="userId" th:value="${userId}" />
+                    <!-- Contact Information -->
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6">
+                        <h2 class="text-lg font-semibold mb-4">Contact Information</h2>
 
-                        <!-- Name Fields -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">FIRST NAME</label>
+                                <input type="text" id="firstName" name="firstName" placeholder="First name" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-1 focus:ring-black focus:border-black outline-none" required>
+                            </div>
+                            <div>
+                                <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">LAST NAME</label>
+                                <input type="text" id="lastName" name="lastName" placeholder="Last name" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-1 focus:ring-black focus:border-black outline-none" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">PHONE NUMBER</label>
+                            <input type="tel" id="phone" name="phone" placeholder="Phone number" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-1 focus:ring-black focus:border-black outline-none" required>
+                        </div>
+
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">EMAIL ADDRESS</label>
+                            <input type="email" id="email" name="email" placeholder="Your Email" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-1 focus:ring-black focus:border-black outline-none" required>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Address -->
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6">
+                        <h2 class="text-lg font-semibold mb-4">Shipping Address</h2>
+
+                        <div class="mb-4">
+                            <label for="address" class="block text-sm font-medium text-gray-700 mb-1">STREET ADDRESS *</label>
+                            <input type="text" id="address" name="address" placeholder="Street Address" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-1 focus:ring-black focus:border-black outline-none" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="country" class="block text-sm font-medium text-gray-700 mb-1">COUNTRY *</label>
+                            <div class="relative">
+                                <select id="country" name="country" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-1 focus:ring-black focus:border-black outline-none appearance-none" required onchange="toggleOtherCountry(this.value)">
+                                    <option value="">Country</option>
+                                    <option value="US">United States</option>
+                                    <option value="CA">Canada</option>
+                                    <option value="UK">United Kingdom</option>
+                                    <option value="other">Other (specify)</option>
+                                    <!-- Add more countries as needed -->
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <!-- Custom country input that appears when "Other" is selected -->
+                            <div id="otherCountryContainer" class="mt-2 hidden">
+                                <input type="text" id="otherCountry" name="otherCountry" placeholder="Enter your country" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-1 focus:ring-black focus:border-black outline-none">
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="city" class="block text-sm font-medium text-gray-700 mb-1">TOWN / CITY *</label>
+                            <input type="text" id="city" name="city" placeholder="Town / City" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-1 focus:ring-black focus:border-black outline-none" required>
+                        </div>
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                                <input type="text" id="firstName" name="firstName" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-2 focus:ring-black focus:border-transparent outline-none" required>
+                                <label for="state" class="block text-sm font-medium text-gray-700 mb-1">STATE</label>
+                                <input type="text" id="state" name="state" placeholder="State" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-1 focus:ring-black focus:border-black outline-none">
                             </div>
                             <div>
-                                <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                                <input type="text" id="lastName" name="lastName" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-2 focus:ring-black focus:border-transparent outline-none" required>
+                                <label for="zip" class="block text-sm font-medium text-gray-700 mb-1">ZIP CODE</label>
+                                <input type="text" id="zip" name="zip" placeholder="Zip Code" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-1 focus:ring-black focus:border-black outline-none">
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Email Field -->
-                        <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                            <input type="email" id="email" name="email" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-2 focus:ring-black focus:border-transparent outline-none" required>
-                        </div>
-
-                        <!-- Phone Field -->
-                        <div>
-                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                            <input type="tel" id="phone" name="phone" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-2 focus:ring-black focus:border-transparent outline-none" required>
-                        </div>
-
-                        <!-- Address Fields -->
-                        <div>
-                            <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Street Address</label>
-                            <input type="text" id="address" name="address" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-2 focus:ring-black focus:border-transparent outline-none" required>
-                        </div>
-
-                        <!-- City, State, Zip -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                                <label for="city" class="block text-sm font-medium text-gray-700 mb-1">City</label>
-                                <input type="text" id="city" name="city" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-2 focus:ring-black focus:border-transparent outline-none" required>
-                            </div>
-                            <div>
-                                <label for="state" class="block text-sm font-medium text-gray-700 mb-1">State/Province</label>
-                                <input type="text" id="state" name="state" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-2 focus:ring-black focus:border-transparent outline-none" required>
-                            </div>
-                            <div>
-                                <label for="zip" class="block text-sm font-medium text-gray-700 mb-1">ZIP/Postal Code</label>
-                                <input type="text" id="zip" name="zip" class="w-full border border-gray-300 rounded-md p-2.5 focus:ring-2 focus:ring-black focus:border-transparent outline-none" required>
-                            </div>
-                        </div>
-
-                        <!-- Payment Method -->
-                        <div>
-                            <h3 class="text-lg font-medium mb-3">Payment Method</h3>
-                            <div class="space-y-3">
-                                <div class="flex items-center">
-                                    <input id="payment-cash" name="paymentMethod" type="radio" value="cash" class="h-4 w-4 text-black focus:ring-black border-gray-300" checked>
-                                    <label for="payment-cash" class="ml-3 block text-sm font-medium text-gray-700">Cash on Delivery</label>
-                                </div>
-                                <div class="flex items-center">
-                                    <input id="payment-card" name="paymentMethod" type="radio" value="card" class="h-4 w-4 text-black focus:ring-black border-gray-300">
-                                    <label for="payment-card" class="ml-3 block text-sm font-medium text-gray-700">Credit/Debit Card</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Place Order Button -->
-                        <div class="pt-4">
-                            <button type="submit" class="w-full bg-black text-white py-3 rounded hover:bg-gray-800 transition duration-200">
-                                Place Order
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                    <!-- Place Order Button -->
+                    <div>
+                        <button type="submit" class="w-full bg-black text-white py-3 rounded hover:bg-gray-800 transition duration-200">
+                            Place Order
+                        </button>
+                    </div>
+                </form>
             </div>
 
             <!-- Order Summary (Right Side) -->
             <div class="lg:col-span-1 order-1 lg:order-2">
-                <!-- Mobile Order Summary -->
-                <div class="lg:hidden mb-6 border rounded-lg p-4 sm:p-6 bg-gray-50">
-                    <h2 class="text-lg font-semibold mb-4">Order Summary</h2>
-                    <div class="space-y-3 mb-4">
-                        <div th:each="item : ${cart.cartItems}" class="flex justify-between items-center">
-                            <div class="flex items-center">
-                                <span class="font-medium" th:text="${item.product.name}">Product Name</span>
-                                <span class="text-gray-500 text-sm ml-2" th:text="'x' + ${item.quantity}">x1</span>
-                            </div>
-                            <span class="font-medium" th:text="'$' + ${item.subtotal}">$0.00</span>
-                        </div>
-                    </div>
-                    <div class="border-t pt-3">
-                        <div class="flex justify-between text-sm mb-2">
-                            <span>Shipping</span>
-                            <span>Free</span>
-                        </div>
-                        <div class="flex justify-between font-bold text-lg">
-                            <span>Total</span>
-                            <span id="mobile-total-price" th:text="'$' + ${total}">$0.00</span>
-                        </div>
-                    </div>
-                </div>
+                <div class="border rounded-lg p-6 bg-white sticky top-4">
+                    <h2 class="text-xl font-medium mb-6">Order summary</h2>
 
-                <!-- Desktop Order Summary -->
-                <div class="hidden lg:block border rounded-lg p-6 bg-gray-50 sticky top-4">
-                    <h2 class="text-lg font-semibold mb-4">Order Summary</h2>
+                    <!--&lt;!&ndash; Order Items &ndash;&gt;
+                    <div class="space-y-6 mb-6">
+                        &lt;!&ndash; Cart Items &ndash;&gt;
+                        <div th:each="item : ${cart.cartItems}" class="flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 flex-shrink-0">
+                                    <img th:src="@{/uploads/images/{img}(img=${item.product.image})}" alt="Product Image" class="w-full h-full object-contain" />
+                                </div>
+                                <div>
+                                    <p class="font-medium" th:text="${item.product.name}">Product Name</p>
+                                    <div class="flex items-center mt-2 border rounded-md inline-flex">
+                                        &lt;!&ndash; Quantity Display &ndash;&gt;
+                                        <span class="px-3 py-1 border-l border-r" th:text="${item.quantity}">1</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="font-medium" th:text="'$' + ${item.product.price}">$38.00</span>
+                        </div>
+                    </div>-->
 
                     <!-- Order Items -->
-                    <div class="space-y-3 mb-6">
-                        <div th:each="item : ${cart.cartItems}" class="flex justify-between items-center">
-                            <div>
-                                <span class="font-medium" th:text="${item.product.name}">Product Name</span>
-                                <span class="text-gray-500 text-sm ml-1" th:text="'x' + ${item.quantity}">x1</span>
+                    <div class="space-y-6 mb-6">
+                        <!-- Cart Items -->
+                        <div th:each="item : ${cart.cartItems}" class="flex items-center justify-between">
+                            <!-- Left Section: Image & Product Name -->
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 flex-shrink-0">
+                                    <img th:src="@{/uploads/images/{img}(img=${item.product.image})}"
+                                         alt="Product Image"
+                                         class="w-full h-full object-contain" />
+                                </div>
+                                <div>
+                                    <p class="font-medium" th:text="${item.product.name}">Product Name</p>
+                                </div>
                             </div>
-                            <span class="font-medium" th:text="'$' + ${item.subtotal}">$0.00</span>
+
+                            <!-- Right Section: Quantity & Price on the same line -->
+                            <div class="flex items-center gap-2">
+                                <!-- "x {quantity}" -->
+                                <span class="text-gray-600" th:text="'x ' + ${item.quantity}">x 1</span>
+                                <!-- Price -->
+                                <span class="font-medium" th:text="'$' + ${item.product.price}">$38.00</span>
+                            </div>
                         </div>
                     </div>
+
 
                     <!-- Order Totals -->
                     <div class="border-t pt-4 space-y-2">
-                        <div class="flex justify-between text-sm">
-                            <span>Subtotal</span>
-                            <span th:text="'$' + ${total}">$0.00</span>
-                        </div>
-                        <div class="flex justify-between text-sm">
+                        <div class="flex justify-between items-center py-2">
                             <span>Shipping</span>
                             <span>Free</span>
                         </div>
-                        <div class="flex justify-between font-bold text-lg pt-2">
+                        <div class="flex justify-between items-center font-medium">
                             <span>Total</span>
-                            <span id="desktop-total-price" th:text="'$' + ${total}">$0.00</span>
+                            <span th:text="'$' + ${total}">$234.00</span>
                         </div>
                     </div>
                 </div>
@@ -178,6 +200,3 @@
         </div>
     </div>
 </div>
-</body>
-</html>
-

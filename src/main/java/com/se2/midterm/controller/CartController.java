@@ -3,6 +3,7 @@ package com.se2.midterm.controller;
 import com.se2.midterm.entity.Cart;
 import com.se2.midterm.entity.Order;
 import com.se2.midterm.entity.User;
+import com.se2.midterm.repository.CartRepository;
 import com.se2.midterm.service.CartService;
 import com.se2.midterm.service.CheckOutService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +21,15 @@ public class CartController {
     private CartService cartService;
     @Autowired
     private CheckOutService CheckOutService;
+    @Autowired
+    private CartRepository cartRepository;
 
     //API lấy giỏ hàng của người dùng
     @GetMapping("/{userId}")
     public Cart getCart(@PathVariable Long userId) {
         User user = new User();
         user.setId(userId);
+        System.out.println("User ID: " + userId);
         return cartService.getOrCreateCart(user);
     }
 
@@ -52,13 +56,15 @@ public class CartController {
         return "redirect:/cart/view/" + userId;
     }
     //API cập nhật số lượng sản phẩm trong giỏ hàng
-    @PutMapping("/update")
-    public Cart updateCartItemQuantity(@RequestParam Long userId,
+    @PostMapping("/update")
+    public String updateCartItemQuantity(@RequestParam Long userId,
                                        @RequestParam Long cartItemId,
                                        @RequestParam int quantity) {
         User user = new User();
         user.setId(userId);
-        return cartService.updateCartItemQuantity(user, cartItemId, quantity);
+        cartService.updateCartItemQuantity(user, cartItemId, quantity);
+        System.out.println("Updated quantity: " + quantity);
+        return "redirect:/cart/view/" + userId;
     }
 
     //API lấy tổng tiền giỏ hàng
@@ -77,8 +83,12 @@ public class CartController {
         }
         User user = new User();
         user.setId(userId);
-        cartService.checkout(user);
         Cart cart = cartService.getOrCreateCart(user);
+
+        // Check that the cart exists and has items
+        if (cart == null || cart.getCartItems() == null || cart.getCartItems().isEmpty()) {
+            throw new IllegalStateException("Cart is empty! Please add items before checking out.");
+        }
 
         model.addAttribute("cart", cart);
         model.addAttribute("total", cart.getTotalPrice());
@@ -88,15 +98,28 @@ public class CartController {
     }
 
     //API xác nhận thanh toán
-    @RequestMapping(value = "/checkout/confirm", method = {RequestMethod.GET, RequestMethod.POST})
+    @PostMapping("/checkout/confirm")
     public String confirmCheckout(@RequestParam Long userId, Model model) {
+        // Call the checkout service to convert the cart into an Order.
         Order order = CheckOutService.checkout(userId);
+        // Retrieve the user's cart based on the user in the order
+        // (Make sure you have access to cartRepository or cartService here)
+        Cart cart = cartRepository.findByUser(order.getUser())
+                .orElseThrow(() -> new RuntimeException("Cart not found for the user"));
+
+        // Clear the cart using the centralized service method
+        cartService.clearCart(cart);
+
+        // Add the Order object to the model so you can display its data in the view.
         model.addAttribute("order", order);
 
-        System.out.println("✅ Đơn hàng đã lưu: Order ID = " + order.getId());
+        // Log the Order ID for debugging purposes.
+        System.out.println("✅ Order saved: Order ID = " + order.getId());
 
+        // Return the view name for the order confirmation page.
         return "orderComplete";
     }
+
 
 
     @GetMapping("/view/{userId}")
@@ -105,10 +128,9 @@ public class CartController {
         user.setId(userId);
 
         Cart cart = cartService.getOrCreateCart(user);
-        double total = cartService.getTotalPrice(user);
 
         model.addAttribute("cart", cart);
-        model.addAttribute("total", total);
+        model.addAttribute("total", cart.getTotalPrice());
         model.addAttribute("userId", userId);
 
         return "cart"; // Trỏ đến templates/cart.html

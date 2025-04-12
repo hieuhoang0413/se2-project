@@ -35,9 +35,7 @@ public class CartItem {
 
     public void updateSubtotal() {
         this.subtotal = this.price * this.quantity;
-        if (this.cart != null) {
-            this.cart.updateTotalPrice();
-        }
+/*        this.cart.getTotalPrice();  // Cập nhật tổng tiền giỏ hàng*/
     }
 
     // Getter & Setter
@@ -89,6 +87,4 @@ public class CartItem {
     public void setSubtotal(double subtotal) {
         this.subtotal = subtotal;
     }
-
-
 }

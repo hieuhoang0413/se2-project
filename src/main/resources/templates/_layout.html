@@ -74,8 +74,8 @@
             </div>
 
             <div class="block">
-                <div class="flex items-center ml-4 md:ml-6">
-                    <div class="relative ml-3 flex">
+                <div class="flex items-center justify-between w-full space-x-2">
+                    <div class="flex items-center justify-between w-full space-x-2">
                         <!-- User -->
                         <div class="relative inline-block text-left">
                             <button type="button"
@@ -147,16 +147,25 @@
     </div>
 </div>
 
+
 <main layout:fragment="content">
     <!-- This will be replaced by each view -->
 </main>
 
-
-<footer class="relative z-[1] bg-black px-4 sm:px-[85px] pt-[80px] pb-[32px]">
-    <div class="text-[#E8ECEF] flex flex-col md:flex-row justify-between border-b border-[#6C7275]">
-        <div class="flex gap-8 pb-12">
-            <div class="-translate-y-[5px] w-[104px] h-10">
-                <img th:src="@{/images/FurnitureLight.svg}" alt="Logo" />
+    <footer class="relative z-[1] bg-black px-[85px] pt-[80px] pb-[32px]">
+        <div class="text-[#E8ECEF] flex justify-between border-b border-[#6C7275]">
+            <div class="flex gap-8 pb-12">
+                <div class="-translate-y-[5px] w-[104px] h-10">
+                    <img th:src="@{/uploads/images/FurnitureLight.svg}" alt="Logo" />
+                </div>
+                <div class="w-[1px] h-6 bg-[#6C7275]"></div>
+                <p>Gift & Decoration Store</p>
+            </div>
+            <div class="flex h-fit gap-10 text-sm">
+                <a class="hover:text-white hover:font-semibold" th:href="@{/home}">Home</a>
+                <a class="hover:text-white hover:font-semibold" th:href="@{/shop}">Shop</a>
+                <a class="hover:text-white hover:font-semibold" th:href="@{/about}">About</a>
+                <a class="hover:text-white hover:font-semibold" th:href="@{/contact}">Contact Us</a>
             </div>
             <div class="w-[1px] h-6 bg-[#6C7275]"></div>
             <p>Gift & Decoration Store</p>

@@ -50,7 +50,7 @@ public class AdminController {
         return "orders";
     }
 
-    // ✅ GET: Trang chỉnh sửa trạng thái
+    // Trang chỉnh sửa trạng thái
     @GetMapping("/orders/{id}/edit")
     public String editOrderStatus(@PathVariable Long id, Model model) {
         Order order = orderService.getOrderById(id);
@@ -61,7 +61,7 @@ public class AdminController {
         return "editOrderStatus";
     }
 
-    // ✅ POST: Cập nhật trạng thái đơn hàng
+    // Cập nhật trạng thái đơn hàng
     @PostMapping("/orders/{id}/update-status")
     public String updateOrderStatus(@PathVariable Long id,
                                     @RequestParam Long statusId) {

@@ -21,6 +21,7 @@ public class OrderDetail {
     @JoinColumn(name = "productId", nullable = false)
     private Product product;
 
+
     // The quantity of the product in this order detail.
     @Column(nullable = false)
     private int quantity;

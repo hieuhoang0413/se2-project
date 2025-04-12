@@ -3,6 +3,8 @@ package com.se2.midterm.entity;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")  // Adjust if your table is named differently
@@ -21,6 +23,17 @@ public class Order {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "status_id") // Must match the column in your 'orders' table
     private OrderStatus status;
+
+    @OneToMany(mappedBy = "order")
+    private List<OrderDetail> orderDetails = new ArrayList<>();
+
+    public List<OrderDetail> getOrderDetails() {
+        return orderDetails;
+    }
+
+    public void setOrderDetails(List<OrderDetail> orderDetails) {
+        this.orderDetails = orderDetails;
+    }
 
     private LocalDateTime orderDate;
 

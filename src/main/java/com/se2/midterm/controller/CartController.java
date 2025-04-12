@@ -26,6 +26,7 @@ public class CartController {
     public Cart getCart(@PathVariable Long userId) {
         User user = new User();
         user.setId(userId);
+        System.out.println("User ID: " + userId);
         return cartService.getOrCreateCart(user);
     }
 
@@ -52,13 +53,15 @@ public class CartController {
         return "redirect:/cart/view/" + userId;
     }
     //API cập nhật số lượng sản phẩm trong giỏ hàng
-    @PutMapping("/update")
-    public Cart updateCartItemQuantity(@RequestParam Long userId,
+    @PostMapping("/update")
+    public String updateCartItemQuantity(@RequestParam Long userId,
                                        @RequestParam Long cartItemId,
                                        @RequestParam int quantity) {
         User user = new User();
         user.setId(userId);
-        return cartService.updateCartItemQuantity(user, cartItemId, quantity);
+        cartService.updateCartItemQuantity(user, cartItemId, quantity);
+        System.out.println("Updated quantity: " + quantity);
+        return "redirect:/cart/view/" + userId;
     }
 
     //API lấy tổng tiền giỏ hàng
@@ -77,7 +80,6 @@ public class CartController {
         }
         User user = new User();
         user.setId(userId);
-        cartService.checkout(user);
         Cart cart = cartService.getOrCreateCart(user);
 
         model.addAttribute("cart", cart);
@@ -88,15 +90,21 @@ public class CartController {
     }
 
     //API xác nhận thanh toán
-    @RequestMapping(value = "/checkout/confirm", method = {RequestMethod.GET, RequestMethod.POST})
+    @PostMapping("/checkout/confirm")
     public String confirmCheckout(@RequestParam Long userId, Model model) {
+        // Call the checkout service to convert the cart into an Order.
         Order order = CheckOutService.checkout(userId);
+        CheckOutService.clearOrderedCartItems(order.getOrderDetails());
+        // Add the Order object to the model so you can display its data in the view.
         model.addAttribute("order", order);
 
-        System.out.println("✅ Đơn hàng đã lưu: Order ID = " + order.getId());
+        // Log the Order ID for debugging purposes.
+        System.out.println("✅ Order saved: Order ID = " + order.getId());
 
+        // Return the view name for the order confirmation page.
         return "orderComplete";
     }
+
 
 
     @GetMapping("/view/{userId}")
@@ -105,10 +113,9 @@ public class CartController {
         user.setId(userId);
 
         Cart cart = cartService.getOrCreateCart(user);
-        double total = cartService.getTotalPrice(user);
 
         model.addAttribute("cart", cart);
-        model.addAttribute("total", total);
+        model.addAttribute("total", cart.getTotalPrice());
         model.addAttribute("userId", userId);
 
         return "cart"; // Trỏ đến templates/cart.html

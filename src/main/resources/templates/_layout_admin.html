@@ -65,26 +65,28 @@
         <!-- content page will override this -->
     </div>
 
-    <footer class="w-full bg-black px-[85px] pt-[80px] pb-[32px]">
-        <div class="text-[#E8ECEF] flex justify-between border-b border-[#6C7275]">
-            <div class="flex gap-8 pb-12">
+    <footer class="w-full bg-black px-8 pb-12 lg:px-[85px] lg:pt-[80px] lg:pb-[32px]">
+        <div class="text-[#E8ECEF] flex justify-center lg:justify-between border-b border-[#6C7275]">
+            <div class="flex items-center gap-8 pb-10 lg:pb-12">
                 <div class="-translate-y-[5px] w-[104px] h-10">
                     <img th:src="@{/uploads/images/FurnitureLight.svg}" alt="Logo" />
                 </div>
-                <div class="w-[1px] h-6 bg-[#6C7275]"></div>
-                <p>Gift & Decoration Store</p>
+                <div class="hidden lg:block w-[1px] h-6 bg-[#6C7275]"></div>
+                <p class="hidden lg:block">Gift & Decoration Store</p>
             </div>
         </div>
-        <div class="flex justify-between items-center my-4">
-            <div class="flex gap-7 text-[12px]">
+        <div class="flex flex-col flex-col-reverse lg:flex-row lg:justify-between items-center my-4">
+            <div class="flex flex-col flex-col-reverse lg:flex-row lg:gap-7 text-[12px]">
                 <p class="text-[#E8ECEF]">Copyright © 2023 3legant. All rights reserved</p>
-                <a class="text-white" th:href="@{/privacy-policy}">Privacy Policy</a>
-                <a class="text-white" th:href="@{/terms-of-use}">Terms of Use</a>
+                <div class="w-full flex gap-6 items-center justify-center my-7">
+                    <a class="text-white" th:href="@{/privacy-policy}">Privacy Policy</a>
+                    <a class="text-white" th:href="@{/terms-of-use}">Terms of Use</a>
+                </div>
             </div>
             <div class="flex gap-6">
-                <img src="/icons/instagram.svg" alt="Instagram" width="24" height="24" />
-                <img src="/icons/facebook.svg" alt="Facebook" width="24" height="24" />
-                <img src="/icons/youtube.svg" alt="YouTube" width="24" height="24" />
+                <img th:src="@{/uploads/images/Facebook_Logo.png}" alt="Instagram" width="24" height="24" />
+                <img th:src="@{/uploads/images/Instagram_icon.png.webp}" alt="Facebook" width="24" height="24" />
+                <img th:src="@{/uploads/images/Youtube_logo.png}" alt="YouTube" width="24" height="24" />
             </div>
         </div>
     </footer>
@@ -94,6 +96,8 @@
             menu.classList.toggle('hidden');
         });
     </script>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </body>
 
 </html>

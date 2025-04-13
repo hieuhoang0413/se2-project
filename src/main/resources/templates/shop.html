@@ -37,7 +37,7 @@
             <a th:href="@{/product/{id}(id=${product.id})}" th:each="product : ${products}"
                 class="product-item block hover:shadow-2xl hover:scale-[101%] h-[460px] w-[260px] border border-gray-200 cursor-pointer">
                 <div class="relative flex flex-col items-center justify-end pt-6 bg-[#F3F5F7] w-full h-[350px] ">
-                    <img class="absolute top-10 w-full h-auto" th:src="@{/images/{file}(file=${product.image})}"
+                    <img class="absolute top-10 w-full h-auto" th:src="@{uploads/images/{file}(file=${product.image})}"
                         alt="Error Image" />
                     <div
                         class="absolute bg-white top-4 left-4 w-[66px] h-[24px] rounded-sm text-center text-base font-bold uppercase">

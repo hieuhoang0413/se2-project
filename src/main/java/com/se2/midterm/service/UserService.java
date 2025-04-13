@@ -32,7 +32,7 @@ public class UserService implements UserDetailsService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         if (user.getRole() == null) {
-            user.setRole(Role.ADMIN);
+            user.setRole(Role.USER);
         }
 
         // Lưu user trước để có ID

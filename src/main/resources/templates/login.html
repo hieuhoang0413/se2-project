@@ -9,11 +9,11 @@
 
 <body>
     <div class="flex w-full">
-        <div class="relative w-1/2 h-full min-h-screen overflow-hidden">
+        <div class="hidden lg:block relative w-1/2 h-full min-h-screen overflow-hidden">
             <img th:src="@{/images/sofa.png}" alt="Logo"
-                 class="absolute z-10 left-1/2 -translate-x-1/2 w-full h-auto" />
+                class="absolute z-10 left-1/2 -translate-x-1/2 w-full h-auto" />
         </div>
-        <div class="w-1/2 bg-[#F3F5F7] pl-[90px] pt-[120px] pr-[160px]">
+        <div class="w-full px-10 py-12 lg:w-1/2 bg-[#F3F5F7] lg:pl-[90px] lg:pt-[120px] lg:pr-[160px]">
             <h1 class="text-[40px] mb-6">Sign In</h1>
             <p class="text-[#6C7275] mb-8">Don’t have an accout yet? <a th:href="@{/register}"
                     class="text-[#38CB89]">Sign Up</a></p>

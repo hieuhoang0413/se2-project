@@ -24,7 +24,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         System.out.println("Configuring security filter chain...");
-
         httpSecurity
                 .authorizeRequests(auth -> auth
                         .requestMatchers("/login", "/css/**", "/js/**", "/images/**", "/uploads/**").permitAll()

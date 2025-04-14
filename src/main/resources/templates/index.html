@@ -13,7 +13,7 @@
         <!-- Slide -->
         <div class="flex justify-center items-center min-h-screen">
             <div class="w-full mb-20">
-                <div class="relative w-full h-[536px] overflow-hidden group">
+                <div class="relative w-full h-[304px] lg:h-[536px] overflow-hidden group">
                     <div id="slider" class="slider transition-all duration-1000 flex w-full h-full">
                         <img class="min-w-full h-full object-cover"
                             src="https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
@@ -26,23 +26,23 @@
                             alt="" />
                     </div>
                     <button onclick="prevSlide()"
-                        class="absolute left-5 top-1/2 transform -translate-y-1/2 bg-white w-[52px] h-[52px] rounded-full cursor-pointer opacity-30 hover:opacity-100">&#10094;</button>
+                        class="hidden lg:block absolute left-5 top-1/2 transform -translate-y-1/2 bg-white w-[52px] h-[52px] rounded-full cursor-pointer opacity-30 hover:opacity-100">&#10094;</button>
                     <button onclick="nextSlide()"
-                        class="absolute right-5 top-1/2 transform -translate-y-1/2 bg-white w-[52px] h-[52px] rounded-full cursor-pointer opacity-30 hover:opacity-100">&#10095;</button>
+                        class="hidden lg:block absolute right-5 top-1/2 transform -translate-y-1/2 bg-white w-[52px] h-[52px] rounded-full cursor-pointer opacity-30 hover:opacity-100">&#10095;</button>
                 </div>
-                <div class="flex items-center px-[85px] mt-8 font-sans">
-                    <h1 class="text-7xl">Simply Unique/ Simply Better.</h1>
-                    <p class="text-gray-600 ml-4"><b class="text-black">3legant</b> is a gift & decorations store based
+                <div class="lg:flex lg:items-center px-[32px] lg:px-[85px] mt-8 font-sans">
+                    <h1 class="text-[40px] lg:text-7xl">Simply Unique/ Simply Better.</h1>
+                    <p class="text-[14px] lg:text-[16px] text-gray-600 lg:ml-4"><b class="text-black">3legant</b> is a gift & decorations store based
                         in HCMC, Vietnam. Est since 2019.</p>
                 </div>
             </div>
         </div>
 
-        <div class="flex w-full h-[664px] px-[85px] gap-6">
+        <div class="flex flex-col lg:flex-row w-full lg:h-[664px] px-8 lg:px-[85px] gap-6">
             <!-- Left section -->
-            <div class="relative w-1/2 h-full">
-                <img class="w-full h-full object-contain" th:src="@{uploads/images/sofa.png}" alt="Living Room" />
-                <div class="absolute top-12 left-12 mb-10 ">
+            <div class="relative w-full lg:w-1/2 lg:h-full h-[378px]">
+                <img class="w-full h-full object-cover" th:src="@{uploads/images/sofa.png}" alt="Living Room" />
+                <div class="absolute top-8 left-8 lg:top-12 lg:left-12 mb-10 ">
                     <h1 class="text-[34px]">Living Room</h1>
                     <a href="/shop" class="flex items-center w-fit h-[28px] text-[16px] border-b border-black">
                         Shop now
@@ -54,12 +54,12 @@
             </div>
 
             <!-- Right section -->
-            <div class="w-1/2 h-full flex flex-col gap-6">
+            <div class="lg:w-1/2 w-full lg:h-full flex flex-col gap-6">
                 <!-- Bedroom -->
-                <div class="relative w-full h-1/2 overflow-hidden">
-                    <img class="w-full h-full object-contain" th:src="@{uploads/images/bedside-cabinet.png}"
+                <div class="relative w-full lg:h-1/2 h-[378px] overflow-hidden">
+                    <img class="w-full h-full object-cover" th:src="@{uploads/images/bedside-cabinet.png}"
                         alt="Bedroom" />
-                    <div class="absolute bottom-10 left-8 ">
+                    <div class="absolute bottom-8 lg:bottom-10 left-8 ">
                         <h1 class="text-[34px]">Bedroom</h1>
                         <a href="/shop" class="flex items-center w-fit h-[28px] text-[16px] border-b border-black">
                             Shop now
@@ -71,9 +71,9 @@
                 </div>
 
                 <!-- Kitchen -->
-                <div class="relative w-full h-1/2 overflow-hidden">
-                    <img class="w-full h-full object-contain" th:src="@{uploads/images/microwave.png}" alt="Kitchen" />
-                    <div class="absolute bottom-10 left-8 ">
+                <div class="relative w-full lg:h-1/2 h-[378px] overflow-hidden">
+                    <img class="w-full h-full object-cover" th:src="@{uploads/images/microwave.png}" alt="Kitchen" />
+                    <div class="absolute bottom-8 lg:bottom-10 left-8 ">
                         <h1 class="text-[34px]">Kitchen</h1>
                         <a href="/shop" class="flex items-center w-fit h-[28px] text-[16px] border-b border-black">
                             Shop now
@@ -86,15 +86,16 @@
             </div>
         </div>
 
-        <div class="w-full overflow-hidden pl-[85px]">
-            <div class="flex justify-between pr-[85px] items-center">
-                <h1 class="my-12 text-[40px]">New Arrivals</h1>
-                <a class="border-b border-black font-[500]" href="/shop">More Products &#10132;</a>
+        <!-- New Arrivals -->
+        <div class="w-full h-fit lg:overflow-hidden pl-8 lg:pl-[85px]">
+            <div class="lg:flex justify-between lg:pr-[85px] items-center">
+                <h1 class="my-12 text-[32px] lg:text-[40px] font-[500]">New Arrivals</h1>
+                <a class="hidden lg:block border-black font-[500]" href="/shop">More Products &#10132;</a>
             </div>
-            <div class="w-full mt-10 flex gap-4 flex-wrap">
+            <div class="w-full h-fit overflow-scroll my-10 flex gap-4 lg:flex-wrap">
                 <a th:href="@{/product/{id}(id=${product.id})}" th:each="product : ${products}"
-                    class="product-item block hover:shadow-2xl hover:scale-[101%] h-[460px] w-[260px] border border-gray-200 cursor-pointer">
-                    <div class="relative flex flex-col items-center justify-end pt-6 bg-[#F3F5F7] w-full h-[350px] ">
+                    class="product-item flex-shrink-0 hover:shadow-2xl hover:scale-[101%] h-[392px] lg:h-[460px] w-[230px] lg:w-[260px] border border-gray-200 cursor-pointer">
+                    <div class="relative flex flex-col items-center justify-end pt-6 bg-[#F3F5F7] w-full h-[300px] lg:h-[350px] ">
                         <img class="absolute top-10 w-full h-auto" th:src="@{uploads/images/{file}(file=${product.image})}"
                             alt="Error Image" />
                         <div
@@ -144,10 +145,11 @@
                     </div>
                 </a>
             </div>
+            <a class="lg:hidden border-black font-[500]" href="/shop">More Products &#10132;</a>
         </div>
 
-        <div class="flex gap-6 w-full px-[85px] py-[80px]">
-            <div class="bg-[#F3F5F7] h-[220px] w-1/4 py-12 px-8">
+        <div class="flex flex-wrap lg:flex-nowrap gap-2 lg:gap-6 w-full px-8 lg:px-[85px] py-[80px]">
+            <div class="bg-[#F3F5F7] h-[200px] lg:h-[220px] w-[152px] lg:w-1/4 py-8 lg:py-12 px-4 lg:px-8">
                 <div>
                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
                         <path
@@ -159,10 +161,10 @@
                             strokeLinejoin="round" />
                     </svg>
                 </div>
-                <h3 class="text-xl mt-4 mb-2">Free Shipping</h3>
+                <h3 class="text-[14px] font-[600] lg:text-xl mt-4 mb-2">Free Shipping</h3>
                 <p class="text-sm font-normal text-[#6C7275]">Order above $200</p>
             </div>
-            <div class="bg-[#F3F5F7] h-[220px] w-1/4 py-12 px-8">
+            <div class="bg-[#F3F5F7] h-[200px] lg:h-[220px] w-[152px] lg:w-1/4 py-8 lg:py-12 px-4 lg:px-8">
                 <div>
                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
                         <rect x="4" y="8" width="40" height="32" rx="4" stroke="#141718" strokeWidth="2.5" />
@@ -172,10 +174,10 @@
                         <circle cx="2" cy="2" r="2" transform="matrix(1 0 0 -1 10 26)" fill="#141718" />
                     </svg>
                 </div>
-                <h3 class="text-xl mt-4 mb-2">Money-back</h3>
+                <h3 class="text-[14px] font-[600] lg:text-xl mt-4 mb-2">Money-back</h3>
                 <p class="text-sm font-normal text-[#6C7275]">30 days guarantee</p>
             </div>
-            <div class="bg-[#F3F5F7] h-[220px] w-1/4 py-12 px-8">
+            <div class="bg-[#F3F5F7] h-[200px] lg:h-[220px] w-[152px] lg:w-1/4 py-8 lg:py-12 px-4 lg:px-8">
                 <div>
                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
                         <path
@@ -183,10 +185,10 @@
                             stroke="#141718" strokeWidth="2.5" strokeLinecap="round" />
                     </svg>
                 </div>
-                <h3 class="text-xl mt-4 mb-2">Secure Payments</h3>
+                <h3 class="text-[14px] font-[600] lg:text-xl mt-4 mb-2">Secure Payments</h3>
                 <p class="text-sm font-normal text-[#6C7275]">Secured by Stripe</p>
             </div>
-            <div class="bg-[#F3F5F7] h-[220px] w-1/4 py-12 px-8">
+            <div class="bg-[#F3F5F7] h-[200px] lg:h-[220px] w-[152px] lg:w-1/4 py-8 lg:py-12 px-4 lg:px-8">
                 <div>
                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
                         <path
@@ -194,7 +196,7 @@
                             stroke="#141718" strokeWidth="2.5" strokeLinejoin="round" />
                     </svg>
                 </div>
-                <h3 class="text-xl mt-4 mb-2">24/7 Support</h3>
+                <h3 class="text-[14px] font-[600] lg:text-xl mt-4 mb-2">24/7 Support</h3>
                 <p class="text-sm font-normal text-[#6C7275]">Phone and Email support</p>
             </div>
         </div>

@@ -40,7 +40,7 @@ public class Cart {
         if (cartItems == null || cartItems.isEmpty()) {
             System.out.println("No items in cart to update total price.");
             return 0;
-        }//cai subtotal dang ko nhan thi phai, trong dbs y choi ban luon
+        }
         for (CartItem item : cartItems) {
             totalPrice += item.getPrice()* item.getQuantity();
         }
@@ -56,10 +56,9 @@ public class Cart {
     public void setUser(User user) { this.user = user; }
 
     public List<CartItem> getCartItems() { return cartItems; }
-/*    public void setCartItems(List<CartItem> cartItems) {
+    public void setCartItems(List<CartItem> cartItems) {
         this.cartItems = cartItems;
-        updateTotalPrice(); // Cập nhật tổng tiền khi có thay đổi
-    }*/
+    }
 
     public void setStatus(CartStatus status) {
         this.status = status;
